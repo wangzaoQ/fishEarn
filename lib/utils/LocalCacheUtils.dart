@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:fish_earn/config/LocalCacheConfig.dart';
+import 'package:fish_earn/data/GameData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalCacheUtils{
@@ -58,23 +62,23 @@ class LocalCacheUtils{
     return await _prefs!.remove(key);
   }
 
-  // // 保存User，序列化成json字符串
-  // static Future<bool> putUser(UserData user) async {
-  //   String jsonStr = jsonEncode(user.toJson());
-  //   return await _prefs!.setString(CacheConfig.cacheUserKey, jsonStr);
-  // }
-  //
-  // // 读取User，反序列化
-  // static UserData getUser() {
-  //   String? jsonStr = _prefs?.getString(CacheConfig.cacheUserKey);
-  //   if (jsonStr == null) {
-  //     var user = UserData(newCoin: 0.0);
-  //     putUser(user);
-  //     return user;
-  //   }
-  //   Map<String, dynamic> map = jsonDecode(jsonStr);
-  //   return UserData.fromJson(map);
-  // }
+  // 保存Game，序列化成json字符串
+  static Future<bool> putGameData(GameData user) async {
+    String jsonStr = jsonEncode(user.toJson());
+    return await _prefs!.setString(LocalCacheConfig.cacheKeyLocalGame, jsonStr);
+  }
+
+  // 读取Game，反序列化
+  static GameData getGameData() {
+    String? jsonStr = _prefs?.getString(LocalCacheConfig.cacheKeyLocalGame);
+    if (jsonStr == null) {
+      var user = GameData();
+      putGameData(user);
+      return user;
+    }
+    Map<String, dynamic> map = jsonDecode(jsonStr);
+    return GameData.fromJson(map);
+  }
 
 
 
