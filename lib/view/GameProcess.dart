@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/data/GameData.dart';
+import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,9 @@ import 'GradientProgressBar.dart';
 class GameProgress extends StatefulWidget {
   final double progress; // 0~1
   final GameData gameData; // 0~1
+  final void Function(int result) onConfirm; // 👈 改成支持参数的函数
 
-  const GameProgress({Key? key, required this.gameData, required this.progress})
+  const GameProgress({Key? key, required this.gameData, required this.progress,required this.onConfirm,})
     : super(key: key);
 
   @override
@@ -114,18 +116,21 @@ class _GameProgressState extends State<GameProgress>
                 Positioned(
                   left: 150.w,
                   top: 10.h,
-                  child: SizedBox(
+                  child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      pressedOpacity: 0.7,
+                      child: SizedBox(
                     width: 68.w,
                     height: 68.h,
                     child: Stack(
                       children: [
                         (widget.progress == 0.5 && widget.gameData.level == 1)
                             ? RotationTransition(
-                                turns: _controller,
-                                child: Image.asset(
-                                  "assets/images/bg_game_progress.webp",
-                                ),
-                              )
+                          turns: _controller,
+                          child: Image.asset(
+                            "assets/images/bg_game_progress.webp",
+                          ),
+                        )
                             : SizedBox.shrink(),
                         Align(
                           alignment: Alignment.center,
@@ -137,7 +142,14 @@ class _GameProgressState extends State<GameProgress>
                         ),
                       ],
                     ),
-                  ),
+                  ), onPressed: (){
+                    if (widget.gameData.level == 1 &&
+                        widget.progress == 0.5) {
+                      widget.gameData.level = 2;
+                      LocalCacheUtils.putGameData(widget.gameData);
+                      widget.onConfirm(2);
+                    }
+                  })
                 ),
                 Positioned(
                   left: 160.w,
@@ -153,29 +165,43 @@ class _GameProgressState extends State<GameProgress>
                 Positioned(
                   right: 50.w,
                   top: 10.h,
-                  child: SizedBox(
-                    width: 68.w,
-                    height: 68.h,
-                    child: Stack(
-                      children: [
-                        (widget.progress == 1 && widget.gameData.level == 2)
-                            ? RotationTransition(
-                                turns: _controller,
-                                child: Image.asset(
-                                  "assets/images/bg_game_progress.webp",
-                                ),
-                              )
-                            : SizedBox.shrink(),
-                        Align(
-                          alignment: Alignment.center,
-                          child: Image.asset(
-                            "assets/images/ic_game3.webp",
-                            width: 55.w,
-                            height: 36.h,
+                  child: CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    pressedOpacity: 0.7,
+                    child: SizedBox(
+                      width: 68.w,
+                      height: 68.h,
+                      child: Stack(
+                        children: [
+                          (widget.progress == 1 && widget.gameData.level == 2)
+                              ? RotationTransition(
+                                  turns: _controller,
+                                  child: Image.asset(
+                                    "assets/images/bg_game_progress.webp",
+                                  ),
+                                )
+                              : SizedBox.shrink(),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Image.asset(
+                              "assets/images/ic_game3.webp",
+                              width: 55.w,
+                              height: 36.h,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                    onPressed: () {
+                      widget.onConfirm(3);
+
+                      if (widget.gameData.level == 2 &&
+                          widget.progress == 1) {
+                        widget.gameData.level = 3;
+                        LocalCacheUtils.putGameData(widget.gameData);
+                        widget.onConfirm(3);
+                      }
+                    },
                   ),
                 ),
                 Positioned(

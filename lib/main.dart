@@ -4,6 +4,7 @@ import 'package:applovin_max/applovin_max.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/LocalConfig.dart';
 import 'package:fish_earn/game/GamePage.dart';
+import 'package:fish_earn/utils/GlobalConfigManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -42,6 +43,7 @@ Future<void> main() async {
   //     LogUtils.logD("facebook init error");
   //   }
   // }
+  GlobalConfigManager.instance.init();
   runApp(
     EasyLocalization(
       supportedLocales: [Locale('en'), Locale('pt')],

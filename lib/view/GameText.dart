@@ -41,6 +41,7 @@ class GameText extends StatelessWidget {
             style: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.w900,
+              fontFamily: "AHV",
               foreground: Paint()
                 ..style = PaintingStyle.stroke
                 ..strokeWidth = strokeWidth
@@ -67,6 +68,7 @@ class GameText extends StatelessWidget {
             style: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.w900,
+              fontFamily: "AHV",
               color: fillColor,
               shadows: [
                 Shadow(

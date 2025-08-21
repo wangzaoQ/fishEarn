@@ -28,6 +28,14 @@ class GameData{
       var progress = ((all-levelTime)/all);
       progress = progress>=1?1:progress;
       return 0.5 *progress;
+    }else if(level == 2){
+      if(levelTime<=0){
+        levelTime = GameConfig.time_2_3;
+      }
+      var all = GameConfig.time_2_3;
+      var progress = ((all-levelTime)/all);
+      progress = progress>=1?1:progress;
+      progress = (0.5 *progress)+0.5;
     }
     return 1;
   }
