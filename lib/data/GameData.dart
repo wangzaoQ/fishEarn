@@ -36,6 +36,7 @@ class GameData{
       var progress = ((all-levelTime)/all);
       progress = progress>=1?1:progress;
       progress = (0.5 *progress)+0.5;
+      return progress;
     }
     return 1;
   }

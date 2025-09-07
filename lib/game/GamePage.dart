@@ -17,7 +17,6 @@ import '../view/GameLifeProgress.dart';
 import '../view/GameText.dart';
 import '../view/pop/LevelPop2_3.dart';
 import 'FishAnimGame.dart';
-import 'FishGame.dart';
 import 'GameLifePage.dart';
 
 class GamePage extends StatefulWidget {
@@ -209,9 +208,14 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
         ),
       );
     } else if (gameData.level == 2) {
-      // return GameWidget(
-      //   game: SimpleAnimGame(), // 直接把游戏传进去
-      // );
+      return Container(
+        color: Colors.transparent, // 外层透明
+        child: GameWidget(
+          game: SimpleAnimGame(),
+        ),
+    );GameWidget(
+        game: SimpleAnimGame(), // 直接把游戏传进去
+      );
       return Positioned.fill(
         child: Center(
           child: SizedBox(
