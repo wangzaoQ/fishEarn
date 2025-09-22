@@ -38,6 +38,9 @@ class FishComponent extends SpriteAnimationComponent with HasGameRef<SimpleAnimG
     // 加载单帧或多帧（这里按单帧示例；若你有多帧可加载列表）
     final frames = <Sprite>[];
     frames.add(await gameRef.loadSprite('$picName.webp'));
+    // frames.add(await gameRef.loadSprite('${picName}1.png'));
+    // frames.add(await gameRef.loadSprite('${picName}2.png'));
+    // frames.add(await gameRef.loadSprite('${picName}3.png'));
     animation = SpriteAnimation.spriteList(frames, stepTime: frameStep);
 
     // 如果调用时没有传 position，则随机放到屏幕内的一个位置（避免都在中间）

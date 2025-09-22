@@ -9,9 +9,9 @@ class GameText extends StatelessWidget {
     this.fillColor = Colors.white,
     this.strokeColor = const Color(0xFF8B4513), // 棕色描边
     this.shadowColor = const Color(0xFF8B4513),
-    this.padding = const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+    this.padding = const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
     this.background,
-    this.borderRadius = const BorderRadius.all(Radius.circular(6)),
+    this.borderRadius = const BorderRadius.all(Radius.circular(0)),
   });
 
   final double fontSize;

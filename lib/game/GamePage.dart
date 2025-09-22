@@ -208,12 +208,12 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
         ),
       );
     } else if (gameData.level == 2) {
-      return Container(
+      return Padding(padding: EdgeInsetsGeometry.only(left: 0,top: 100.h,right: 0,bottom: 110.h),child: Container(
         color: Colors.transparent, // 外层透明
         child: GameWidget(
           game: SimpleAnimGame(),
         ),
-    );GameWidget(
+      ),);GameWidget(
         game: SimpleAnimGame(), // 直接把游戏传进去
       );
       return Positioned.fill(
