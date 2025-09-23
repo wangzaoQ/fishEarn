@@ -180,10 +180,30 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
           //鱼动画
           buildAnimal(),
           //鱼生命进度
-          Positioned(
-            top: 310.h,
-            left: 32.w,
-            child: GameLifePage(),
+          Positioned(top: 310.h, left: 32.w, child: GameLifePage()),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsetsGeometry.only(top: 268.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center, // ← 子元素水平居中
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/ic_coin.webp",
+                    width: 50.w,
+                    height: 50.h,
+                  ),
+                  GameText(
+                    showText: "+\$0.001/1s",
+                    fontSize: 28.sp,
+                    fillColor: Color(0xFFFFEF50),
+                    strokeColor: Color(0xFF9B4801),
+                    strokeWidth: 2.w,
+                  ),
+                ],
+              ),
+            ),
           ),
           // Positioned(child:SizedBox(child: CustomProgress3(progress: 0.5),) )
         ],
@@ -208,7 +228,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
         ),
       );
     } else if (gameData.level == 2) {
-      return Padding(padding: EdgeInsetsGeometry.only(left: 0,top: 100.h,right: 0,bottom: 110.h),child: Container(
+      return Padding(padding: EdgeInsetsGeometry.only(left: 0,top: 150.h,right: 0,bottom: 80.h),child: Container(
         color: Colors.transparent, // 外层透明
         child: GameWidget(
           game: SimpleAnimGame(),
