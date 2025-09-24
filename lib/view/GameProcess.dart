@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../config/GameConfig.dart';
 import 'GradientProgressBar.dart';
 
 class GameProgress extends StatefulWidget {
@@ -146,6 +147,7 @@ class _GameProgressState extends State<GameProgress>
                     if (widget.gameData.level == 1 &&
                         widget.progress == 0.5) {
                       widget.gameData.level = 2;
+                      widget.gameData.levelTime = GameConfig.time_2_3;
                       LocalCacheUtils.putGameData(widget.gameData);
                       widget.onConfirm(2);
                     }

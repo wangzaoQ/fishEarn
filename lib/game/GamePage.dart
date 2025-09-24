@@ -11,11 +11,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+import '../config/global.dart';
 import '../data/GameData.dart';
 import '../model/GameViewModel.dart';
+import '../utils/LogUtils.dart';
 import '../view/GameLifeProgress.dart';
 import '../view/GameText.dart';
 import '../view/pop/LevelPop2_3.dart';
+import 'AnimalGameHolder.dart';
 import 'FishAnimGame.dart';
 import 'GameLifePage.dart';
 
@@ -31,26 +34,30 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   late double progress;
   AnimationController? _lottieController;
 
+  var TAG = "GamePage";
+
   @override
   void initState() {
     super.initState();
     _lottieController = AnimationController(vsync: this);
-    // GlobalTimerManager().startTimer(
-    //   onTick: () {
-    //     setState(() {
-    //       if (gameData.level > 0) {
-    //         gameData.levelTime -= 1;
-    //         LocalCacheUtils.putGameData(gameData);
-    //       }
-    //     });
-    //   },
-    // );
+    gameData = LocalCacheUtils.getGameData();
+    GlobalTimerManager().startTimer(
+      onTick: () async{
+        if(!allowTime)return;
+        gameData = LocalCacheUtils.getGameData();
+        if (gameData.level > 0) {
+          gameData.levelTime -= 1;
+          LocalCacheUtils.putGameData(gameData);
+        }
+        progress = gameData.getCurrentProgress();
+        globalTimeListener.value = progress;
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     gameData = LocalCacheUtils.getGameData();
-    progress = gameData.getCurrentProgress();
     return Scaffold(
       body: Stack(
         children: [
@@ -121,20 +128,25 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
             padding: EdgeInsetsGeometry.only(top: 94.h),
             child: Align(
               alignment: Alignment.topCenter,
-              child: GameProgress(
-                gameData: gameData,
-                progress: progress,
-                onConfirm: (result) {
-                  setState(() {
-                    if (result == 2) {
-                      //level 2升级
-                      _lottieController?.dispose();
-                    } else if (result == 3) {
-                      PopManager().show(context: context, child: LevelPop2_3());
-                    }
-                  });
+              child: RepaintBoundary(child: ValueListenableBuilder<double>(
+                valueListenable: globalTimeListener,
+                builder: (_, value, __) {
+                  return GameProgress(
+                    gameData: gameData,
+                    progress: value,
+                    onConfirm: (result) {
+                      setState(() {
+                        if (result == 2) {
+                          //level 2升级
+                          _lottieController?.dispose();
+                        } else if (result == 3) {
+                          PopManager().show(context: context, child: LevelPop2_3());
+                        }
+                      });
+                    },
+                  ); // 只重建这一小块
                 },
-              ),
+              ))
             ),
           ),
           Positioned(
@@ -181,6 +193,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
           buildAnimal(),
           //鱼生命进度
           Positioned(top: 310.h, left: 32.w, child: GameLifePage()),
+          gameData.level == 1?SizedBox.shrink():
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
@@ -195,7 +208,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                     height: 50.h,
                   ),
                   GameText(
-                    showText: "+\$0.001/1s",
+                    showText: "+\$${gameData.level == 2?"0.001":"0.005"}/1s",
                     fontSize: 28.sp,
                     fillColor: Color(0xFFFFEF50),
                     strokeColor: Color(0xFF9B4801),
@@ -212,6 +225,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   }
 
   Widget buildAnimal() {
+    LogUtils.logD("${TAG} buildAnimal");
     if (gameData.level == 1) {
       return Positioned.fill(
         child: Center(
@@ -228,26 +242,9 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
         ),
       );
     } else if (gameData.level == 2) {
-      return Padding(padding: EdgeInsetsGeometry.only(left: 0,top: 150.h,right: 0,bottom: 80.h),child: Container(
-        color: Colors.transparent, // 外层透明
-        child: GameWidget(
-          game: SimpleAnimGame(),
-        ),
-      ),);GameWidget(
-        game: SimpleAnimGame(), // 直接把游戏传进去
-      );
       return Positioned.fill(
         child: Center(
-          child: SizedBox(
-            width: 160.w,
-            height: 160.h,
-            child: Image.asset(
-              "assets/images/ic_game2_large.webp",
-              height: 160.h,
-              width: 160.w,
-              fit: BoxFit.cover,
-            ),
-          ),
+          child: AnimalGameHolder(level: 2),
         ),
       );
     } else {

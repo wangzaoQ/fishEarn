@@ -17,7 +17,7 @@ class SimpleAnimGame extends FlameGame {
 
     // 添加一条鱼
     add(FishComponent(
-      picName: 'ic_game2_large', // 对应 assets/images/fish/fish_1.png 这样的资源
+      picName: 'ic_animal', // 对应 assets/images/fish/fish_1.png 这样的资源
       size: Vector2(160.w, 160.w),
     ));
   }
