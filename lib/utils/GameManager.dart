@@ -38,8 +38,16 @@ class GameManager{
     game?.showProtect();
   }
 
+  void hideProtect() {
+    game?.hideProtect();
+  }
+
   updateCoinToGame(double coin){
     game?.updateCoin(coin);
+  }
+
+  updateProtectTime(int time){
+    game?.updateProtectTime(time);
   }
 
   addCoin(GameData gameData){

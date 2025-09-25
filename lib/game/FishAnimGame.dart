@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../config/global.dart';
+import '../utils/GlobalTimerManager.dart';
 import 'FishComponent.dart';
 
 class SimpleAnimGame extends FlameGame {
@@ -15,7 +16,8 @@ class SimpleAnimGame extends FlameGame {
   late SpriteComponent coinIcon;
   late SpriteComponent settingIcon;
   TextComponent? coinText;
-
+  late SpriteComponent bgProtect;
+  late TextComponent timeText;
   @override
   Color backgroundColor() => Colors.transparent;
 
@@ -64,6 +66,29 @@ class SimpleAnimGame extends FlameGame {
       ..position = coinBg.position + Vector2(coinBg.size.x / 2, coinBg.size.y / 2);
     add(coinText!);
 
+    // 背景图片
+    bgProtect = SpriteComponent()
+      ..sprite = await Sprite.load('bg_protect.webp') // 注意路径
+      ..size = Vector2(124, 47) // 对应 Flutter 的 width:124.w, height:47.h
+      ..position = Vector2((size.x - 124) / 2, 529); // 顶部对齐 + top padding
+    add(bgProtect);
+
+    // 时间文字
+    final textPaintTime = TextPaint(
+      style: TextStyle(
+        color: Color(0xFF561C3E),
+        fontSize: 15, // 对应 15.sp
+        fontWeight: FontWeight.bold,
+      ),
+    );
+
+    timeText = TextComponent(
+      text: GlobalTimerManager().formatTime(0),
+      textRenderer: textPaintTime,
+      anchor: Anchor.topRight,
+    )
+      ..position = bgProtect.position + Vector2(bgProtect.size.x - 12, 13); // right:12, top:13
+    add(timeText);
   }
 
   /// 外部调用以更新 coin 文本（只修改 TextComponent，不触发 Flutter rebuild）
@@ -75,10 +100,25 @@ class SimpleAnimGame extends FlameGame {
     }
   }
 
+  void updateProtectTime(int time){
+    // 每帧刷新文字，如果保护时间在减少
+    if(time == 0){
+      bgProtect.paint.color = bgProtect.paint.color.withOpacity(0.0);
+      timeText.text = "";
+      hideProtect();
+    }else{
+      bgProtect.paint.color = bgProtect.paint.color.withOpacity(1.0);
+      timeText.text = GlobalTimerManager().formatTime(time);
+    }
+  }
+
   void showProtect(){
     fishComment.showOverlay();
   }
 
+  void hideProtect(){
+    fishComment.hideOverlay();
+  }
   @override
   void onRemove() {
     super.onRemove();

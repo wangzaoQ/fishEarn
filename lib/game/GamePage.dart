@@ -44,6 +44,10 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     return 3;
   }
 
+  int getProtectTime() {
+    return 10;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +57,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
       onTick: () async {
         if (!allowTime) return;
         time++;
+        var cutProtectTime = false;
         gameData = LocalCacheUtils.getGameData();
         if (gameData.level > 0 && gameData.levelTime >= 1) {
           gameData.levelTime -= 1;
@@ -64,6 +69,13 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
           time = 0;
           GameManager.instance.cutLife(gameData);
         }
+        if(gameData.protectTime>0){
+          cutProtectTime = true;
+          gameData.protectTime-=1;
+        }else{
+          gameData.protectTime=0;
+          cutProtectTime = false;
+        }
         LocalCacheUtils.putGameData(gameData);
 
         progress = GameManager.instance.getCurrentProgress(gameData);
@@ -71,6 +83,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
           globalTimeListener.value = progress;
           lifeNotifier.value = gameData.life;
           GameManager.instance.updateCoinToGame(gameData.coin);
+          GameManager.instance.updateProtectTime(gameData.protectTime);
         });
       },
     );
@@ -198,19 +211,26 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                 child: Image.asset("assets/images/ic_protect.webp"),
               ),
               onPressed: () {
+                gameData = LocalCacheUtils.getGameData();
+                gameData.protectTime+=getProtectTime();
+                LocalCacheUtils.putGameData(gameData);
                 GameManager.instance.showProtect();
               },
             ),
           ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsetsGeometry.only(top: 529.h),
-              child: SizedBox(width: 124.w, height: 47.h, child: Stack(children: [
-                Image.asset("assets/images/bg_protect.webp",fit: BoxFit.fill,)
-              ],)),
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.topCenter,
+          //   child: Padding(
+          //     padding: EdgeInsetsGeometry.only(top: 529.h),
+          //     child: SizedBox(width: 124.w, height: 47.h, child: Stack(children: [
+          //       Image.asset("assets/images/bg_protect.webp",fit: BoxFit.fill,),
+          //       Positioned(
+          //           right: 12.w,
+          //           top: 13.h,
+          //           child: Text(GlobalTimerManager().formatTime(getProtectTime()),style: TextStyle(color: Color(0xFF561C3E),fontSize: 15.sp,fontWeight: FontWeight.bold),))
+          //     ],)),
+          //   ),
+          // ),
           gameData.level == 1
               ? SizedBox.shrink()
               : Align(
