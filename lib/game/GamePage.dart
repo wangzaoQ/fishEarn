@@ -40,7 +40,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
 
   var time = 0;
 
-  int getCutTime(){
+  int getCutTime() {
     return 3;
   }
 
@@ -50,17 +50,17 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     _lottieController = AnimationController(vsync: this);
     gameData = LocalCacheUtils.getGameData();
     GlobalTimerManager().startTimer(
-      onTick: () async{
-        if(!allowTime)return;
+      onTick: () async {
+        if (!allowTime) return;
         time++;
         gameData = LocalCacheUtils.getGameData();
-        if (gameData.level > 0 && gameData.levelTime>=1) {
-           gameData.levelTime-=1;
+        if (gameData.level > 0 && gameData.levelTime >= 1) {
+          gameData.levelTime -= 1;
         }
-        if(gameData.level>1){
+        if (gameData.level > 1) {
           GameManager.instance.addCoin(gameData);
         }
-        if(time == getCutTime()){
+        if (time == getCutTime()) {
           time = 0;
           GameManager.instance.cutLife(gameData);
         }
@@ -96,44 +96,6 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
               child: Stack(
                 children: [
                   Positioned(
-                    top: 11.h,
-                    left: 18.w,
-                    child: Stack(
-                      children: [
-                        Image.asset(
-                          "assets/images/bg_to_bar_coin.webp",
-                          width: 90.w,
-                          height: 25.h,
-                          fit: BoxFit.cover,
-                        ),
-
-                        // Positioned.fill(
-                        //   child: Center(
-                        //     child: RepaintBoundary(child: ValueListenableBuilder<double>(
-                        //       valueListenable: coinNotifier,
-                        //       builder: (_, value, __) {
-                        //         return Text(
-                        //           value.toStringAsFixed(3),
-                        //           style: TextStyle(
-                        //             color: Color(0xFFF4FF72),
-                        //             fontSize: 15.sp,
-                        //             fontFamily: "AHV",
-                        //           ),
-                        //         ); // 只重建这一小块
-                        //       },
-                        //     )),
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                  ),
-                  Image.asset(
-                    "assets/images/ic_coin.webp",
-                    width: 45.w,
-                    height: 45.h,
-                    fit: BoxFit.cover,
-                  ),
-                  Positioned(
                     right: 15.w,
                     child: CupertinoButton(
                       padding: EdgeInsets.zero,
@@ -155,25 +117,30 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
             padding: EdgeInsetsGeometry.only(top: 94.h),
             child: Align(
               alignment: Alignment.topCenter,
-              child: RepaintBoundary(child: ValueListenableBuilder<double>(
-                valueListenable: globalTimeListener,
-                builder: (_, value, __) {
-                  return GameProgress(
-                    gameData: gameData,
-                    progress: value,
-                    onConfirm: (result) {
-                      setState(() {
-                        if (result == 2) {
-                          //level 2升级
-                          _lottieController?.dispose();
-                        } else if (result == 3) {
-                          PopManager().show(context: context, child: LevelPop2_3());
-                        }
-                      });
-                    },
-                  ); // 只重建这一小块
-                },
-              ))
+              child: RepaintBoundary(
+                child: ValueListenableBuilder<double>(
+                  valueListenable: globalTimeListener,
+                  builder: (_, value, __) {
+                    return GameProgress(
+                      gameData: gameData,
+                      progress: value,
+                      onConfirm: (result) {
+                        setState(() {
+                          if (result == 2) {
+                            //level 2升级
+                            _lottieController?.dispose();
+                          } else if (result == 3) {
+                            PopManager().show(
+                              context: context,
+                              child: LevelPop2_3(),
+                            );
+                          }
+                        });
+                      },
+                    ); // 只重建这一小块
+                  },
+                ),
+              ),
             ),
           ),
           Positioned(
@@ -215,36 +182,62 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
               ),
             ),
           ),
-
-          //鱼动画
-          buildAnimal(),
           //鱼生命进度
           Positioned(top: 310.h, left: 32.w, child: GameLifePage()),
-          gameData.level == 1?SizedBox.shrink():
+          //鱼动画
+          buildAnimal(),
+          Positioned(
+            top: 220.h,
+            right: 22.w,
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              pressedOpacity: 0.7,
+              child: SizedBox(
+                width: 70.w,
+                height: 70.h,
+                child: Image.asset("assets/images/ic_protect.webp"),
+              ),
+              onPressed: () {
+                GameManager.instance.showProtect();
+              },
+            ),
+          ),
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: EdgeInsetsGeometry.only(top: 268.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center, // ← 子元素水平居中
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "assets/images/ic_coin.webp",
-                    width: 50.w,
-                    height: 50.h,
-                  ),
-                  GameText(
-                    showText: "+\$${gameData.level == 2?"0.001":"0.005"}/1s",
-                    fontSize: 28.sp,
-                    fillColor: Color(0xFFFFEF50),
-                    strokeColor: Color(0xFF9B4801),
-                    strokeWidth: 2.w,
-                  ),
-                ],
-              ),
+              padding: EdgeInsetsGeometry.only(top: 529.h),
+              child: SizedBox(width: 124.w, height: 47.h, child: Stack(children: [
+                Image.asset("assets/images/bg_protect.webp",fit: BoxFit.fill,)
+              ],)),
             ),
           ),
+          gameData.level == 1
+              ? SizedBox.shrink()
+              : Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.only(top: 268.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center, // ← 子元素水平居中
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          "assets/images/ic_coin.webp",
+                          width: 50.w,
+                          height: 50.h,
+                        ),
+                        GameText(
+                          showText:
+                              "+\$${gameData.level == 2 ? "0.001" : "0.005"}/1s",
+                          fontSize: 28.sp,
+                          fillColor: Color(0xFFFFEF50),
+                          strokeColor: Color(0xFF9B4801),
+                          strokeWidth: 2.w,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
           // Positioned(child:SizedBox(child: CustomProgress3(progress: 0.5),) )
         ],
       ),
@@ -269,11 +262,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
         ),
       );
     } else if (gameData.level == 2) {
-      return Positioned.fill(
-        child: Center(
-          child: AnimalGameHolder(level: 2),
-        ),
-      );
+      return Positioned.fill(child: Center(child: AnimalGameHolder(level: 2)));
     } else {
       return Positioned.fill(
         child: Center(

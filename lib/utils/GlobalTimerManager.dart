@@ -25,4 +25,11 @@ class GlobalTimerManager{
 
   /// 是否运行中
   bool get isRunning => _timer?.isActive ?? false;
+
+
+  String formatTime(int totalSeconds) {
+    final minutes = totalSeconds ~/ 60;
+    final seconds = totalSeconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
 }

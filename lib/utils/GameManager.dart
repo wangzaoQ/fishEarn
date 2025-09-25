@@ -34,6 +34,10 @@ class GameManager{
     return 1;
   }
 
+  void showProtect() {
+    game?.showProtect();
+  }
+
   updateCoinToGame(double coin){
     game?.updateCoin(coin);
   }
@@ -62,4 +66,5 @@ class GameManager{
       return GameConfig.color3;
     }
   }
+
 }
