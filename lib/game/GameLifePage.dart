@@ -1,8 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/utils/LogUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../config/global.dart';
+import '../utils/LocalCacheUtils.dart';
 import '../view/GameLifeProgress.dart';
 import '../view/GameText.dart';
 import '../view/TopDownCover.dart';
@@ -104,7 +107,16 @@ class _GameLifePageState extends State<GameLifePage>
           Positioned(
             top: 26,
             left: 28.w,
-            child: CustomProgress3(progress: 0.6),
+            child:ValueListenableBuilder<int>(
+              valueListenable: lifeNotifier,
+              builder: (_, value, __) {
+                var progress = (value == 0)
+                    ? LocalCacheUtils.getGameData().life
+                    : value;
+                LogUtils.logD("GameLifePage progress:${progress}");
+                return CustomProgress3(progress: progress/100.0); // 只重建这一小块
+              },
+            ) ,
           ),
         ],
       ),

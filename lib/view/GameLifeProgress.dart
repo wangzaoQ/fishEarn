@@ -1,3 +1,5 @@
+import 'package:fish_earn/utils/GameManager.dart';
+import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 class CustomProgress3 extends StatefulWidget {
@@ -50,7 +52,7 @@ class _CustomProgress3State extends State<CustomProgress3>
 
   @override
   void dispose() {
-    // _controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -58,7 +60,7 @@ class _CustomProgress3State extends State<CustomProgress3>
   Widget build(BuildContext context) {
     final double height = 105.h;
     final double width = 19.w;
-
+    var life = GameManager.instance.getLifeColor(LocalCacheUtils.getGameData().life);
     return SizedBox(
       width: 19.w,
       height: height,
@@ -87,7 +89,7 @@ class _CustomProgress3State extends State<CustomProgress3>
                           child: Container(
                             width: width,
                             height: height * _animation.value.clamp(0, 1),
-                            color: const Color(0xFFFFFFFF),
+                            color: Color(life),
                           ),
                         ),
                       );

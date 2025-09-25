@@ -1,9 +1,13 @@
+import 'package:fish_earn/data/GameData.dart';
+import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/LogUtils.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../config/global.dart';
+import '../utils/LocalCacheUtils.dart';
 import 'FishAnimGame.dart';
 
 class AnimalGameHolder extends StatefulWidget {
@@ -21,6 +25,7 @@ class _AnimalGameHolderState extends State<AnimalGameHolder> {
   void initState() {
     super.initState();
     _game = SimpleAnimGame(); // 只创建一次
+    GameManager.instance.game = _game;
   }
 
   @override
@@ -36,7 +41,7 @@ class _AnimalGameHolderState extends State<AnimalGameHolder> {
     // RepaintBoundary 防止外部重绘影响 GameWidget
     return RepaintBoundary(
       child: Padding(
-        padding: EdgeInsets.only(top: 150.h, bottom: 80.h),
+        padding: EdgeInsets.only(top: 0.h, bottom: 80.h),
         child: Container(
           color: Colors.transparent,
           child: GameWidget(

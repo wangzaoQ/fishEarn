@@ -1,4 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/GlobalTimerManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameProcess.dart';
@@ -7,6 +8,7 @@ import 'package:fish_earn/view/pop/PopManger.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +38,12 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
 
   var TAG = "GamePage";
 
+  var time = 0;
+
+  int getCutTime(){
+    return 3;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -44,13 +52,26 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     GlobalTimerManager().startTimer(
       onTick: () async{
         if(!allowTime)return;
+        time++;
         gameData = LocalCacheUtils.getGameData();
-        if (gameData.level > 0) {
-          gameData.levelTime -= 1;
-          LocalCacheUtils.putGameData(gameData);
+        if (gameData.level > 0 && gameData.levelTime>=1) {
+           gameData.levelTime-=1;
         }
-        progress = gameData.getCurrentProgress();
-        globalTimeListener.value = progress;
+        if(gameData.level>1){
+          GameManager.instance.addCoin(gameData);
+        }
+        if(time == getCutTime()){
+          time = 0;
+          GameManager.instance.cutLife(gameData);
+        }
+        LocalCacheUtils.putGameData(gameData);
+
+        progress = GameManager.instance.getCurrentProgress(gameData);
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          globalTimeListener.value = progress;
+          lifeNotifier.value = gameData.life;
+          GameManager.instance.updateCoinToGame(gameData.coin);
+        });
       },
     );
   }
@@ -85,18 +106,24 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                           height: 25.h,
                           fit: BoxFit.cover,
                         ),
-                        Positioned.fill(
-                          child: Center(
-                            child: Text(
-                              "${gameData.coin}",
-                              style: TextStyle(
-                                color: Color(0xFFF4FF72),
-                                fontSize: 15.sp,
-                                fontFamily: "AHV",
-                              ),
-                            ),
-                          ),
-                        ),
+
+                        // Positioned.fill(
+                        //   child: Center(
+                        //     child: RepaintBoundary(child: ValueListenableBuilder<double>(
+                        //       valueListenable: coinNotifier,
+                        //       builder: (_, value, __) {
+                        //         return Text(
+                        //           value.toStringAsFixed(3),
+                        //           style: TextStyle(
+                        //             color: Color(0xFFF4FF72),
+                        //             fontSize: 15.sp,
+                        //             fontFamily: "AHV",
+                        //           ),
+                        //         ); // 只重建这一小块
+                        //       },
+                        //     )),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
