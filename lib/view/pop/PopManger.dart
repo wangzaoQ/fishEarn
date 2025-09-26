@@ -1,20 +1,17 @@
 import 'dart:collection';
+import 'dart:async';
 import 'package:fish_earn/config/LocalConfig.dart';
 import 'package:fish_earn/view/pop/BasePopView.dart';
 import 'package:flutter/material.dart';
-
-
 class PopManager {
   static final PopManager _instance = PopManager._internal();
-
   factory PopManager() => _instance;
-
   PopManager._internal();
 
   final Queue<_PopTask> _queue = Queue<_PopTask>();
   bool _isShowing = false;
 
-  void show<T>({
+  Future<T?> show<T>({
     required BuildContext context,
     required Widget child,
     Duration duration = const Duration(milliseconds: 300),
@@ -22,8 +19,9 @@ class PopManager {
     bool barrierDismissible = true,
     Color barrierColor = Colors.black,
     double needAlpha = 0.5,
-    Function(T? result)? backResult,
   }) {
+    final completer = Completer<T?>();
+
     _queue.add(_PopTask<T>(
       context: context,
       child: child,
@@ -32,16 +30,17 @@ class PopManager {
       barrierDismissible: barrierDismissible,
       barrierColor: barrierColor,
       needAlpha: needAlpha,
-      backResult: backResult,
+      completer: completer,
     ));
 
     _tryNext<T>();
+    return completer.future;
   }
 
   void _tryNext<T>() {
     if (_isShowing || _queue.isEmpty) return;
 
-    final task = _queue.removeFirst();
+    final task = _queue.removeFirst() as _PopTask<T>;
     _isShowing = true;
 
     BasePopView().showScaleDialog<T>(
@@ -52,12 +51,11 @@ class PopManager {
       barrierDismissible: task.barrierDismissible,
       barrierColor: task.barrierColor,
       needAlpha: task.needAlpha,
-      backResult: (result) {
-        _isShowing = false;
-        task.backResult?.call(result);
-        _tryNext(); // 下一弹
-      },
-    );
+    ).then((result) {
+      _isShowing = false;
+      task.completer.complete(result);
+      _tryNext(); // 下一个
+    });
   }
 }
 
@@ -69,7 +67,7 @@ class _PopTask<T> {
   final bool barrierDismissible;
   final Color barrierColor;
   final double needAlpha;
-  final Function(T? result)? backResult;
+  final Completer<T?> completer;
 
   _PopTask({
     required this.context,
@@ -79,6 +77,7 @@ class _PopTask<T> {
     required this.barrierDismissible,
     required this.barrierColor,
     required this.needAlpha,
-    this.backResult,
+    required this.completer,
   });
 }
+

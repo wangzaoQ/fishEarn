@@ -1,8 +1,10 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/config/GameConfig.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/GlobalTimerManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameProcess.dart';
+import 'package:fish_earn/view/pop/GameFailPop.dart';
 import 'package:fish_earn/view/pop/LevelPop1_2.dart';
 import 'package:fish_earn/view/pop/PopManger.dart';
 import 'package:flame/game.dart';
@@ -41,52 +43,17 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   var time = 0;
 
   int getCutTime() {
-    return 3;
+    return GameConfig.cutTime;
   }
 
   int getProtectTime() {
-    return 10;
+    return GameConfig.protectTime;
   }
 
   @override
   void initState() {
     super.initState();
-    _lottieController = AnimationController(vsync: this);
-    gameData = LocalCacheUtils.getGameData();
-    GlobalTimerManager().startTimer(
-      onTick: () async {
-        if (!allowTime) return;
-        time++;
-        var cutProtectTime = false;
-        gameData = LocalCacheUtils.getGameData();
-        if (gameData.level > 0 && gameData.levelTime >= 1) {
-          gameData.levelTime -= 1;
-        }
-        if (gameData.level > 1) {
-          GameManager.instance.addCoin(gameData);
-        }
-        if (time == getCutTime()) {
-          time = 0;
-          GameManager.instance.cutLife(gameData);
-        }
-        if(gameData.protectTime>0){
-          cutProtectTime = true;
-          gameData.protectTime-=1;
-        }else{
-          gameData.protectTime=0;
-          cutProtectTime = false;
-        }
-        LocalCacheUtils.putGameData(gameData);
-
-        progress = GameManager.instance.getCurrentProgress(gameData);
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          globalTimeListener.value = progress;
-          lifeNotifier.value = gameData.life;
-          GameManager.instance.updateCoinToGame(gameData.coin);
-          GameManager.instance.updateProtectTime(gameData.protectTime);
-        });
-      },
-    );
+    registerTimer();
   }
 
   @override
@@ -311,4 +278,75 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     // ✅ 释放 Lottie 占用的资源
     _lottieController?.dispose();
   }
+
+  Future<void> registerTimer() async {
+    _lottieController = AnimationController(vsync: this);
+    gameData = LocalCacheUtils.getGameData();
+    bool result = await isGameOver();
+    if(result){
+      return;
+    }
+    GlobalTimerManager().startTimer(
+      onTick: () async {
+        if (!allowTime) return;
+        var cutProtectTime = false;
+        gameData = LocalCacheUtils.getGameData();
+        if (gameData.level > 0 && gameData.levelTime >= 1) {
+          gameData.levelTime -= 1;
+        }
+        if (gameData.level > 1) {
+          time++;
+          GameManager.instance.addCoin(gameData);
+        }
+        if (time == getCutTime()) {
+          time = 0;
+          GameManager.instance.cutLife(gameData);
+          if(gameData.life <=0){
+            GlobalTimerManager().cancelTimer();
+            //游戏结束
+            bool result = await isGameOver();
+            if(result)return;
+          }
+        }
+        if(gameData.protectTime>0){
+          cutProtectTime = true;
+          gameData.protectTime-=1;
+        }else{
+          gameData.protectTime=0;
+          cutProtectTime = false;
+        }
+        LocalCacheUtils.putGameData(gameData);
+
+        progress = GameManager.instance.getCurrentProgress(gameData);
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          globalTimeListener.value = progress;
+          lifeNotifier.value = gameData.life;
+          GameManager.instance.updateCoinToGame(gameData.coin);
+          GameManager.instance.updateProtectTime(gameData.protectTime);
+        });
+      },
+    );
+  }
+
+  Future<bool> isGameOver() async {
+    if(gameData.life <=0){
+      GlobalTimerManager().cancelTimer();
+      //游戏结束
+      var result = await PopManager().show(
+        context: context,
+        child: GameFailPop(),
+      );
+      if(result == 0){
+        GameManager.instance.reset(gameData);
+        registerTimer();
+        time = 0;
+        setState(() {
+
+        });
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

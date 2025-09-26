@@ -42,10 +42,11 @@ dependencies:
   json_serializable: ^6.9.5
   webview_flutter: ^4.13.0  # 请使用最新版
   logger: ^2.6.0
-  applovin_max: any
+#  applovin_max: any
   cupertino_icons: ^1.0.8
   lottie: ^3.3.1
   flame: ^1.32.0
+  auto_size_text: ^3.0.0
   #    firebase_core: ^4.0.0
 #    firebase_remote_config: ^6.0.0
   # The following adds the Cupertino Icons font to your application.

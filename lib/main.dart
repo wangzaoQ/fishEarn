@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:applovin_max/applovin_max.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/LocalConfig.dart';
 import 'package:fish_earn/game/GamePage.dart';
@@ -22,7 +21,7 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   if (Platform.isAndroid) {
     // AppLovinMAX.setTestDeviceAdvertisingIds(["fb6469a3-b062-43dc-a53a-24d7cd4d08ce"]);
-    MaxConfiguration? sdkConfiguration = await AppLovinMAX.initialize(LocalConfig.maxKey);
+    // MaxConfiguration? sdkConfiguration = await AppLovinMAX.initialize(LocalConfig.maxKey);
     // AppLovinMAX.showMediationDebugger();
     // AppLovinMAX.setVerboseLogging(true);
   }

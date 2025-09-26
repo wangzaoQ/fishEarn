@@ -9,9 +9,8 @@ class BasePopView {
     bool barrierDismissible = true,
     Color barrierColor = Colors.black,
     double needAlpha = 0.5,
-    Function(T? result)? backResult,
   }) {
-    final future = showGeneralDialog<T>(
+    return showGeneralDialog<T>(
       context: context,
       barrierLabel: "ScaleDialog",
       barrierDismissible: barrierDismissible,
@@ -35,14 +34,5 @@ class BasePopView {
         );
       },
     );
-
-    future.then((value) {
-      if (backResult != null) {
-        backResult(value);
-      }
-    });
-
-    return future;
   }
-
 }

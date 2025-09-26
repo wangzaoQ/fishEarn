@@ -1,6 +1,10 @@
 import 'dart:ffi';
 
+import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flame/components.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import '../config/GameConfig.dart';
 import '../data/GameData.dart';
@@ -73,6 +77,26 @@ class GameManager{
     }else{
       return GameConfig.color3;
     }
+  }
+
+
+  static void showTips(String msg) {
+    Fluttertoast.showToast(
+      msg: msg,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      backgroundColor: Colors.black.withOpacity(0.7),
+      textColor: Colors.white,
+      fontSize: 15.sp,
+    );
+  }
+
+  void reset(GameData gameData) {
+    gameData.level = 1;
+    gameData.levelTime = GameConfig.time_1_2;
+    gameData.life = 100;
+    gameData.protectTime = 0;
+    LocalCacheUtils.putGameData(gameData);
   }
 
 }
