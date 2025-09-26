@@ -8,5 +8,7 @@ ValueNotifier<Offset?> overlayNotifier = ValueNotifier<Offset?>(null);
 ValueNotifier<Offset?> overlayNotifier2 = ValueNotifier<Offset?>(null);
 
 var allowTime = true;
-var showFood = false;
-var showDanger = false;
+var globalShowFood = false;
+var globalShowDanger = false;
+var globalShowShark = false;
+var globalShowProtect = false;

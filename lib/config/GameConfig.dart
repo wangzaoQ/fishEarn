@@ -12,4 +12,7 @@ class GameConfig {
   static const gameLifeCoin = 10;
   static const gameAddLife = 10;
   static const gamePropsTime = 10;
+  static const gameDangerTime1 = 10;
+  static const gameDangerTime2 = 30;
+  static const gameDangerTime3 = 60;
 }

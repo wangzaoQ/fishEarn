@@ -49,6 +49,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   var cutTime = 0;
   //道具相关
   var propsTime = 0;
+  var aliveTime = 0;
 
   int getCutTime() {
     return GameConfig.cutTime;
@@ -146,6 +147,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
           //鱼动画
           buildAnimal(),
           buildFood(),
+          buildDanger(),
           buildShark(),
           Positioned(
             bottom: 0,
@@ -185,14 +187,14 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                           return;
                         } else {
                           setState(() {
-                            if (showFood) return;
-                            showFood = true;
+                            if (globalShowFood) return;
+                            globalShowFood = true;
                             gameData.foodCount -= 1;
                             GameManager.instance.addLife(gameData);
                             LocalCacheUtils.putGameData(gameData);
                           });
                           Future.delayed(Duration(seconds: 1), () {
-                            showFood = false;
+                            globalShowFood = false;
                           });
                         }
                       },
@@ -281,21 +283,6 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                 ),
               ),
               onPressed: () {
-                setState(() {
-                  if (showDanger) return;
-                  showDanger = true;
-                  // GameManager.instance.swimToCenter();
-                  GameManager.instance.pauseMovement();
-                  GameManager.instance.showDanger();
-                });
-                Future.delayed(Duration(seconds: 5), () {
-                  if(!mounted)return;
-                  setState(() {
-                    showDanger = false;
-                    GameManager.instance.hideDanger();
-                    GameManager.instance.resumeMovement();
-                  });
-                });
               },
             ),
           ),
@@ -412,6 +399,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
           gameData.levelTime -= 1;
         }
         propsTime++;
+        aliveTime++;
         if (gameData.level > 1) {
           cutTime++;
           GameManager.instance.addCoin(gameData);
@@ -434,7 +422,9 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
           cutProtectTime = false;
         }
         LocalCacheUtils.putGameData(gameData);
-
+        if(aliveTime == GameConfig.gameDangerTime1 || aliveTime == GameConfig.gameDangerTime2 || aliveTime == GameConfig.gameDangerTime3){
+          showDanger();
+        }
         progress = GameManager.instance.getCurrentProgress(gameData);
         SchedulerBinding.instance.addPostFrameCallback((_) {
           globalTimeListener.value = progress;
@@ -447,8 +437,8 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     );
   }
 
-  Future<bool> isGameOver() async {
-    if (gameData.life <= 0) {
+  Future<bool> isGameOver({bool force = false}) async {
+    if (gameData.life <= 0 || force) {
       GlobalTimerManager().cancelTimer();
       //游戏结束
       var result = await PopManager().show(
@@ -471,7 +461,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
       left: 0,
       top: 0,
       right: 0,
-      child: showFood
+      child: globalShowFood
           ? DropFadeImage(
               key: GlobalKey(),
               child: Image.asset(
@@ -484,22 +474,25 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     );
   }
 
-  buildShark() {
+  buildShark(){
+    return Positioned(
+      top: 0,
+      right: 0,
+      child:globalShowShark? SharkWidget(
+        key: GlobalKey(),
+        imagePath: "assets/images/ic_shark.webp",
+        top: 420.h,
+        width: 204.w,
+        height: 101.h,
+      ):SizedBox.shrink(),
+    );
+  }
+
+  buildDanger() {
     return Positioned.fill(
-      child: showDanger
+      child: globalShowDanger
           ? Stack(
               children: [
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: SharkWidget(
-                    key: GlobalKey(),
-                    imagePath: "assets/images/ic_shark.webp",
-                    top: 420.h,
-                    width: 204.w,
-                    height: 101.h,
-                  ),
-                ),
                 Positioned(
                   bottom: 110.h,
                   left: 0,
@@ -542,5 +535,38 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
             )
           : SizedBox.shrink(),
     );
+  }
+
+  var isShowDanger = false;
+  void showDanger() {
+    if(isShowDanger)return;
+    isShowDanger = true;
+    setState(() {
+      if (globalShowDanger) return;
+      globalShowDanger = true;
+      // GameManager.instance.swimToCenter();
+      GameManager.instance.pauseMovement();
+      GameManager.instance.showDanger();
+    });
+    Future.delayed(Duration(seconds: 5), () {
+      if(!mounted)return;
+      setState(() {
+        globalShowDanger = false;
+        globalShowShark = true;
+
+        GameManager.instance.hideDanger();
+        GameManager.instance.resumeMovement();
+      });
+      Future.delayed(const Duration(milliseconds: 2000), () async {
+        if(!mounted)return;
+        isShowDanger = false;
+        if(!globalShowProtect){
+          bool result = await isGameOver(force: true);
+          if (result) {
+            return;
+          }
+        }
+      });
+    });
   }
 }

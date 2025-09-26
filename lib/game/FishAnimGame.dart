@@ -108,6 +108,7 @@ class SimpleAnimGame extends FlameGame {
       bgProtect.paint.color = bgProtect.paint.color.withOpacity(0.0);
       timeText.text = "";
       hideProtect();
+      globalShowProtect = false;
     }else{
       bgProtect.paint.color = bgProtect.paint.color.withOpacity(1.0);
       timeText.text = GlobalTimerManager().formatTime(time);
@@ -116,6 +117,7 @@ class SimpleAnimGame extends FlameGame {
 
   void showProtect(){
     fishComment.showOverlay();
+    globalShowProtect = true;
   }
 
   void hideProtect(){

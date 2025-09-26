@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import '../config/GameConfig.dart';
+import '../config/global.dart';
 import '../data/GameData.dart';
 import '../game/FishAnimGame.dart';
 
@@ -113,6 +114,11 @@ class GameManager{
   }
 
   void reset(GameData gameData) {
+    allowTime = true;
+    globalShowFood = false;
+    globalShowDanger = false;
+    globalShowShark = false;
+    globalShowProtect = false;
     gameData.level = 1;
     gameData.levelTime = GameConfig.time_1_2;
     gameData.life = 100;
