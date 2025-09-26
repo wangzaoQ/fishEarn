@@ -42,9 +42,30 @@ class GameManager{
     game?.showProtect();
   }
 
+  void showDanger() {
+    game?.showDanger();
+  }
+
+  void hideDanger() {
+    game?.hideDanger();
+  }
+
   void hideProtect() {
     game?.hideProtect();
   }
+
+  void pauseMovement(){
+    game?.pauseMovement();
+  }
+
+  void resumeMovement(){
+    game?.resumeMovement();
+  }
+
+  void swimToCenter(){
+    game?.swimToCenter();
+  }
+
 
   updateCoinToGame(double coin){
     game?.updateCoin(coin);
@@ -80,7 +101,7 @@ class GameManager{
   }
 
 
-  static void showTips(String msg) {
+  void showTips(String msg) {
     Fluttertoast.showToast(
       msg: msg,
       toastLength: Toast.LENGTH_SHORT,
@@ -99,10 +120,18 @@ class GameManager{
     LocalCacheUtils.putGameData(gameData);
   }
 
-  static void addLife(GameData gameData) {
+  void addLife(GameData gameData) {
     gameData.life+=GameConfig.gameAddLife;
     if(gameData.life>100){
       gameData.life = 100;
+    }
+  }
+
+  double getPropsProgress(int propsTime) {
+    if(propsTime>GameConfig.gamePropsTime){
+      return 1.0;
+    }else{
+      return propsTime/GameConfig.gamePropsTime;
     }
   }
 

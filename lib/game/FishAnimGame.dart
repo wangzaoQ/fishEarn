@@ -121,6 +121,27 @@ class SimpleAnimGame extends FlameGame {
   void hideProtect(){
     fishComment.hideOverlay();
   }
+
+  void showDanger(){
+    fishComment.showDanger();
+  }
+
+  void hideDanger(){
+    fishComment.hideDanger();
+  }
+
+  void pauseMovement(){
+    fishComment.pauseMovement();
+  }
+
+  void resumeMovement(){
+    fishComment.resumeMovement();
+  }
+
+  void swimToCenter(){
+    fishComment.swimToCenter();
+  }
+
   @override
   void onRemove() {
     super.onRemove();

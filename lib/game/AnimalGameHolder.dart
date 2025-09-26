@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../config/global.dart';
 import '../utils/LocalCacheUtils.dart';
+import '../view/_ScalingOverlay.dart';
 import 'FishAnimGame.dart';
 class AnimalGameHolder extends StatefulWidget {
   final int level;
@@ -63,8 +64,6 @@ class _AnimalGameHolderState extends State<AnimalGameHolder> {
             game: _game!,
             overlayBuilderMap: {
               'fish_overlays': (BuildContext ctx, FlameGame gm) {
-                final g = gm as SimpleAnimGame;
-
                 return ValueListenableBuilder<Offset?>(
                   valueListenable: overlayNotifier,
                   builder: (context, offset, _) {
@@ -87,8 +86,30 @@ class _AnimalGameHolderState extends State<AnimalGameHolder> {
                   },
                 );
               },
+              'fish_danger_overlays': (BuildContext ctx, FlameGame gm) {
+                return ValueListenableBuilder<Offset?>(
+                  valueListenable: overlayNotifier2,
+                  builder: (context, offset, _) {
+                    if (offset == null) return const SizedBox.shrink();
+
+                    var overlayW = 230.w;
+                    var overlayH = 230.h;
+
+                    return Positioned(
+                      left: offset.dx - overlayW / 2,
+                      top: offset.dy - overlayH / 2,
+                      width: overlayW,
+                      height: overlayH,
+                      child: ScalingOverlay(child: Image.asset(
+                        "assets/images/bg_danger.webp",
+                        fit: BoxFit.fill,
+                      )),
+                    );
+                  },
+                );
+              },
             },
-            initialActiveOverlays: const ['fish_overlays'],
+            initialActiveOverlays: const ['fish_overlays','fish_danger_overlays'],
           ),
         ),
       ),

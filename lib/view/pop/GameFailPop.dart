@@ -70,7 +70,7 @@ class _GameFailPopState extends State<GameFailPop> {
             onPressed: () {
               var gameData = LocalCacheUtils.getGameData();
               if(gameData.coin<=GameConfig.gameLifeCoin){
-                GameManager.showTips("app_resurrection_tips".tr());
+                GameManager.instance.showTips("app_resurrection_tips".tr());
                 return;
               }
               Navigator.pop(context, 1);
