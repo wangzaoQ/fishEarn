@@ -3,6 +3,7 @@ import 'package:fish_earn/config/GameConfig.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/GlobalTimerManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
+import 'package:fish_earn/view/DropFadeImage.dart';
 import 'package:fish_earn/view/GameProcess.dart';
 import 'package:fish_earn/view/pop/GameFailPop.dart';
 import 'package:fish_earn/view/pop/LevelPop1_2.dart';
@@ -41,6 +42,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   var TAG = "GamePage";
 
   var time = 0;
+
 
   int getCutTime() {
     return GameConfig.cutTime;
@@ -137,7 +139,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                     child: Image.asset(
                       "assets/images/bg_game_bottom.webp",
                       height: 76.h,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.fill,
                     ),
                   ),
                   // 其他内容
@@ -155,7 +157,47 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        if (gameData.foodCount <= 0) {
+                          GameManager.showTips("app_not_enough_food".tr());
+                          return;
+                        } else {
+                          setState(() {
+                            if(showFood)return;
+                            showFood = true;
+                            gameData.foodCount -= 1;
+                            GameManager.addLife(gameData);
+                            LocalCacheUtils.putGameData(gameData);
+                          });
+                          Future.delayed(Duration(seconds: 1), () {
+                            showFood = false;
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: EdgeInsetsGeometry.only(bottom: 12.h),
+                      child: Container(
+                        width: 36.w,
+                        height: 18.h,
+                        decoration: BoxDecoration(
+                          color: const Color(0x8C000000),
+                          // #8C000000 (alpha first in Flutter)
+                          borderRadius: BorderRadius.circular(11.0), // 11dp
+                        ),
+                        child: Center(
+                          child: Text(
+                            "${gameData.foodCount}",
+                            style: TextStyle(
+                              color: Color(0xFFF4FF72),
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -163,9 +205,12 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
             ),
           ),
           //鱼生命进度
-          Positioned(top: 310.h, left: 32.w, child: GameLifePage()),
+          gameData.level == 1
+              ? SizedBox.shrink()
+              : Positioned(top: 310.h, left: 32.w, child: GameLifePage()),
           //鱼动画
           buildAnimal(),
+          buildFood(),
           Positioned(
             top: 220.h,
             right: 22.w,
@@ -179,7 +224,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
               ),
               onPressed: () {
                 gameData = LocalCacheUtils.getGameData();
-                gameData.protectTime+=getProtectTime();
+                gameData.protectTime += getProtectTime();
                 LocalCacheUtils.putGameData(gameData);
                 GameManager.instance.showProtect();
               },
@@ -233,6 +278,9 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
 
   Widget buildAnimal() {
     LogUtils.logD("${TAG} buildAnimal");
+    return Positioned.fill(
+      child: Center(child: AnimalGameHolder(level: gameData.level)),
+    );
     if (gameData.level == 1) {
       return Positioned.fill(
         child: Center(
@@ -283,7 +331,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     _lottieController = AnimationController(vsync: this);
     gameData = LocalCacheUtils.getGameData();
     bool result = await isGameOver();
-    if(result){
+    if (result) {
       return;
     }
     GlobalTimerManager().startTimer(
@@ -301,18 +349,18 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
         if (time == getCutTime()) {
           time = 0;
           GameManager.instance.cutLife(gameData);
-          if(gameData.life <=0){
+          if (gameData.life <= 0) {
             GlobalTimerManager().cancelTimer();
             //游戏结束
             bool result = await isGameOver();
-            if(result)return;
+            if (result) return;
           }
         }
-        if(gameData.protectTime>0){
+        if (gameData.protectTime > 0) {
           cutProtectTime = true;
-          gameData.protectTime-=1;
-        }else{
-          gameData.protectTime=0;
+          gameData.protectTime -= 1;
+        } else {
+          gameData.protectTime = 0;
           cutProtectTime = false;
         }
         LocalCacheUtils.putGameData(gameData);
@@ -329,24 +377,30 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   }
 
   Future<bool> isGameOver() async {
-    if(gameData.life <=0){
+    if (gameData.life <= 0) {
       GlobalTimerManager().cancelTimer();
       //游戏结束
       var result = await PopManager().show(
         context: context,
         child: GameFailPop(),
       );
-      if(result == 0){
+      if (result == 0) {
         GameManager.instance.reset(gameData);
         registerTimer();
         time = 0;
-        setState(() {
-
-        });
+        setState(() {});
         return true;
       }
     }
     return false;
+  }
+
+  buildFood() {
+   return Positioned(
+        left: 0,
+        top: 0,
+        right: 0,
+        child: showFood ? DropFadeImage(key:GlobalKey(),child: Image.asset("assets/images/ic_food.webp",width: 46.w,height: 46.h,),) : SizedBox.shrink());
   }
 
 }

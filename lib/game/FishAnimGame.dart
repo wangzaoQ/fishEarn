@@ -20,11 +20,12 @@ class SimpleAnimGame extends FlameGame {
   late TextComponent timeText;
   @override
   Color backgroundColor() => Colors.transparent;
-
+  final int level;
+  SimpleAnimGame(this.level);
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-
+    var picName = "";
     // --- 现有：添加一条鱼 ---
     fishComment = FishComponent(
       picName: 'ic_animal', // 对应 assets/images/fish/... 的资源
@@ -89,6 +90,7 @@ class SimpleAnimGame extends FlameGame {
     )
       ..position = bgProtect.position + Vector2(bgProtect.size.x - 12, 13); // right:12, top:13
     add(timeText);
+    updateProtectTime(0);
   }
 
   /// 外部调用以更新 coin 文本（只修改 TextComponent，不触发 Flutter rebuild）

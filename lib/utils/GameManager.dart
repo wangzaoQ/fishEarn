@@ -99,4 +99,11 @@ class GameManager{
     LocalCacheUtils.putGameData(gameData);
   }
 
+  static void addLife(GameData gameData) {
+    gameData.life+=GameConfig.gameAddLife;
+    if(gameData.life>100){
+      gameData.life = 100;
+    }
+  }
+
 }

@@ -10,4 +10,5 @@ class GameConfig {
   static const cutTime = 3;
   static const protectTime = 10;
   static const gameLifeCoin = 10;
+  static const gameAddLife = 10;
 }

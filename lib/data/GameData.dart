@@ -16,7 +16,9 @@ class GameData{
 
   int protectTime;
 
-  GameData({this.level = 1,this.levelTime = GameConfig.time_1_2 ,this.coin = 0.0,this.life = 100,this.protectTime = 0});
+  int foodCount;
+
+  GameData({this.level = 1,this.levelTime = GameConfig.time_1_2 ,this.coin = 0.0,this.life = 100,this.protectTime = 0,this.foodCount = 100});
 
   // JSON 反序列化
   factory GameData.fromJson(Map<String, dynamic> json) =>

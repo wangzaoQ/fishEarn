@@ -6,5 +6,6 @@
   "app_fail_title": "WEALTH INTERRUPTION",
   "app_resurrection": "Resurrection",
   "app_starting_over": "Starting Over",
-  "app_resurrection_tips": "Resurrection costs $10"
+  "app_resurrection_tips": "Resurrection costs $10",
+  "app_not_enough_food": "Not enough food"
 }

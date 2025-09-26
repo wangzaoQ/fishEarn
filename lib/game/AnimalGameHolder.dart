@@ -9,7 +9,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../config/global.dart';
 import '../utils/LocalCacheUtils.dart';
 import 'FishAnimGame.dart';
-
 class AnimalGameHolder extends StatefulWidget {
   final int level;
   const AnimalGameHolder({super.key, required this.level});
@@ -19,40 +18,55 @@ class AnimalGameHolder extends StatefulWidget {
 }
 
 class _AnimalGameHolderState extends State<AnimalGameHolder> {
-  late final SimpleAnimGame _game;
+  SimpleAnimGame? _game; // 允许替换
 
   @override
   void initState() {
     super.initState();
-    _game = SimpleAnimGame(); // 只创建一次
-    GameManager.instance.game = _game;
+    _createGame(widget.level);
+  }
+
+  @override
+  void didUpdateWidget(covariant AnimalGameHolder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.level != widget.level) {
+      // 销毁旧的
+      _game?.onRemove();
+      // 重建
+      _createGame(widget.level);
+      // 通知刷新 GameWidget
+      setState(() {});
+    }
+  }
+
+  void _createGame(int level) {
+    _game = SimpleAnimGame(level); // 传入关卡参数
+    GameManager.instance.game = _game!;
   }
 
   @override
   void dispose() {
-    _game.onRemove(); // 或者调用你需要的清理方法（根据 SimpleAnimGame 实现）
+    _game?.onRemove();
     super.dispose();
   }
 
-  var TAG = "GAME_ANIMAL";
-
   @override
   Widget build(BuildContext context) {
-    // RepaintBoundary 防止外部重绘影响 GameWidget
+    if (_game == null) return const SizedBox.shrink();
+
     return RepaintBoundary(
       child: Padding(
         padding: EdgeInsets.only(top: 0.h, bottom: 80.h),
         child: Container(
           color: Colors.transparent,
           child: GameWidget(
-            game: _game,
+            game: _game!,
             overlayBuilderMap: {
               'fish_overlays': (BuildContext ctx, FlameGame gm) {
                 final g = gm as SimpleAnimGame;
 
-                // 单条鱼 overlayNotifier
                 return ValueListenableBuilder<Offset?>(
-                  valueListenable: overlayNotifier, // 对应 FishComponent.overlayNotifier
+                  valueListenable: overlayNotifier,
                   builder: (context, offset, _) {
                     if (offset == null) return const SizedBox.shrink();
                     var overlayW = 230.w;
@@ -64,17 +78,15 @@ class _AnimalGameHolderState extends State<AnimalGameHolder> {
                       height: overlayH,
                       child: Container(
                         alignment: Alignment.center,
-                        // decoration: BoxDecoration(
-                        //   color: Colors.black.withOpacity(0.55),
-                        //   borderRadius: BorderRadius.circular(6),
-                        // ),
-                        child: Image.asset("assets/images/bg_fish_oval1.webp",fit: BoxFit.fill,),
+                        child: Image.asset(
+                          "assets/images/bg_fish_oval1.webp",
+                          fit: BoxFit.fill,
+                        ),
                       ),
                     );
                   },
                 );
               },
-
             },
             initialActiveOverlays: const ['fish_overlays'],
           ),

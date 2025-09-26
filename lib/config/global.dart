@@ -6,3 +6,4 @@ final ValueNotifier<int> protectNotifier = ValueNotifier(0);
 ValueNotifier<Offset?> overlayNotifier = ValueNotifier<Offset?>(null);
 
 var allowTime = true;
+var showFood = false;

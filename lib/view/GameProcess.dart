@@ -241,14 +241,14 @@ class _GameProgressState extends State<GameProgress>
                               strokeColor: Color(0xFF000000),
                             ),
                           ),
-                          Positioned(
-                            left: 13.w,
-                            child: Image.asset(
-                              "assets/images/ic_ad_tips.webp",
-                              width: 15.w,
-                              height: 15.h,
-                            ),
-                          ),
+                          // Positioned(
+                          //   left: 13.w,
+                          //   child: Image.asset(
+                          //     "assets/images/ic_ad_tips.webp",
+                          //     width: 15.w,
+                          //     height: 15.h,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
