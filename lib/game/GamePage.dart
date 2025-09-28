@@ -3,9 +3,11 @@ import 'package:fish_earn/config/GameConfig.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/GlobalTimerManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
+import 'package:fish_earn/utils/NetWorkManager.dart';
 import 'package:fish_earn/view/DropFadeImage.dart';
 import 'package:fish_earn/view/GameProcess.dart';
 import 'package:fish_earn/view/SharkWidget.dart';
+import 'package:fish_earn/view/pop/GameAward.dart';
 import 'package:fish_earn/view/pop/GameFailPop.dart';
 import 'package:fish_earn/view/pop/LevelPop1_2.dart';
 import 'package:fish_earn/view/pop/PopManger.dart';
@@ -20,6 +22,7 @@ import 'package:provider/provider.dart';
 import '../config/global.dart';
 import '../data/GameData.dart';
 import '../model/GameViewModel.dart';
+import '../utils/ClickManager.dart';
 import '../utils/LogUtils.dart';
 import '../view/GameLifeProgress.dart';
 import '../view/GameText.dart';
@@ -283,7 +286,21 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                   ],
                 ),
               ),
-              onPressed: () {
+              onPressed: () async {
+                var progress = GameManager.instance.getPropsProgress(propsTime);
+                if(NetWorkManager().isNetError(context))return;
+                if (!ClickManager.canClick()) return;
+                if(progress == 1){
+                  var result = await PopManager().show(
+                    context: context,
+                    child: GameAwardPop(),
+                  );
+                  if(result == 1){
+                    setState(() {
+
+                    });
+                  }
+                }
               },
             ),
           ),

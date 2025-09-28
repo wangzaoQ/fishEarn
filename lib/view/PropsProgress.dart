@@ -31,7 +31,7 @@ class PropsProgress extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            width: (50.w - 4) * clampedProgress, // 减去左右 padding 共 4
+            width: (50.w) * clampedProgress, // 减去左右 padding 共 4
             height: double.infinity,
             decoration: BoxDecoration(
               color: progressColor,

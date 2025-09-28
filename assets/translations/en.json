@@ -8,5 +8,8 @@
   "app_starting_over": "Starting Over",
   "app_resurrection_tips": "Resurrection costs $10",
   "app_not_enough_food": "Not enough food",
-  "app_level_up": "Level Up"
+  "app_level_up": "Level Up",
+  "app_claim": "Claim",
+  "app_wave_treasure": "WAVE TREASURES",
+  "app_net_error": "Net Error"
 }

@@ -7,14 +7,26 @@ import 'package:fish_earn/view/GameText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class GameFailPop extends StatefulWidget {
-  const GameFailPop({super.key});
+class GameAwardPop extends StatefulWidget {
+  const GameAwardPop({super.key});
 
   @override
-  State<GameFailPop> createState() => _GameFailPopState();
+  State<GameAwardPop> createState() => _GameAwardPopState();
 }
 
-class _GameFailPopState extends State<GameFailPop> {
+class _GameAwardPopState extends State<GameAwardPop> with SingleTickerProviderStateMixin{
+
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3), // 一圈时间
+    )..repeat(); // 无限旋转
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -31,81 +43,69 @@ class _GameFailPopState extends State<GameFailPop> {
           ),
         ),
         Positioned(
-          left: 105.w,
-          right: 105.w,
-          top: 322.h,
+          left: 23.w,
+          right: 23.w,
+          top: 180.h,
           child: Image.asset(
-            "assets/images/ic_game_fail.webp",
+            "assets/images/bg_award.webp",
             width: double.infinity,
-            height: 92.h,
+            height: 417.h,
           ),
         ),
         Positioned(
+          top: 333.h,
+            left: 95.w,
+            right: 95.w,
+            child: SizedBox(width: 183.w,height: 183.h,child:  RotationTransition(
+          turns: _controller,
+          child: Image.asset("assets/images/bg_game_progress.webp",fit: BoxFit.fill,),
+        ),)),
+        Positioned(
           left: 40.w,
-          top: 537.h,
+          top: 609.h,
           child: CupertinoButton(
             padding: EdgeInsets.zero,
             pressedOpacity: 0.7,
             child: SizedBox(
-              width: 139.w,
-              height: 45.h,
+              width: 172.w,
+              height: 50.h,
               child: Stack(
                 alignment: Alignment.center, // 让子元素默认居中
                 children: [
                   Image.asset("assets/images/bg_confirm.webp"),
                   Center(
                     child: AutoSizeText(
-                      "app_resurrection".tr(),
+                      "app_claim".tr(),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF185F11),
                       ),
                       maxLines: 1,
-                    )
+                    ),
                   ),
                 ],
               ),
             ),
             onPressed: () {
               var gameData = LocalCacheUtils.getGameData();
-              if(gameData.coin<=GameConfig.gameLifeCoin){
-                GameManager.instance.showTips("app_resurrection_tips".tr());
-                return;
-              }
+              gameData.foodCount+=1;
+              LocalCacheUtils.putGameData(gameData);
               Navigator.pop(context, 1);
             },
           ),
         ),
         Positioned(
-          right: 40.w,
-          top: 537.h,
+          right: 20.w,
+          top: 168.h,
           child: CupertinoButton(
-            padding: EdgeInsets.zero,
-            pressedOpacity: 0.7,
-            child: SizedBox(
-              width: 139.w,
-              height: 45.h,
-              child: Stack(
-                alignment: Alignment.center, // 让子元素默认居中
-                children: [
-                  Image.asset("assets/images/bg_cancel.webp"),
-                  Center(
-                    child: AutoSizeText(
-                      "app_starting_over".tr(),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFB84418),
-                      ),
-                      maxLines: 1,
-                    )
-                  ),
-                ],
-              ),
+            child: Image.asset(
+              "assets/images/ic_pop_close.webp",
+              width: 32.w,
+              height: 32.h,
             ),
             onPressed: () {
-              Navigator.pop(context, 0);
+              Navigator.pop(context, null);
             },
           ),
         ),

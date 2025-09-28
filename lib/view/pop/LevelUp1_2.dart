@@ -65,7 +65,7 @@ class _LevelUp1_2State extends State<LevelUp1_2>
               children: [
                 RotationTransition(
                   turns: _controller,
-                  child: Image.asset("assets/images/bg_game_progress.webp"),
+                  child: Image.asset("assets/images/bg_game_progress.webp",fit: BoxFit.fill,),
                 ),
                 Align(
                   alignment: Alignment.center,
