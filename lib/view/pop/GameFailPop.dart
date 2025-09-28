@@ -7,6 +7,8 @@ import 'package:fish_earn/view/GameText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../utils/AudioUtils.dart';
+
 class GameFailPop extends StatefulWidget {
   const GameFailPop({super.key});
 
@@ -15,6 +17,13 @@ class GameFailPop extends StatefulWidget {
 }
 
 class _GameFailPopState extends State<GameFailPop> {
+
+  @override
+  void initState() {
+    super.initState();
+    AudioUtils().playTempAudio("audio/fail.mp3");
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(

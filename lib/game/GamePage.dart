@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/GameConfig.dart';
+import 'package:fish_earn/utils/AudioUtils.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/GlobalTimerManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
@@ -53,6 +56,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   //道具相关
   var propsTime = 0;
   var aliveTime = 0;
+  Timer? _timer =null;
 
   int getCutTime() {
     return GameConfig.cutTime;
@@ -65,6 +69,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    AudioUtils().initTempQueue();
     _controller = AnimationController(
       vsync: this,
       duration: Duration(seconds: 1),
@@ -297,7 +302,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                   );
                   if(result == 1){
                     setState(() {
-
+                      propsTime = 0;
                     });
                   }
                 }
@@ -465,6 +470,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
       );
       if (result == 0) {
         GameManager.instance.reset(gameData);
+        lifeNotifier.value = 0;
         registerTimer();
         cutTime = 0;
         setState(() {
@@ -567,6 +573,22 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
       // GameManager.instance.swimToCenter();
       GameManager.instance.pauseMovement();
       GameManager.instance.showDanger();
+    });
+    var timeCount = 0;
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) return;
+      timeCount++;
+      AudioUtils().playTempAudio("audio/danger.mp3");
+      if(timeCount == 5){
+        setState(() {
+          _timer?.cancel();
+          globalShowDanger = false;
+          globalShowShark = true;
+          GameManager.instance.hideDanger();
+          GameManager.instance.resumeMovement();
+        });
+      }
     });
     Future.delayed(Duration(seconds: 5), () {
       if(!mounted)return;

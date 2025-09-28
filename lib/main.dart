@@ -1,10 +1,14 @@
 import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/config/LocalConfig.dart';
 import 'package:fish_earn/game/GamePage.dart';
+import 'package:fish_earn/utils/AudioUtils.dart';
 import 'package:fish_earn/utils/GlobalConfigManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
+import 'package:fish_earn/utils/LogUtils.dart';
+import 'package:fish_earn/utils/NetWorkManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -97,6 +101,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   int pauseTime = 0;
   bool isForeground = true;
 
+  var TAG = "APP_TAG";
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
@@ -164,6 +170,25 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     );
   }
 
-  void initSdk() {}
+  void initSdk() {
+    Future.microtask(() async {
+      try {
+        var allowBgm = LocalCacheUtils.getBool(
+          LocalCacheConfig.allowBGMKey,
+          defaultValue: true,
+        );
+        if (allowBgm) {
+          AudioUtils().playBGM("audio/bg1.mp3");
+        }
+      } catch (e) {
+        LogUtils.logD("$TAG playBGM error");
+      }
+      try {
+        NetWorkManager().initNetworkListener();
+      } catch (e) {
+        LogUtils.logD("$TAG NetWorkManager init error");
+      }
+    });
+  }
 }
 

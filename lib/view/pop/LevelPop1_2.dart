@@ -3,6 +3,7 @@ import 'package:fish_earn/utils/GlobalConfigManager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../utils/AudioUtils.dart';
 import '../GameText.dart';
 
 class LevelPop1_2 extends StatefulWidget {
@@ -13,6 +14,12 @@ class LevelPop1_2 extends StatefulWidget {
 }
 
 class _LevelPop1_2State extends State<LevelPop1_2> {
+
+  @override
+  void initState() {
+    super.initState();
+    AudioUtils().playTempAudio("audio/levelUp.mp3");
+  }
   @override
   Widget build(BuildContext context) {
     return Stack(

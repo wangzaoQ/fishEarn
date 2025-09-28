@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/GameConfig.dart';
+import 'package:fish_earn/utils/AudioUtils.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameText.dart';
@@ -25,6 +26,7 @@ class _GameAwardPopState extends State<GameAwardPop> with SingleTickerProviderSt
       vsync: this,
       duration: const Duration(seconds: 3), // 一圈时间
     )..repeat(); // 无限旋转
+    AudioUtils().playTempAudio("audio/award.mp3");
   }
 
   @override

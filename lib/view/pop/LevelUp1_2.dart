@@ -4,6 +4,7 @@ import 'package:fish_earn/utils/GlobalConfigManager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../utils/AudioUtils.dart';
 import '../GameText.dart';
 
 class LevelUp1_2 extends StatefulWidget {
@@ -24,6 +25,7 @@ class _LevelUp1_2State extends State<LevelUp1_2>
       vsync: this,
       duration: const Duration(seconds: 3), // 一圈时间
     )..repeat(); // 无限旋转
+    AudioUtils().playTempAudio("audio/levelUp.mp3");
   }
 
   @override

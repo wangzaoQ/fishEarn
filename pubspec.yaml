@@ -48,6 +48,7 @@ dependencies:
   flame: ^1.32.0
   auto_size_text: ^3.0.0
   connectivity_plus: ^7.0.0
+  audioplayers: ^6.5.1
   #    firebase_core: ^4.0.0
 #    firebase_remote_config: ^6.0.0
   # The following adds the Cupertino Icons font to your application.
@@ -85,6 +86,12 @@ flutter:
     - assets/translations/
     - assets/animations1/data.json
     - assets/animations1/images/
+    - assets/audio/award.mp3
+    - assets/audio/bg1.mp3
+    - assets/audio/click.mp3
+    - assets/audio/danger.mp3
+    - assets/audio/fail.mp3
+    - assets/audio/levelUp.mp3
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
