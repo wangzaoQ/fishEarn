@@ -7,14 +7,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../utils/AudioUtils.dart';
 import '../GameText.dart';
 
-class LevelUp1_2 extends StatefulWidget {
-  const LevelUp1_2({super.key});
+class LevelUp2_3 extends StatefulWidget {
+  const LevelUp2_3({super.key});
 
   @override
-  State<LevelUp1_2> createState() => _LevelUp1_2State();
+  State<LevelUp2_3> createState() => _LevelUp2_3State();
 }
 
-class _LevelUp1_2State extends State<LevelUp1_2>
+class _LevelUp2_3State extends State<LevelUp2_3>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
@@ -73,9 +73,9 @@ class _LevelUp1_2State extends State<LevelUp1_2>
                 Align(
                   alignment: Alignment.center,
                   child: Image.asset(
-                    "assets/images/ic_animal1.png",
-                    width: 123.w,
-                    height: 123.h,
+                    "assets/images/ic_game3_a1.png",
+                    width: 152.w,
+                    height: 152.h,
                   ),
                 ),
                 Align(
@@ -92,7 +92,7 @@ class _LevelUp1_2State extends State<LevelUp1_2>
                           height: 45.h,
                         ),
                         GameText(
-                          showText: "+0.001/1s",
+                          showText: "+0.005/1s",
                           fontSize: 25.sp,
                           fillColor: Color(0xFFFFEF50),
                           strokeColor: Color(0xFF9B4801),
@@ -116,12 +116,12 @@ class _LevelUp1_2State extends State<LevelUp1_2>
           ),
         ),
         Positioned(
-          left: 46.w,
-          top: 414.h,
+          left: 40.w,
+          top: 417.h,
           child: SizedBox(
-            width: 88.w,
-            height: 87.h,
-            child: Image.asset("assets/images/ic_game1.png"),
+            width: 91.w,
+            height: 91.h,
+            child: Image.asset("assets/images/ic_animal1.png"),
           ),
         ),
         Positioned(

@@ -44,6 +44,7 @@ class _LevelPop1_2State extends State<LevelPop1_2> {
               height: 32.h,
             ),
             onPressed: () {
+              AudioUtils().playClickAudio();
               Navigator.pop(context, null);
             },
           ),

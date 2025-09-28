@@ -28,7 +28,7 @@ class GameManager{
       return 0.5 *progress;
     }else if(gameData.level == 2){
       if(gameData.levelTime<=0){
-        gameData.levelTime = GameConfig.time_2_3;
+        gameData.levelTime = 0;
       }
       var all = GameConfig.time_2_3;
       var progress = ((all-gameData.levelTime)/all);

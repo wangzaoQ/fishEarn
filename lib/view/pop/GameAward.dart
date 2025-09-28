@@ -112,6 +112,7 @@ class _GameAwardPopState extends State<GameAwardPop>
                 ),
               ),
               onPressed: () {
+                AudioUtils().playClickAudio();
                 var gameData = LocalCacheUtils.getGameData();
                 gameData.foodCount += 1;
                 LocalCacheUtils.putGameData(gameData);
@@ -119,6 +120,13 @@ class _GameAwardPopState extends State<GameAwardPop>
               },
             ),
           ),
+          Align(alignment: Alignment.topCenter,child: Padding(padding: EdgeInsetsGeometry.only(top: 314.h),child: GameText(
+            showText: "app_wave_treasure".tr(),
+            fontSize: 19.sp,
+            fillColor: Color(0xFFFFD828),
+            strokeColor: Color(0xFFFC5B88),
+            strokeWidth: 1.w,
+          ),),),
           Positioned(
             right: 20.w,
             top: 168.h,
@@ -129,6 +137,7 @@ class _GameAwardPopState extends State<GameAwardPop>
                 height: 32.h,
               ),
               onPressed: () {
+                AudioUtils().playClickAudio();
                 Navigator.pop(context, null);
               },
             ),

@@ -46,6 +46,7 @@ class _SettingPopState extends State<SettingPop> {
                     fit: BoxFit.fill,
                   ),
                   onPressed: () {
+                    AudioUtils().playClickAudio();
                     Navigator.pop(context, null);
                   },
                 ),
@@ -99,6 +100,7 @@ class _SettingPopState extends State<SettingPop> {
                         height: 30.h,
                       ),
                       onPressed: () {
+                        AudioUtils().playClickAudio();
                         setState(() {
                           updateBgm(allowBgm);
                         });
@@ -138,13 +140,14 @@ class _SettingPopState extends State<SettingPop> {
                       padding: EdgeInsets.zero,
                       pressedOpacity: 0.7,
                       child: Image.asset(
-                        allowBgm
+                        allowTempAudioKey
                             ? "assets/images/ic_audio_on.webp"
                             : "assets/images/ic_audio_off.webp",
                         width: 57.w,
                         height: 30.h,
                       ),
                       onPressed: () {
+                        AudioUtils().playClickAudio();
                         setState(() {
                           updatePlayAudio(allowTempAudioKey);
                         });
@@ -182,6 +185,7 @@ class _SettingPopState extends State<SettingPop> {
                     ),
                   ),
                   onPressed: () {
+                    AudioUtils().playClickAudio();
                     Navigator.pop(context, 1);
                   },
                 ),
@@ -214,6 +218,7 @@ class _SettingPopState extends State<SettingPop> {
                     ),
                   ),
                   onPressed: () {
+                    AudioUtils().playClickAudio();
                     Navigator.pop(context, 0);
                   },
                 ),

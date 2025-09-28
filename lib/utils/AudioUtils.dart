@@ -78,6 +78,11 @@ class AudioUtils {
     await _bgmPlayer.stop();
     _bgmPlaying = false;
   }
+
+  Future<void> playClickAudio()async{
+    playTempAudio("audio/click.mp3");
+  }
+
   /// 播放音效，自动寻找空闲播放器（带错误处理）
   Future<void> playTempAudio(String assetPath, {double volume = 1.0}) async {
     var allowTempAudioKey = LocalCacheUtils.getBool(

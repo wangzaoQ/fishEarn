@@ -121,6 +121,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                         height: 45.h,
                       ),
                       onPressed: () async {
+                        AudioUtils().playClickAudio();
                         var result = await PopManager().show(
                           context: context,
                           child: SettingPop(),
@@ -151,15 +152,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                       progress: value,
                       onConfirm: (result) {
                         setState(() {
-                          if (result == 2) {
-                            //level 2升级
-                            _lottieController?.dispose();
-                          } else if (result == 3) {
-                            PopManager().show(
-                              context: context,
-                              child: LevelPop2_3(),
-                            );
-                          }
+                          _lottieController?.dispose();
                         });
                       },
                     ); // 只重建这一小块
@@ -202,6 +195,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                         ),
                       ),
                       onPressed: () {
+                        AudioUtils().playClickAudio();
                         if (gameData.foodCount <= 0) {
                           GameManager.instance.showTips("app_not_enough_food".tr());
                           return;
@@ -260,6 +254,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                 child: Image.asset("assets/images/ic_protect.webp"),
               ),
               onPressed: () {
+                AudioUtils().playClickAudio();
                 gameData = LocalCacheUtils.getGameData();
                 gameData.protectTime += getProtectTime();
                 LocalCacheUtils.putGameData(gameData);
@@ -269,6 +264,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                   }
                 });
                 GameManager.instance.showProtect();
+                GameManager.instance.updateProtectTime(gameData.protectTime);
               },
             ),
           ),
@@ -308,6 +304,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                 ),
               ),
               onPressed: () async {
+                AudioUtils().playClickAudio();
                 var progress = GameManager.instance.getPropsProgress(propsTime);
                 if(NetWorkManager().isNetError(context))return;
                 if (!ClickManager.canClick()) return;
@@ -411,19 +408,8 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     }
   }
 
-  @override
-  void dispose() {
-    animalDispose();
-    super.dispose();
-  }
-
-  void animalDispose() {
-    // ✅ 释放 Lottie 占用的资源
-    _lottieController?.dispose();
-  }
 
   Future<void> registerTimer() async {
-    _lottieController = AnimationController(vsync: this);
     gameData = LocalCacheUtils.getGameData();
     bool result = await isGameOver();
     if (result) {
@@ -603,9 +589,15 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
         _timer?.cancel();
         setState(() {
           globalShowDanger2 = false;
-          globalShowShark = true;
           GameManager.instance.hideDanger();
-          GameManager.instance.resumeMovement();
+
+        });
+        Future.delayed(const Duration(milliseconds: 1000), () async {
+          if(!mounted)return;
+          setState(() {
+            globalShowShark = true;
+            GameManager.instance.resumeMovement();
+          });
         });
         Future.delayed(const Duration(milliseconds: 2000), () async {
           if(!mounted)return;

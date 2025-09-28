@@ -3,6 +3,7 @@ import 'package:fish_earn/utils/GlobalConfigManager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../utils/AudioUtils.dart';
 import '../GameText.dart';
 
 class LevelPop2_3 extends StatefulWidget {
@@ -37,6 +38,7 @@ class _LevelPop2_3State extends State<LevelPop2_3> {
               height: 32.h,
             ),
             onPressed: () {
+              AudioUtils().playClickAudio();
               Navigator.pop(context, null);
             },
           ),

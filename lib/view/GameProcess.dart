@@ -3,7 +3,9 @@ import 'package:fish_earn/data/GameData.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameText.dart';
 import 'package:fish_earn/view/pop/LevelPop1_2.dart';
+import 'package:fish_earn/view/pop/LevelPop2_3.dart';
 import 'package:fish_earn/view/pop/LevelUp1_2.dart';
+import 'package:fish_earn/view/pop/LevelUp2_3.dart';
 import 'package:fish_earn/view/pop/PopManger.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../config/GameConfig.dart';
+import '../utils/AudioUtils.dart';
 import 'GradientProgressBar.dart';
 
 class GameProgress extends StatefulWidget {
@@ -147,6 +150,7 @@ class _GameProgressState extends State<GameProgress>
                       ],
                     ),
                   ), onPressed: () async {
+                    AudioUtils().playClickAudio();
                     if (widget.gameData.level == 1 && widget.progress == 0.5) {
                       var result = await PopManager().show(
                         context: context,
@@ -206,14 +210,22 @@ class _GameProgressState extends State<GameProgress>
                         ],
                       ),
                     ),
-                    onPressed: () {
-                      widget.onConfirm(3);
-
-                      if (widget.gameData.level == 2 &&
-                          widget.progress == 1) {
-                        widget.gameData.level = 3;
-                        LocalCacheUtils.putGameData(widget.gameData);
-                        widget.onConfirm(3);
+                    onPressed: () async {
+                      AudioUtils().playClickAudio();
+                      if(widget.gameData.level == 2 && widget.progress == 1){
+                        var result = await PopManager().show(
+                          context: context,
+                          child: LevelUp2_3(),
+                        );
+                        if(result == 1){
+                          widget.gameData.level = 3;
+                          LocalCacheUtils.putGameData(widget.gameData);
+                          widget.onConfirm(3);
+                          PopManager().show(
+                            context: context,
+                            child: LevelPop2_3(),
+                          );
+                        }
                       }
                     },
                   ),
@@ -264,7 +276,7 @@ class _GameProgressState extends State<GameProgress>
                         ],
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: null,
                   ),
                 ),
               ],

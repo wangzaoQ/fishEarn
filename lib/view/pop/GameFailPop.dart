@@ -77,6 +77,7 @@ class _GameFailPopState extends State<GameFailPop> {
               ),
             ),
             onPressed: () {
+              AudioUtils().playClickAudio();
               var gameData = LocalCacheUtils.getGameData();
               if(gameData.coin<=GameConfig.gameLifeCoin){
                 GameManager.instance.showTips("app_resurrection_tips".tr());
@@ -114,6 +115,7 @@ class _GameFailPopState extends State<GameFailPop> {
               ),
             ),
             onPressed: () {
+              AudioUtils().playClickAudio();
               Navigator.pop(context, 0);
             },
           ),
