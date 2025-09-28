@@ -8,6 +8,8 @@ import 'FishAnimGame.dart'; // 你的 SimpleAnimGame
 class FishComponent extends SpriteAnimationComponent with HasGameRef<SimpleAnimGame> {
   final Random _random = Random();
 
+  int level;
+
   final String picName;
   double speed;
   double frameStep;
@@ -38,6 +40,7 @@ class FishComponent extends SpriteAnimationComponent with HasGameRef<SimpleAnimG
 
   FishComponent({
     required this.picName,
+    required this.level,
     this.speed = 60,
     this.frameStep = 0.12,
     this.turnSpeed = 2.0,
@@ -97,8 +100,12 @@ class FishComponent extends SpriteAnimationComponent with HasGameRef<SimpleAnimG
     await super.onLoad();
 
     final frames = <Sprite>[];
-    for (int i = 1; i <= 6; i++) {
-      frames.add(await gameRef.loadSprite('$picName$i.png'));
+    if(level == 1){
+      frames.add(await gameRef.loadSprite('$picName.png'));
+    }else{
+      for (int i = 1; i <= 6; i++) {
+        frames.add(await gameRef.loadSprite('$picName$i.png'));
+      }
     }
     animation = SpriteAnimation.spriteList(frames, stepTime: frameStep);
 

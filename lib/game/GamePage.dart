@@ -109,6 +109,16 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
               ),
             ),
           ),
+
+          //鱼生命进度
+          gameData.level == 1
+              ? SizedBox.shrink()
+              : Positioned(top: 310.h, left: 32.w, child: GameLifePage()),
+          //鱼动画
+          buildAnimal(),
+          buildFood(),
+          buildDanger(),
+          buildShark(),
           //progress
           Padding(
             padding: EdgeInsetsGeometry.only(top: 94.h),
@@ -140,15 +150,6 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
               ),
             ),
           ),
-          //鱼生命进度
-          gameData.level == 1
-              ? SizedBox.shrink()
-              : Positioned(top: 310.h, left: 32.w, child: GameLifePage()),
-          //鱼动画
-          buildAnimal(),
-          buildFood(),
-          buildDanger(),
-          buildShark(),
           Positioned(
             bottom: 0,
             left: 0,
@@ -449,7 +450,9 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
         GameManager.instance.reset(gameData);
         registerTimer();
         cutTime = 0;
-        setState(() {});
+        setState(() {
+          LocalCacheUtils.putGameData(gameData);
+        });
         return true;
       }
     }

@@ -2,6 +2,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/data/GameData.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameText.dart';
+import 'package:fish_earn/view/pop/LevelPop1_2.dart';
+import 'package:fish_earn/view/pop/LevelUp1_2.dart';
+import 'package:fish_earn/view/pop/PopManger.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -143,13 +146,22 @@ class _GameProgressState extends State<GameProgress>
                         ),
                       ],
                     ),
-                  ), onPressed: (){
-                    if (widget.gameData.level == 1 &&
-                        widget.progress == 0.5) {
-                      widget.gameData.level = 2;
-                      widget.gameData.levelTime = GameConfig.time_2_3;
-                      LocalCacheUtils.putGameData(widget.gameData);
-                      widget.onConfirm(2);
+                  ), onPressed: () async {
+                    if (widget.gameData.level == 1 && widget.progress == 0.5) {
+                      var result = await PopManager().show(
+                        context: context,
+                        child: LevelUp1_2(),
+                      );
+                      if(result == 1){
+                        widget.gameData.level = 2;
+                        widget.gameData.levelTime = GameConfig.time_2_3;
+                        LocalCacheUtils.putGameData(widget.gameData);
+                        widget.onConfirm(2);
+                        PopManager().show(
+                          context: context,
+                          child: LevelPop1_2(),
+                        );
+                      }
                     }
                   })
                 ),

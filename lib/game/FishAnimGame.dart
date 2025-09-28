@@ -26,10 +26,26 @@ class SimpleAnimGame extends FlameGame {
   Future<void> onLoad() async {
     await super.onLoad();
     var picName = "";
+    var width = 0.0;
+    var height = 0.0;
+    if(level == 1){
+      picName = "ic_game1";
+      width = 96.w;
+      height = 52.h;
+    }else if(level == 2){
+      picName = "ic_animal";
+      width = 160.w;
+      height = 160.w;
+    }else if(level == 3){
+      picName = "ic_game3_a";
+      width = 160.w;
+      height = 160.w;
+    }
     // --- 现有：添加一条鱼 ---
     fishComment = FishComponent(
-      picName: 'ic_animal', // 对应 assets/images/fish/... 的资源
-      size: Vector2(160.w, 160.w),
+      level: level,
+      picName: picName, // 对应 assets/images/fish/... 的资源
+      size: Vector2(width, height),
     );
     add(fishComment);
 
