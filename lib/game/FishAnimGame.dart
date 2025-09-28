@@ -55,22 +55,22 @@ class SimpleAnimGame extends FlameGame {
     // 金币背景条
     coinBg = SpriteComponent()
       ..sprite = await Sprite.load("bg_to_bar_coin.webp")
-      ..size = Vector2(90, 25) // 对应 Flutter 中 width:90.w, height:25.h
-      ..position = Vector2(18, 43 + 11); // top + 内部 top
+      ..size = Vector2(90.w, 25.h) // 对应 Flutter 中 width:90.w, height:25.h
+      ..position = Vector2(18.w, 43.h + 11.h); // top + 内部 top
     add(coinBg);
 
     // 金币图标
     coinIcon = SpriteComponent()
-      ..sprite = await Sprite.load("ic_coin.webp")
-      ..size = Vector2(45, 45)
-      ..position = Vector2(8, 43); // top + left
+      ..sprite = await Sprite.load("ic_coin.png")
+      ..size = Vector2(45.w, 45.h)
+      ..position = Vector2(8.w, 43.h); // top + left
     add(coinIcon);
 
     // 金币数文字
     final textPaint = TextPaint(
       style: TextStyle(
         color: Color(0xFFF4FF72),
-        fontSize: 15, // Flutter 中 15.sp 可以换成实际像素
+        fontSize: 15.sp, // Flutter 中 15.sp 可以换成实际像素
         fontFamily: "AHV",
       ),
     );
@@ -80,7 +80,7 @@ class SimpleAnimGame extends FlameGame {
       textRenderer: textPaint,
       anchor: Anchor.center,
     )
-      ..position = coinBg.position + Vector2(coinBg.size.x / 2, coinBg.size.y / 2);
+      ..position = coinBg.position + Vector2(coinBg.size.x / 2+10.w, coinBg.size.y / 2);
     add(coinText!);
 
     // 背景图片
@@ -132,8 +132,8 @@ class SimpleAnimGame extends FlameGame {
   }
 
   void showProtect(){
-    fishComment.showOverlay();
     globalShowProtect = true;
+    fishComment.showOverlay();
   }
 
   void hideProtect(){
@@ -141,10 +141,12 @@ class SimpleAnimGame extends FlameGame {
   }
 
   void showDanger(){
+    globalShowDanger1 = true;
     fishComment.showDanger();
   }
 
   void hideDanger(){
+    globalShowDanger1 = false;
     fishComment.hideDanger();
   }
 

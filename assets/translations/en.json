@@ -6,10 +6,15 @@
   "app_fail_title": "WEALTH INTERRUPTION",
   "app_resurrection": "Resurrection",
   "app_starting_over": "Starting Over",
-  "app_resurrection_tips": "Resurrection costs $10",
+  "app_resurrection_tips": "Resurrection cost is 10 gold coins",
   "app_not_enough_food": "Not enough food",
   "app_level_up": "Level Up",
   "app_claim": "Claim",
   "app_wave_treasure": "WAVE TREASURES",
-  "app_net_error": "Net Error"
+  "app_net_error": "Net Error",
+  "app_bgm": "Background Music",
+  "app_sound_effects": "sound effects",
+  "app_contact_us": "Contact Us",
+  "app_privacy_policy": "Privacy Policy"
+
 }

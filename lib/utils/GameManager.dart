@@ -116,7 +116,8 @@ class GameManager{
   void reset(GameData gameData) {
     allowTime = true;
     globalShowFood = false;
-    globalShowDanger = false;
+    globalShowDanger1 = false;
+    globalShowDanger2 = false;
     globalShowShark = false;
     globalShowProtect = false;
     gameData.level = 1;

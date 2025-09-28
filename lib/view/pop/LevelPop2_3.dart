@@ -64,7 +64,7 @@ class _LevelPop2_3State extends State<LevelPop2_3> {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.center, // 水平居中
                 children: [
-              Image.asset("assets/images/ic_coin2.webp",width: 46.w,height: 46.h),
+              Image.asset("assets/images/ic_coin.png",width: 46.w,height: 46.h),
               GameText(showText:GlobalConfigManager.instance.getCommonCoin(),
                 fontSize: 25.sp,
                 fillColor: Color(0xFFFFEF50),)

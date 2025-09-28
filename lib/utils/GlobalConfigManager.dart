@@ -28,6 +28,6 @@ class GlobalConfigManager{
   }
 
   String getCommonCoin(){
-    return "+\$0.001/1s";
+    return "+0.001/1s";
   }
 }

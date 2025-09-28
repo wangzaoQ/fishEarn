@@ -15,8 +15,8 @@ class GameAwardPop extends StatefulWidget {
   State<GameAwardPop> createState() => _GameAwardPopState();
 }
 
-class _GameAwardPopState extends State<GameAwardPop> with SingleTickerProviderStateMixin{
-
+class _GameAwardPopState extends State<GameAwardPop>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -33,85 +33,108 @@ class _GameAwardPopState extends State<GameAwardPop> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false, // 禁止默认返回
-      onPopInvokedWithResult: (didPop, result) {
-      },
+      onPopInvokedWithResult: (didPop, result) {},
       child: Stack(
-      children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: Padding(
-            padding: EdgeInsetsGeometry.only(top: 252.h),
-            child: GameText(showText: "app_fail_title".tr()),
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsetsGeometry.only(top: 252.h),
+              child: GameText(showText: "app_fail_title".tr()),
+            ),
           ),
-        ),
-        Positioned(
-          left: 23.w,
-          right: 23.w,
-          top: 180.h,
-          child: Image.asset(
-            "assets/images/bg_award.webp",
-            width: double.infinity,
-            height: 417.h,
+          Positioned(
+            left: 23.w,
+            right: 23.w,
+            top: 180.h,
+            child: Image.asset(
+              "assets/images/bg_award.webp",
+              width: double.infinity,
+              height: 417.h,
+            ),
           ),
-        ),
-        Positioned(
-          top: 333.h,
+          Positioned(
+            top: 333.h,
             left: 95.w,
             right: 95.w,
-            child: SizedBox(width: 183.w,height: 183.h,child:  RotationTransition(
-          turns: _controller,
-          child: Image.asset("assets/images/bg_game_progress.webp",fit: BoxFit.fill,),
-        ),)),
-        Positioned(
-          left: 40.w,
-          top: 609.h,
-          child: CupertinoButton(
-            padding: EdgeInsets.zero,
-            pressedOpacity: 0.7,
             child: SizedBox(
-              width: 172.w,
-              height: 50.h,
-              child: Stack(
-                alignment: Alignment.center, // 让子元素默认居中
-                children: [
-                  Image.asset("assets/images/bg_confirm.webp"),
-                  Center(
-                    child: AutoSizeText(
-                      "app_claim".tr(),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF185F11),
-                      ),
-                      maxLines: 1,
-                    ),
-                  ),
-                ],
+              width: 183.w,
+              height: 183.h,
+              child: RotationTransition(
+                turns: _controller,
+                child: Image.asset(
+                  "assets/images/bg_game_progress.webp",
+                  fit: BoxFit.fill,
+                ),
               ),
             ),
-            onPressed: () {
-              var gameData = LocalCacheUtils.getGameData();
-              gameData.foodCount+=1;
-              LocalCacheUtils.putGameData(gameData);
-              Navigator.pop(context, 1);
-            },
           ),
-        ),
-        Positioned(
-          right: 20.w,
-          top: 168.h,
-          child: CupertinoButton(
-            child: Image.asset(
-              "assets/images/ic_pop_close.webp",
-              width: 32.w,
-              height: 32.h,
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsetsGeometry.only(top: 369.h),
+              child: SizedBox(
+                width: 110.w,
+                height: 110.h,
+                child: Image.asset(
+                  "assets/images/ic_food_award.webp",
+                  fit: BoxFit.fill,
+                ),
+              ),
             ),
-            onPressed: () {
-              Navigator.pop(context, null);
-            },
           ),
-        ),
-      ],
-    ),);
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 609.h,
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              pressedOpacity: 0.7,
+              child: SizedBox(
+                width: 172.w,
+                height: 50.h,
+                child: Stack(
+                  alignment: Alignment.center, // 让子元素默认居中
+                  children: [
+                    Image.asset("assets/images/bg_confirm.webp"),
+                    Center(
+                      child: AutoSizeText(
+                        "app_claim".tr(),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF185F11),
+                        ),
+                        maxLines: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              onPressed: () {
+                var gameData = LocalCacheUtils.getGameData();
+                gameData.foodCount += 1;
+                LocalCacheUtils.putGameData(gameData);
+                Navigator.pop(context, 1);
+              },
+            ),
+          ),
+          Positioned(
+            right: 20.w,
+            top: 168.h,
+            child: CupertinoButton(
+              child: Image.asset(
+                "assets/images/ic_pop_close.webp",
+                width: 32.w,
+                height: 32.h,
+              ),
+              onPressed: () {
+                Navigator.pop(context, null);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -241,7 +241,7 @@ class FishComponent extends SpriteAnimationComponent with HasGameRef<SimpleAnimG
       final halfH = this.size.y / 2;
       final maxX = gameRef.size.x - halfW;
       final maxY = gameRef.size.y - halfH;
-      final double topMargin = 130.h; // 顶部保留 50 像素
+      final double topMargin = 140.h; // 顶部保留 50 像素
       final minY = halfH + topMargin;
       var bounced = false;
 

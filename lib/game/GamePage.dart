@@ -31,6 +31,7 @@ import '../view/GameLifeProgress.dart';
 import '../view/GameText.dart';
 import '../view/PropsProgress.dart';
 import '../view/pop/LevelPop2_3.dart';
+import '../view/pop/SettingPop.dart';
 import 'AnimalGameHolder.dart';
 import 'FishAnimGame.dart';
 import 'GameLifePage.dart';
@@ -91,6 +92,15 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
             child: Image.asset("assets/images/bg_game.webp", fit: BoxFit.cover),
           ),
           // top bar
+          //鱼生命进度
+          gameData.level == 1
+              ? SizedBox.shrink()
+              : Positioned(top: 310.h, left: 32.w, child: GameLifePage()),
+          //鱼动画
+          buildAnimal(),
+          buildFood(),
+          buildDanger(),
+          buildShark(),
           Positioned(
             top: 43.h,
             left: 8.w,
@@ -110,23 +120,23 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                         width: 45.w,
                         height: 45.h,
                       ),
-                      onPressed: () {},
+                      onPressed: () async {
+                        var result = await PopManager().show(
+                          context: context,
+                          child: SettingPop(),
+                        );
+                        if(result == 1){
+                          //联系我们
+                        }else if(result == 0){
+                          //隐私
+                        }
+                      },
                     ),
                   ),
                 ],
               ),
             ),
           ),
-
-          //鱼生命进度
-          gameData.level == 1
-              ? SizedBox.shrink()
-              : Positioned(top: 310.h, left: 32.w, child: GameLifePage()),
-          //鱼动画
-          buildAnimal(),
-          buildFood(),
-          buildDanger(),
-          buildShark(),
           //progress
           Padding(
             padding: EdgeInsetsGeometry.only(top: 94.h),
@@ -171,6 +181,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                     alignment: Alignment.bottomCenter,
                     child: Image.asset(
                       "assets/images/bg_game_bottom.webp",
+                      width: double.infinity,
                       height: 76.h,
                       fit: BoxFit.fill,
                     ),
@@ -252,6 +263,11 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                 gameData = LocalCacheUtils.getGameData();
                 gameData.protectTime += getProtectTime();
                 LocalCacheUtils.putGameData(gameData);
+                setState(() {
+                  if(globalShowDanger1){
+                    GameManager.instance.hideDanger();
+                  }
+                });
                 GameManager.instance.showProtect();
               },
             ),
@@ -333,13 +349,13 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset(
-                          "assets/images/ic_coin.webp",
+                          "assets/images/ic_coin.png",
                           width: 50.w,
                           height: 50.h,
                         ),
                         GameText(
                           showText:
-                              "+\$${gameData.level == 2 ? "0.001" : "0.005"}/1s",
+                              "+${gameData.level == 2 ? "0.001" : "0.005"}/1s",
                           fontSize: 28.sp,
                           fillColor: Color(0xFFFFEF50),
                           strokeColor: Color(0xFF9B4801),
@@ -473,6 +489,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
         lifeNotifier.value = 0;
         registerTimer();
         cutTime = 0;
+        aliveTime = 0;
         setState(() {
           LocalCacheUtils.putGameData(gameData);
         });
@@ -516,7 +533,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
 
   buildDanger() {
     return Positioned.fill(
-      child: globalShowDanger
+      child: globalShowDanger2
           ? Stack(
               children: [
                 Positioned(
@@ -567,13 +584,15 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   void showDanger() {
     if(isShowDanger)return;
     isShowDanger = true;
+    if (globalShowDanger2) return;
     setState(() {
-      if (globalShowDanger) return;
-      globalShowDanger = true;
+      globalShowDanger2 = true;
       // GameManager.instance.swimToCenter();
+    });
+    if(!globalShowProtect){
       GameManager.instance.pauseMovement();
       GameManager.instance.showDanger();
-    });
+    }
     var timeCount = 0;
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -581,34 +600,25 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
       timeCount++;
       AudioUtils().playTempAudio("audio/danger.mp3");
       if(timeCount == 5){
+        _timer?.cancel();
         setState(() {
-          _timer?.cancel();
-          globalShowDanger = false;
+          globalShowDanger2 = false;
           globalShowShark = true;
           GameManager.instance.hideDanger();
           GameManager.instance.resumeMovement();
         });
-      }
-    });
-    Future.delayed(Duration(seconds: 5), () {
-      if(!mounted)return;
-      setState(() {
-        globalShowDanger = false;
-        globalShowShark = true;
-
-        GameManager.instance.hideDanger();
-        GameManager.instance.resumeMovement();
-      });
-      Future.delayed(const Duration(milliseconds: 2000), () async {
-        if(!mounted)return;
-        isShowDanger = false;
-        if(!globalShowProtect){
-          bool result = await isGameOver(force: true);
-          if (result) {
-            return;
+        Future.delayed(const Duration(milliseconds: 2000), () async {
+          if(!mounted)return;
+          isShowDanger = false;
+          globalShowShark = false;
+          if(!globalShowProtect){
+            bool result = await isGameOver(force: true);
+            if (result) {
+              return;
+            }
           }
-        }
-      });
+        });
+      }
     });
   }
 }

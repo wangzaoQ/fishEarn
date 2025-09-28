@@ -7,12 +7,12 @@ class GameConfig {
   static const color3 = 0xFF5BC025;
 
   //TODO线上需改
-  static const cutTime = 3;
+  static const cutTime = 60;
   static const protectTime = 10;
   static const gameLifeCoin = 10;
   static const gameAddLife = 10;
   static const gamePropsTime = 10;
-  static const gameDangerTime1 = 10;
-  static const gameDangerTime2 = 30;
-  static const gameDangerTime3 = 60;
+  static const gameDangerTime1 = 1*60;
+  static const gameDangerTime2 = 2*60;
+  static const gameDangerTime3 = 3*60;
 }

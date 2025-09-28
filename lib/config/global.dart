@@ -9,6 +9,11 @@ ValueNotifier<Offset?> overlayNotifier2 = ValueNotifier<Offset?>(null);
 
 var allowTime = true;
 var globalShowFood = false;
-var globalShowDanger = false;
+//背景
+var globalShowDanger1 = false;
+//危险气泡
+var globalShowDanger2 = false;
+//鲨鱼攻击
 var globalShowShark = false;
+//防护气泡
 var globalShowProtect = false;

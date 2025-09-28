@@ -86,12 +86,12 @@ class _LevelUp1_2State extends State<LevelUp1_2>
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset(
-                          "assets/images/ic_coin.webp",
+                          "assets/images/ic_coin.png",
                           width: 45.w,
                           height: 45.h,
                         ),
                         GameText(
-                          showText: "+\$0.001/1s",
+                          showText: "+0.001/1s",
                           fontSize: 25.sp,
                           fillColor: Color(0xFFFFEF50),
                           strokeColor: Color(0xFF9B4801),
