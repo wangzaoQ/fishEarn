@@ -114,7 +114,7 @@ class _GameAwardPopState extends State<GameAwardPop>
               onPressed: () {
                 AudioUtils().playClickAudio();
                 var gameData = LocalCacheUtils.getGameData();
-                gameData.foodCount += 1;
+                gameData.foodCount += 10;
                 LocalCacheUtils.putGameData(gameData);
                 Navigator.pop(context, 1);
               },
