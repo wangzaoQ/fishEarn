@@ -66,11 +66,11 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
   var firstShowProtectKey = true;
 
   int getCutTime() {
-    return GameConfig.cutTime;
+    return GameConfig.lifeDecreaseInterval;
   }
 
   int getProtectTime() {
-    return GameConfig.protectTime;
+    return GameConfig.protectDuration;
   }
 
   @override

@@ -49,6 +49,9 @@ class _GameProgressState extends State<GameProgress>
       vsync: this,
       duration: const Duration(seconds: 3), // 一圈时间
     )..repeat(); // 无限旋转
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showMarkLevel1_2();
+    });
   }
 
   var first1_2 = true;
@@ -60,19 +63,7 @@ class _GameProgressState extends State<GameProgress>
     if (oldWidget.progress != widget.progress) {
       _oldProgress = widget.progress;
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.gameData.level == 1 && widget.progress == 0.5) {
-        if (first1_2) {
-          showMarkLevel1_2();
-        }
-        first1_2 = false;
-      } else if (widget.gameData.level == 2 && widget.progress == 1) {
-        if (first2_3) {
-          showMarkLevel1_2();
-        }
-        first2_3 = false;
-      }
-    });
+
   }
 
   @override
@@ -281,46 +272,46 @@ class _GameProgressState extends State<GameProgress>
                       strokeColor: Color(0xFF9B4801),
                     ),
                   ),
-                  widget.gameData.level == 2 && widget.progress == 1?SizedBox.shrink():
-                  Positioned(
-                    left: 110.w,
-                    top: 55.h, // 在进度条下方一点
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.7,
-                      onPressed: null,
-                      child: SizedBox(
-                        width: 46.w,
-                        height: 25.h,
-                        child: Stack(
-                          children: [
-                            Image.asset(
-                              "assets/images/ic_up_arrow.webp",
-                              width: 23.w,
-                              height: 23.h,
-                            ),
-                            Positioned(
-                              left: 15.w,
-                              bottom: 0.h,
-                              child: GameText(
-                                showText: "app_up".tr(),
-                                fontSize: 12.sp,
-                                strokeColor: Color(0xFF000000),
-                              ),
-                            ),
-                            // Positioned(
-                            //   left: 13.w,
-                            //   child: Image.asset(
-                            //     "assets/images/ic_ad_tips.webp",
-                            //     width: 15.w,
-                            //     height: 15.h,
-                            //   ),
-                            // ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  // widget.gameData.level == 2 && widget.progress == 1?SizedBox.shrink():
+                  // Positioned(
+                  //   left: 110.w,
+                  //   top: 55.h, // 在进度条下方一点
+                  //   child: CupertinoButton(
+                  //     padding: EdgeInsets.zero,
+                  //     pressedOpacity: 0.7,
+                  //     onPressed: null,
+                  //     child: SizedBox(
+                  //       width: 46.w,
+                  //       height: 25.h,
+                  //       child: Stack(
+                  //         children: [
+                  //           Image.asset(
+                  //             "assets/images/ic_up_arrow.webp",
+                  //             width: 23.w,
+                  //             height: 23.h,
+                  //           ),
+                  //           Positioned(
+                  //             left: 15.w,
+                  //             bottom: 0.h,
+                  //             child: GameText(
+                  //               showText: "app_up".tr(),
+                  //               fontSize: 12.sp,
+                  //               strokeColor: Color(0xFF000000),
+                  //             ),
+                  //           ),
+                  //           // Positioned(
+                  //           //   left: 13.w,
+                  //           //   child: Image.asset(
+                  //           //     "assets/images/ic_ad_tips.webp",
+                  //           //     width: 15.w,
+                  //           //     height: 15.h,
+                  //           //   ),
+                  //           // ),
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -332,9 +323,7 @@ class _GameProgressState extends State<GameProgress>
 
   TutorialCoachMark? tutorialCoachMark;
   late List<TargetFocus> guideLevel1_2Keys;
-  late List<TargetFocus> guideLevel2_3Keys;
   GlobalKey globalKeyGuide1_2 = GlobalKey();
-  GlobalKey globalKeyGuide2_3 = GlobalKey();
 
   void showMarkLevel1_2() {
     guideLevel1_2Keys = [];

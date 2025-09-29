@@ -76,7 +76,7 @@ class SimpleAnimGame extends FlameGame {
     );
 
     coinText = TextComponent(
-      text: LocalCacheUtils.getGameData().coin.toStringAsFixed(3),
+      text: LocalCacheUtils.getGameData().coin.toStringAsFixed(2),
       textRenderer: textPaint,
       anchor: Anchor.center,
     )

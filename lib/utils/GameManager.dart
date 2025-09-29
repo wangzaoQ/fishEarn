@@ -85,7 +85,7 @@ class GameManager{
   }
 
   cutLife(GameData gameData){
-    gameData.life-=GameConfig.gameAddLife;
+    gameData.life-=GameConfig.lifeIncreaseAmount;
     if(gameData.life<0){
       gameData.life = 0;
     }
@@ -128,17 +128,17 @@ class GameManager{
   }
 
   void addLife(GameData gameData) {
-    gameData.life+=GameConfig.gameAddLife;
+    gameData.life+=GameConfig.lifeIncreaseAmount;
     if(gameData.life>100){
       gameData.life = 100;
     }
   }
 
   double getPropsProgress(int propsTime) {
-    if(propsTime>GameConfig.gamePropsTime){
+    if(propsTime>GameConfig.bottleDuration){
       return 1.0;
     }else{
-      return propsTime/GameConfig.gamePropsTime;
+      return propsTime/GameConfig.bottleDuration;
     }
   }
 

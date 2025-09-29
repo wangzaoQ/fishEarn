@@ -79,7 +79,7 @@ class _GameFailPopState extends State<GameFailPop> {
             onPressed: () {
               AudioUtils().playClickAudio();
               var gameData = LocalCacheUtils.getGameData();
-              if(gameData.coin<=GameConfig.gameLifeCoin){
+              if(gameData.coin<=GameConfig.reviveCostCoin){
                 GameManager.instance.showTips("app_resurrection_tips".tr());
                 return;
               }
