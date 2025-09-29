@@ -86,7 +86,7 @@ flutter:
     - assets/images/
 #    - assets/images/fish/
     - assets/translations/
-    - assets/animations1/data.json
+    - assets/animations1/arrow.json
     - assets/animations1/images/
     - assets/audio/award.mp3
     - assets/audio/bg1.mp3

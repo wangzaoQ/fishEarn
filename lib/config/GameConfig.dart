@@ -21,7 +21,7 @@ class GameConfig {
   //漂流瓶 进度时间 正式 5*60
   static const gamePropsTime = 10;
   // 第一个危险出现时间 正式 3*60
-  static const gameDangerTime1 = 1*60;
+  static const gameDangerTime1 = 0.5*60;
   // 第二个危险出现时间 正式 8*60
   static const gameDangerTime2 = 2*60;
   // 第三个危险出现时间 正式 11*60
