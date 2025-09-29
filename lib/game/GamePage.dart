@@ -277,7 +277,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                             builder: (_, value, __) {
                               return PropsProgress(
                                 progress: value, // 进度 0~1
-                                progressColor: Color(GameConfig.color3),
+                                progressColor: GameConfig.color3,
                               ); // 只重建这一小块
                             },
                           ),
@@ -326,6 +326,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                 setState(() {
                   if (globalShowDanger1) {
                     GameManager.instance.hideDanger();
+                    ArrowOverlay.hide();
                   }
                 });
                 GameManager.instance.showProtect();
@@ -464,6 +465,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
       if(globalShowDanger2){
         ArrowOverlay.hide();
         ArrowOverlay.show(context, ArrowWidget());
+        firstShowProtectKey = false;
         LocalCacheUtils.putBool(LocalCacheConfig.firstShowProtectKey, false);
       }
     });

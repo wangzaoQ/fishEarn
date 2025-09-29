@@ -25,8 +25,8 @@ class _ArrowWidgetState extends State<ArrowWidget> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 250.h,
-      right: 50.w,
+      top: 270.h,
+      right: 70.w,
       child: SizedBox(
         width: 100.w,
         height: 100.h,

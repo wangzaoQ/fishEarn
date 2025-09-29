@@ -91,15 +91,15 @@ class GameManager{
     }
   }
 
-  int getLifeColor(int process){
-    if(process >=60){
-      return GameConfig.color1;
-    }else if(process>=30){
-      return GameConfig.color2;
-    }else{
-      return GameConfig.color3;
-    }
-  }
+  // int getLifeColor(int process){
+  //   if(process >=60){
+  //     return GameConfig.color1;
+  //   }else if(process>=30){
+  //     return GameConfig.color2;
+  //   }else{
+  //     return GameConfig.color3;
+  //   }
+  // }
 
 
   void showTips(String msg) {

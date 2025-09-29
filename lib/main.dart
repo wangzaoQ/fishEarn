@@ -108,8 +108,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
     // 根据生命周期状态处理逻辑
     if (state == AppLifecycleState.resumed) {
-      // isForeground = true;
-      // LogUtils.logD("App 进入前台:isForeground:${isForeground}");
+      isForeground = true;
+      LogUtils.logD("App isForeground:${isForeground}");
+      var allowBgm = LocalCacheUtils.getBool(
+        LocalCacheConfig.allowBGMKey,
+        defaultValue: true,
+      );
+      if (allowBgm) {
+        AudioUtils().playBGM("audio/bg1.mp3");
+      }
       // var allowBgm = CacheManager.getBool(
       //   CacheConfig.cacheBGMKey,
       //   defaultValue: true,
@@ -132,9 +139,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       // }
       // pauseTime = 0;
     } else if (state == AppLifecycleState.paused) {
-      // isForeground = false;
-      // LogUtils.logD("App 进入后台");
-      // AudioManager().pauseBGM();
+      isForeground = false;
+      LogUtils.logD("App isForeground:${isForeground}");
+      AudioUtils().pauseBGM();
       // LogUtils.logD("App 进入后台 设置 pauseTime isPlay:${isPlay}");
       // Future.delayed(Duration(seconds: 1), () {
       //   if(!isPlay && !isForeground){

@@ -2,6 +2,8 @@ import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../config/GameConfig.dart';
 class CustomProgress3 extends StatefulWidget {
   final double progress; // 0~1
   const CustomProgress3({Key? key, required this.progress}) : super(key: key);
@@ -55,12 +57,48 @@ class _CustomProgress3State extends State<CustomProgress3>
     _controller.dispose();
     super.dispose();
   }
+  LinearGradient getLifeGradient(double process) {
+    if (process >= 0.7) {
+      // 满血：绿 -> 黄 -> 红
+      return LinearGradient(
+        begin: Alignment.bottomCenter,
+        end: Alignment.topCenter,
+        colors: [
+          GameConfig.color1, // 绿
+          GameConfig.color2, // 黄
+          GameConfig.color3, // 红
+        ],
+        stops: const [0.0, 0.5, 1.0],
+      );
+    } else if (process >= 0.3) {
+      // 中血量：黄 -> 红
+      return LinearGradient(
+        begin: Alignment.bottomCenter,
+        end: Alignment.topCenter,
+        colors: [
+          GameConfig.color1,
+          GameConfig.color2,
+        ],
+        stops: [0.0, 1.0],
+      );
+    } else {
+      // 低血量：只红
+      return LinearGradient(
+        begin: Alignment.bottomCenter,
+        end: Alignment.topCenter,
+        colors: [
+          GameConfig.color1, // 红
+          GameConfig.color1, // 红
+        ],
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final double height = 105.h;
     final double width = 19.w;
-    var life = GameManager.instance.getLifeColor(LocalCacheUtils.getGameData().life);
     return SizedBox(
       width: 19.w,
       height: height,
@@ -89,7 +127,9 @@ class _CustomProgress3State extends State<CustomProgress3>
                           child: Container(
                             width: width,
                             height: height * _animation.value.clamp(0, 1),
-                            color: Color(life),
+                            decoration: BoxDecoration(
+                              gradient: getLifeGradient(_animation.value), // 传当前进度(0~1)
+                            ),
                           ),
                         ),
                       );
