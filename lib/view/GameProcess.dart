@@ -281,6 +281,7 @@ class _GameProgressState extends State<GameProgress>
                       strokeColor: Color(0xFF9B4801),
                     ),
                   ),
+                  widget.gameData.level == 2 && widget.progress == 1?SizedBox.shrink():
                   Positioned(
                     left: 110.w,
                     top: 55.h, // 在进度条下方一点

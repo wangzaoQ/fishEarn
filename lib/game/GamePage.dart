@@ -196,14 +196,14 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
                       ),
                       onPressed: () {
                         AudioUtils().playClickAudio();
-                        if (gameData.foodCount <= 0) {
+                        if (gameData.foodCount <= 10) {
                           GameManager.instance.showTips("app_not_enough_food".tr());
                           return;
                         } else {
                           setState(() {
                             if (globalShowFood) return;
                             globalShowFood = true;
-                            gameData.foodCount -= 1;
+                            gameData.foodCount -= 10;
                             GameManager.instance.addLife(gameData);
                             LocalCacheUtils.putGameData(gameData);
                           });
