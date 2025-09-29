@@ -18,7 +18,7 @@ class PopManager {
     Curve curve = Curves.easeOutBack,
     bool barrierDismissible = true,
     Color barrierColor = Colors.black,
-    double needAlpha = 0.5,
+    double needAlpha = 0.8,
   }) {
     final completer = Completer<T?>();
 

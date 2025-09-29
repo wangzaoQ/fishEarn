@@ -78,9 +78,9 @@ class GameManager{
 
   addCoin(GameData gameData){
     if(gameData.level == 2){
-      gameData.coin+=0.001;
+      gameData.coin+=0.02;
     }else if(gameData.level == 3){
-      gameData.coin+=0.005;
+      gameData.coin+=0.05;
     }
   }
 

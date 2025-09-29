@@ -50,10 +50,30 @@ class _LevelPop1_2State extends State<LevelPop1_2> {
           ),
         ),
         Positioned(
-          top: 220.h,
+          top: 210.h,
           left: 0,
           right: 0,
-          child: Image.asset("assets/images/bg_level1_2.webp"),
+          child: Image.asset("assets/images/bg_level2_3.webp"),
+        ),
+        Positioned(
+          top: 287.h,
+          left: 90.w,
+          right: 107.w,
+          child: Image.asset("assets/images/ic_animal2.png"),
+        ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: Padding(
+            padding: EdgeInsetsGeometry.only(top: 258.h),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.center, // 水平居中
+                children: [
+                  Image.asset("assets/images/ic_coin.png",width: 46.w,height: 46.h),
+                  GameText(showText:GlobalConfigManager.instance.getCommonCoin(2),
+                    fontSize: 25.sp,
+                    fillColor: Color(0xFFFFEF50),)
+                ]),
+          ),
         ),
         Positioned(
           top: 518.h,

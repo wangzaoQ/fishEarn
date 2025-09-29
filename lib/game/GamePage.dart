@@ -335,33 +335,33 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
           //     ],)),
           //   ),
           // ),
-          gameData.level == 1
-              ? SizedBox.shrink()
-              : Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding: EdgeInsetsGeometry.only(top: 268.h),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center, // ← 子元素水平居中
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          "assets/images/ic_coin.png",
-                          width: 50.w,
-                          height: 50.h,
-                        ),
-                        GameText(
-                          showText:
-                              "+${gameData.level == 2 ? "0.001" : "0.005"}/1s",
-                          fontSize: 28.sp,
-                          fillColor: Color(0xFFFFEF50),
-                          strokeColor: Color(0xFF9B4801),
-                          strokeWidth: 2.w,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+          // gameData.level == 1
+          //     ? SizedBox.shrink()
+          //     : Align(
+          //         alignment: Alignment.topCenter,
+          //         child: Padding(
+          //           padding: EdgeInsetsGeometry.only(top: 268.h),
+          //           child: Row(
+          //             mainAxisAlignment: MainAxisAlignment.center, // ← 子元素水平居中
+          //             crossAxisAlignment: CrossAxisAlignment.center,
+          //             children: [
+          //               Image.asset(
+          //                 "assets/images/ic_coin.png",
+          //                 width: 50.w,
+          //                 height: 50.h,
+          //               ),
+          //               GameText(
+          //                 showText:
+          //                     "+${gameData.level == 2 ? "0.001" : "0.005"}/1s",
+          //                 fontSize: 28.sp,
+          //                 fillColor: Color(0xFFFFEF50),
+          //                 strokeColor: Color(0xFF9B4801),
+          //                 strokeWidth: 2.w,
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //       ),
           // Positioned(child:SizedBox(child: CustomProgress3(progress: 0.5),) )
         ],
       ),

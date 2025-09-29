@@ -53,7 +53,7 @@ class _LevelPop2_3State extends State<LevelPop2_3> {
           top: 287.h,
           left: 90.w,
           right: 107.w,
-          child: Image.asset("assets/images/ic_pop_level3.webp"),
+          child: Image.asset("assets/images/ic_game3_a1.png"),
         ),
         // Positioned(child: SizedBox(
         //   width: double.infinity,
@@ -67,7 +67,7 @@ class _LevelPop2_3State extends State<LevelPop2_3> {
                 mainAxisAlignment: MainAxisAlignment.center, // 水平居中
                 children: [
               Image.asset("assets/images/ic_coin.png",width: 46.w,height: 46.h),
-              GameText(showText:GlobalConfigManager.instance.getCommonCoin(),
+              GameText(showText:GlobalConfigManager.instance.getCommonCoin(3),
                 fontSize: 25.sp,
                 fillColor: Color(0xFFFFEF50),)
             ]),

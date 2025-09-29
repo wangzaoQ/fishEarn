@@ -27,7 +27,7 @@ class GlobalConfigManager{
     _isBrazil = localeTag.startsWith('pt-BR');
   }
 
-  String getCommonCoin(){
-    return "+0.001/1s";
+  String getCommonCoin(int level){
+    return level == 2?"+0.02/s":"+0.05/s";
   }
 }

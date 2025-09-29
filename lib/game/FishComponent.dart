@@ -3,7 +3,8 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../config/global.dart';
-import 'FishAnimGame.dart'; // 你的 SimpleAnimGame
+import 'FishAnimGame.dart';
+import 'GameFloatText.dart'; // 你的 SimpleAnimGame
 
 class FishComponent extends SpriteAnimationComponent with HasGameRef<SimpleAnimGame> {
   final Random _random = Random();
@@ -284,6 +285,12 @@ class FishComponent extends SpriteAnimationComponent with HasGameRef<SimpleAnimG
     if (overlayNotifier2 != null && overlayNotifier2!.value != null) {
       overlayNotifier2!.value = Offset(position.x.toDouble(), position.y.toDouble());
     }
+    // === 每秒自动飘字 ===
+    _floatingTimer += dt;
+    if (_floatingTimer >= 1.0 && level>1) {
+      _floatingTimer = 0.0;
+      showFloatingText(level == 2? "+0.02": "+0.05", color: Color(0xFFFFEF50));
+    }
   }
 
   // 原有转向逻辑，保持不变
@@ -315,6 +322,24 @@ class FishComponent extends SpriteAnimationComponent with HasGameRef<SimpleAnimG
     while (angle > pi) angle -= 2 * pi;
     while (angle < -pi) angle += 2 * pi;
     return angle;
+  }
+  double _floatingTimer = 0.0; // 计时器
+
+  /// 在鱼头顶显示飘字
+  void showFloatingText(String text, {Color color = Colors.white}) {
+    if (gameRef == null) return;
+
+    final paint = TextPaint(
+      style: TextStyle(
+        fontSize: 28.sp,
+        color: color,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+
+    final pos = position.clone()..y -= size.y / 2; // 鱼上方
+    final ft = FloatingText(text, pos, textPaint: paint);
+    gameRef.add(ft);
   }
 
   /// 显示 overlay（不暂停游动）

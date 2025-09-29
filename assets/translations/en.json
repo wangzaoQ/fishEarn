@@ -15,6 +15,8 @@
   "app_bgm": "Background Music",
   "app_sound_effects": "sound effects",
   "app_contact_us": "Contact Us",
-  "app_privacy_policy": "Privacy Policy"
+  "app_privacy_policy": "Privacy Policy",
+  "app_level_up_tips1": "Level Up = ",
+  "app_level_up_tips2": "Auto Earnings Unlocked!"
 
 }
