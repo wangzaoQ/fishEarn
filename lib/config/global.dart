@@ -6,6 +6,7 @@ final ValueNotifier<int> protectNotifier = ValueNotifier(0);
 final ValueNotifier<double> propsNotifier = ValueNotifier(0);
 ValueNotifier<Offset?> overlayNotifier = ValueNotifier<Offset?>(null);
 ValueNotifier<Offset?> overlayNotifier2 = ValueNotifier<Offset?>(null);
+bool isForeground = true;
 
 var allowTime = true;
 var globalShowFood = false;

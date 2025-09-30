@@ -47,7 +47,7 @@ class GamePage extends StatefulWidget {
   _GamePageState createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
+class _GamePageState extends State<GamePage> with TickerProviderStateMixin,WidgetsBindingObserver {
   late GameData gameData;
   late double progress;
   late final AnimationController _controller;
@@ -355,6 +355,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
     GlobalTimerManager().startTimer(
       onTick: () async {
         if (!allowTime) return;
+        if (!isForeground) return;
         var cutProtectTime = false;
         gameData = LocalCacheUtils.getGameData();
         if (gameData.level > 0 && gameData.levelTime >= 1) {
@@ -611,4 +612,18 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin {
       }
     });
   }
+
+  /// 监听 App 生命周期切换
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if(state == AppLifecycleState.resumed){
+      GameManager.instance.resumeMovement();
+      registerTimer();
+    }else if (state == AppLifecycleState.paused){
+      GameManager.instance.pauseMovement();
+      GlobalTimerManager().cancelTimer();
+    }
+  }
+
 }

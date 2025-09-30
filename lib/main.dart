@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 
 import 'StartPage.dart';
 import 'config/GlobalListener.dart';
+import 'config/global.dart';
 import 'model/GameViewModel.dart';
 
 Future<void> main() async {
@@ -99,7 +100,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   int pauseTime = 0;
-  bool isForeground = true;
 
   var TAG = "APP_TAG";
 
@@ -142,6 +142,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       isForeground = false;
       LogUtils.logD("App isForeground:${isForeground}");
       AudioUtils().pauseBGM();
+
       // LogUtils.logD("App 进入后台 设置 pauseTime isPlay:${isPlay}");
       // Future.delayed(Duration(seconds: 1), () {
       //   if(!isPlay && !isForeground){
