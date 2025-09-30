@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/data/GameData.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameText.dart';
@@ -50,7 +51,11 @@ class _GameProgressState extends State<GameProgress>
       duration: const Duration(seconds: 3), // 一圈时间
     )..repeat(); // 无限旋转
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      showMarkLevel1_2();
+      var firstShowGuide1 = LocalCacheUtils.getBool(LocalCacheConfig.firstShowGuide1,defaultValue: true);
+      if(firstShowGuide1){
+        showMarkLevel1_2();
+        LocalCacheUtils.putBool(LocalCacheConfig.firstShowGuide1,false);
+      }
     });
   }
 

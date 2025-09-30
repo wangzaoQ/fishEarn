@@ -76,6 +76,8 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin,Widge
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this); // ✅ 注册
+
     AudioUtils().initTempQueue();
     _controller = AnimationController(
       vsync: this,
@@ -90,6 +92,12 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin,Widge
       defaultValue: true,
     );
     registerTimer();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this); // ✅ 记得移除
+    super.dispose();
   }
 
   @override
@@ -355,7 +363,6 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin,Widge
     GlobalTimerManager().startTimer(
       onTick: () async {
         if (!allowTime) return;
-        if (!isForeground) return;
         var cutProtectTime = false;
         gameData = LocalCacheUtils.getGameData();
         if (gameData.level > 0 && gameData.levelTime >= 1) {
@@ -618,9 +625,11 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin,Widge
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     if(state == AppLifecycleState.resumed){
+      LogUtils.logD("${TAG} resumed");
       GameManager.instance.resumeMovement();
       registerTimer();
     }else if (state == AppLifecycleState.paused){
+      LogUtils.logD("${TAG} paused");
       GameManager.instance.pauseMovement();
       GlobalTimerManager().cancelTimer();
     }
