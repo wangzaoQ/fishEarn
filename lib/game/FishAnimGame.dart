@@ -106,7 +106,9 @@ class SimpleAnimGame extends FlameGame {
     )
       ..position = bgProtect.position + Vector2(bgProtect.size.x - 12, 13); // right:12, top:13
     add(timeText);
-    updateProtectTime(0);
+    if(!globalShowProtect){
+      updateProtectTime(0);
+    }
   }
 
   /// 外部调用以更新 coin 文本（只修改 TextComponent，不触发 Flutter rebuild）
