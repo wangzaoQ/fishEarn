@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 
 class GameConfig {
-  static const time_1_2 = 1 * 30;
-  static const time_2_3 = 2 * 30;
+
   static const time_ad = 2 * 30;
   static const color1 = Colors.red;
   static const color2 = Colors.yellow;
   static const color3 = Colors.green;
 
   //TODO线上需改
+  //进度1升2(正式 3 * 60)
+  static const time_1_2 = 3 * 60;
+  //进度1升2(正式 10 * 60)
+  static const time_2_3 = 2 * 30;
   // ====== 生命值相关 ======
   //生命值每 lifeDecreaseInterval 秒进行一次减少。生命值默认100 (正式60s)
   static const lifeDecreaseInterval = 60;
