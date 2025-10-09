@@ -13,6 +13,7 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) => GameData(
   life: (json['life'] as num?)?.toInt() ?? 100,
   protectTime: (json['protectTime'] as num?)?.toInt() ?? 0,
   foodCount: (json['foodCount'] as num?)?.toInt() ?? 100,
+  pearlCount: (json['pearlCount'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
@@ -22,4 +23,5 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
   'life': instance.life,
   'protectTime': instance.protectTime,
   'foodCount': instance.foodCount,
+  'pearlCount': instance.pearlCount,
 };

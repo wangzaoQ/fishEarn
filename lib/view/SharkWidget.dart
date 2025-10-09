@@ -69,23 +69,19 @@ class _SharkWidgetState extends State<SharkWidget>
 
   @override
   Widget build(BuildContext context) {
-    // 注意：这个会返回一个 Positioned -> 必须放在 Stack 的 children 中
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Positioned(
-          top: widget.top,
-          right: _rightAnim.value, // 直接用 right 控制水平位置
-          child: Opacity(
-            opacity: _fadeAnim.value,
-            child: SizedBox(
-              width: widget.width,
-              height: widget.height,
-              child: Image.asset(widget.imagePath, fit: BoxFit.cover),
-            ),
-          ),
-        );
-      },
+    return AnimatedPositioned(
+      duration: _controller.duration ?? Duration(milliseconds: 300),
+      top: widget.top,
+      right: _rightAnim.value, // 动态值
+      child: Opacity(
+        opacity: _fadeAnim.value,
+        child: SizedBox(
+          width: widget.width,
+          height: widget.height,
+          child: Image.asset(widget.imagePath, fit: BoxFit.cover),
+        ),
+      ),
     );
   }
+
 }

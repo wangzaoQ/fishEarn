@@ -61,7 +61,7 @@ class SimpleAnimGame extends FlameGame {
 
     // 金币图标
     coinIcon = SpriteComponent()
-      ..sprite = await Sprite.load("ic_coin.png")
+      ..sprite = await Sprite.load("ic_coin2.webp")
       ..size = Vector2(45.w, 45.h)
       ..position = Vector2(8.w, 43.h); // top + left
     add(coinIcon);

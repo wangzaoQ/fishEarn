@@ -14,11 +14,14 @@ class GameData{
 
   int life ;
 
+  //保护时间
   int protectTime;
 
   int foodCount;
 
-  GameData({this.level = 1,this.levelTime = GameConfig.time_1_2 ,this.coin = 0.0,this.life = 100,this.protectTime = 0,this.foodCount = 100});
+  int pearlCount;
+
+  GameData({this.level = 1,this.levelTime = GameConfig.time_1_2 ,this.coin = 0.0,this.life = 100,this.protectTime = 0,this.foodCount = 100,this.pearlCount = 0});
 
   // JSON 反序列化
   factory GameData.fromJson(Map<String, dynamic> json) =>

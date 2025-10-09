@@ -9,7 +9,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GameAwardPop extends StatefulWidget {
-  const GameAwardPop({super.key});
+
+  // 0 金钱 1 食物
+  var type= 0;
+
+  GameAwardPop({super.key, required int type});
 
   @override
   State<GameAwardPop> createState() => _GameAwardPopState();
@@ -77,6 +81,7 @@ class _GameAwardPopState extends State<GameAwardPop>
                 width: 110.w,
                 height: 110.h,
                 child: Image.asset(
+                  widget.type == 0?"assets/images/ic_coin_reward.webp":
                   "assets/images/ic_food_award.webp",
                   fit: BoxFit.fill,
                 ),

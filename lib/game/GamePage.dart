@@ -14,6 +14,7 @@ import 'package:fish_earn/view/GameProcess.dart';
 import 'package:fish_earn/view/SharkWidget.dart';
 import 'package:fish_earn/view/pop/GameAward.dart';
 import 'package:fish_earn/view/pop/GameFailPop.dart';
+import 'package:fish_earn/view/pop/GamePearlPop.dart';
 import 'package:fish_earn/view/pop/LevelPop1_2.dart';
 import 'package:fish_earn/view/pop/PopManger.dart';
 import 'package:flame/game.dart';
@@ -47,7 +48,8 @@ class GamePage extends StatefulWidget {
   _GamePageState createState() => _GamePageState();
 }
 
-class _GamePageState extends State<GamePage> with TickerProviderStateMixin,WidgetsBindingObserver {
+class _GamePageState extends State<GamePage>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   late GameData gameData;
   late double progress;
   late final AnimationController _controller;
@@ -212,7 +214,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin,Widge
                       ),
                       onPressed: () {
                         AudioUtils().playClickAudio();
-                        if (gameData.foodCount <10) {
+                        if (gameData.foodCount < 10) {
                           GameManager.instance.showTips(
                             "app_not_enough_food".tr(),
                           );
@@ -254,6 +256,29 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin,Widge
                           ),
                         ),
                       ),
+                    ),
+                  ),
+                  Positioned(
+                    left: 16.w,
+                    bottom: 5.h,
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      pressedOpacity: 0.7,
+                      child: Image.asset("assets/images/ic_pearl.webp",width: 67.w,height: 67.h,),
+                      onPressed: () async {
+                        GlobalTimerManager().cancelTimer();
+                        var pearlCount  = gameData.pearlCount;
+                        //游戏结束
+                        // var result = await PopManager().show(
+                        //   context: context,
+                        //   child: GamePearlPop(pearlCount:pearlCount,targetIndex: 2,),
+                        // );
+                        await PopManager().show(
+                          context: context,
+                          child: GameAwardPop(type:0),
+                        );
+                        registerTimer();
+                      },
                     ),
                   ),
                 ],
@@ -303,7 +328,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin,Widge
                 if (progress == 1) {
                   var result = await PopManager().show(
                     context: context,
-                    child: GameAwardPop(),
+                    child: GameAwardPop(type:0),
                   );
                   if (result == 1) {
                     setState(() {
@@ -363,7 +388,6 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin,Widge
     GlobalTimerManager().startTimer(
       onTick: () async {
         if (!allowTime) return;
-        var cutProtectTime = false;
         gameData = LocalCacheUtils.getGameData();
         if (gameData.level > 0 && gameData.levelTime >= 1) {
           gameData.levelTime -= 1;
@@ -385,11 +409,9 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin,Widge
           }
         }
         if (gameData.protectTime > 0) {
-          cutProtectTime = true;
           gameData.protectTime -= 1;
         } else {
           gameData.protectTime = 0;
-          cutProtectTime = false;
         }
         LocalCacheUtils.putGameData(gameData);
         if (aliveTime == GameConfig.gameDangerTime1 ||
@@ -470,7 +492,7 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin,Widge
 
   buildDanger() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if(globalShowDanger2){
+      if (globalShowDanger2) {
         ArrowOverlay.hide();
         ArrowOverlay.show(context, ArrowWidget());
         firstShowProtectKey = false;
@@ -544,23 +566,39 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin,Widge
                             top: 123.h,
                             left: 86.w,
                             right: 21.w,
-                            child: SizedBox(width:double.infinity,height:74.h,child: Stack(children: [
-                              Image.asset(
-                                "assets/images/bg_level_up.webp",
-                                width: double.infinity,
-                                height: 74.h,
-                                fit: BoxFit.fill,
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: 74.h,
+                              child: Stack(
+                                children: [
+                                  Image.asset(
+                                    "assets/images/bg_level_up.webp",
+                                    width: double.infinity,
+                                    height: 74.h,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  Center(
+                                    child: Padding(
+                                      padding: EdgeInsetsGeometry.fromLTRB(
+                                        32.w,
+                                        0.h,
+                                        20.w,
+                                        0.h,
+                                      ),
+                                      child: AutoSizeText(
+                                        "app_danger_tips".tr(),
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF651922),
+                                        ),
+                                        maxLines: 2,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Center(child: Padding(padding: EdgeInsetsGeometry.fromLTRB(32.w, 0.h, 20.w, 0.h),child: AutoSizeText(
-                                "app_danger_tips".tr(),
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xFF651922),
-                                ),
-                                maxLines: 2,
-                              ),),)
-                            ],),),
+                            ),
                           ),
                         ],
                       )
@@ -624,15 +662,14 @@ class _GamePageState extends State<GamePage> with TickerProviderStateMixin,Widge
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if(state == AppLifecycleState.resumed){
+    if (state == AppLifecycleState.resumed) {
       LogUtils.logD("${TAG} resumed");
       GameManager.instance.resumeMovement();
       registerTimer();
-    }else if (state == AppLifecycleState.paused){
+    } else if (state == AppLifecycleState.paused) {
       LogUtils.logD("${TAG} paused");
       GameManager.instance.pauseMovement();
       GlobalTimerManager().cancelTimer();
     }
   }
-
 }

@@ -87,7 +87,7 @@ class _LevelUp2_3State extends State<LevelUp2_3>
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset(
-                          "assets/images/ic_coin.png",
+                          "assets/images/ic_coin2.webp",
                           width: 45.w,
                           height: 45.h,
                         ),
