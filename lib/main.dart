@@ -1,6 +1,9 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/config/LocalConfig.dart';
 import 'package:fish_earn/game/GamePage.dart';
@@ -25,28 +28,19 @@ Future<void> main() async {
   LocalCacheUtils.init();
   await EasyLocalization.ensureInitialized();
   if (Platform.isAndroid) {
-    // AppLovinMAX.setTestDeviceAdvertisingIds(["fb6469a3-b062-43dc-a53a-24d7cd4d08ce"]);
-    // MaxConfiguration? sdkConfiguration = await AppLovinMAX.initialize(LocalConfig.maxKey);
-    // AppLovinMAX.showMediationDebugger();
-    // AppLovinMAX.setVerboseLogging(true);
+    try {
+      await Firebase.initializeApp();
+      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+
+      // 捕获 async / isolate 全局错误
+      PlatformDispatcher.instance.onError = (error, stack) {
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+        return true;
+      };
+    } catch (e) {
+      LogUtils.logD("Firebase init error");
+    }
   }
-  // GlobalUtils.dataReset();
-  // if (Platform.isAndroid) {
-  //   try {
-  //     FirebaseManager.instance.init();
-  //   } catch (e) {
-  //     LogUtils.logD("Firebase init error");
-  //   }
-  //   try {
-  //     FlutterCustomFacebook.instance.initFaceBook(
-  //       facebookId: CommonConfig.facebookId,
-  //       facebookToken: CommonConfig.facebookToken,
-  //       facebookAppName: CommonConfig.facebookName,
-  //     );
-  //   } catch (e) {
-  //     LogUtils.logD("facebook init error");
-  //   }
-  // }
   GlobalConfigManager.instance.init();
   runApp(
     EasyLocalization(
