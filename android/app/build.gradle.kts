@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.example.fish.fish_earn"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "28.1.13356709"
 
     compileOptions {
@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.fish.earn"
+        applicationId = "com.example.fishearn"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 26

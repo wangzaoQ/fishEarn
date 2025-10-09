@@ -4,7 +4,7 @@
 
 
     <application
-        android:label="fish_earn"
+        android:label="FishEarn"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"

@@ -1,12 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/utils/AudioUtils.dart';
+import 'package:fish_earn/web/WebViewPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../config/LocalCacheConfig.dart';
+import '../../config/global.dart';
 import '../../utils/LocalCacheUtils.dart';
 
 class SettingPop extends StatefulWidget {
@@ -185,8 +187,16 @@ class _SettingPopState extends State<SettingPop> {
                     ),
                   ),
                   onPressed: () {
-                    AudioUtils().playClickAudio();
                     Navigator.pop(context, 1);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => WebViewPage(
+                          url: hUrl,
+                          title: "app_contact_us".tr(),
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),
@@ -218,8 +228,16 @@ class _SettingPopState extends State<SettingPop> {
                     ),
                   ),
                   onPressed: () {
-                    AudioUtils().playClickAudio();
                     Navigator.pop(context, 0);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => WebViewPage(
+                          url: pUrl,
+                          title: "app_privacy_policy".tr(),
+                        ),
+                      ),
+                    );
                   },
                 ),
               ),

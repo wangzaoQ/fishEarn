@@ -18,3 +18,6 @@ var globalShowDanger2 = false;
 var globalShowShark = false;
 //防护气泡
 var globalShowProtect = false;
+
+var pUrl = "https://sites.google.com/view/fishearn-privacypolicy/home";
+var hUrl = "https://sites.google.com/view/fishearn-useragreement/home";
