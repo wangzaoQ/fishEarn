@@ -24,9 +24,11 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../config/global.dart';
 import '../data/GameData.dart';
+import '../data/UserData.dart';
 import '../model/GameViewModel.dart';
 import '../utils/ArrowOverlay.dart';
 import '../utils/ClickManager.dart';
@@ -67,6 +69,8 @@ class _GamePageState extends State<GamePage>
 
   var firstShowProtectKey = true;
 
+  late UserData userData;
+
   int getCutTime() {
     return GameConfig.lifeDecreaseInterval;
   }
@@ -93,7 +97,20 @@ class _GamePageState extends State<GamePage>
       LocalCacheConfig.firstShowProtectKey,
       defaultValue: true,
     );
-    registerTimer();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      userData = LocalCacheUtils.getUserData();
+      if (userData.new1 ||
+          userData.new2 ||
+          userData.new3 ||
+          userData.new4 ||
+          userData.new5) {
+        if(userData.new1){
+          showMarkNew1();
+        }
+      } else {
+        registerTimer();
+      }
+    });
   }
 
   @override
@@ -105,269 +122,273 @@ class _GamePageState extends State<GamePage>
   @override
   Widget build(BuildContext context) {
     gameData = LocalCacheUtils.getGameData();
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset("assets/images/bg_game.webp", fit: BoxFit.cover),
-          ),
-          // top bar
-          //鱼生命进度
-          gameData.level == 1
-              ? SizedBox.shrink()
-              : Positioned(top: 310.h, left: 32.w, child: GameLifePage()),
-          //鱼动画
-          buildAnimal(),
-          buildFood(),
+    return PopScope(
+      canPop: false, // 禁止默认返回
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          if (tutorialCoachMark?.isShowing ?? false) {
+            // 自定义逻辑
+            tutorialCoachMark?.skip(); // 关闭当前教程
+          }
+        }
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: Image.asset(
+                "assets/images/bg_game.webp",
+                fit: BoxFit.cover,
+              ),
+            ),
+            // top bar
+            //鱼生命进度
+            gameData.level == 1
+                ? SizedBox.shrink()
+                : Positioned(top: 310.h, left: 32.w, child: GameLifePage()),
+            //鱼动画
+            buildAnimal(),
+            buildFood(),
 
-          buildShark(),
-          Positioned(
-            top: 43.h,
-            left: 8.w,
-            right: 0,
-            child: SizedBox(
-              width: double.infinity,
-              height: 45.h,
-              child: Stack(
-                children: [
-                  Positioned(
-                    right: 15.w,
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.7,
-                      child: Image.asset(
-                        "assets/images/ic_setting.webp",
-                        width: 45.w,
-                        height: 45.h,
-                      ),
-                      onPressed: () async {
-                        AudioUtils().playClickAudio();
-                        var result = await PopManager().show(
-                          context: context,
-                          child: SettingPop(),
-                        );
-                        if (result == 1) {
-                          //联系我们
-                        } else if (result == 0) {
-                          //隐私
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          //progress
-          Padding(
-            padding: EdgeInsetsGeometry.only(top: 94.h),
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: RepaintBoundary(
-                child: ValueListenableBuilder<double>(
-                  valueListenable: globalTimeListener,
-                  builder: (_, value, __) {
-                    return GameProgress(
-                      gameData: gameData,
-                      progress: value,
-                      onConfirm: (result) {
-                        setState(() {});
-                      },
-                    ); // 只重建这一小块
-                  },
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: SizedBox(
-              width: double.infinity,
-              height: 110.h,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Image.asset(
-                      "assets/images/bg_game_bottom.webp",
-                      width: double.infinity,
-                      height: 76.h,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                  // 其他内容
-                  Align(
-                    alignment: Alignment.center,
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.7,
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Image.asset(
-                          "assets/images/ic_play.webp",
-                          height: 109.h,
-                          width: 197.w,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      onPressed: () {
-                        AudioUtils().playClickAudio();
-                        if (gameData.foodCount < 10) {
-                          GameManager.instance.showTips(
-                            "app_not_enough_food".tr(),
-                          );
-                          return;
-                        } else {
-                          setState(() {
-                            if (globalShowFood) return;
-                            globalShowFood = true;
-                            gameData.foodCount -= 10;
-                            GameManager.instance.addLife(gameData);
-                            LocalCacheUtils.putGameData(gameData);
-                          });
-                          Future.delayed(Duration(seconds: 1), () {
-                            globalShowFood = false;
-                          });
-                        }
-                      },
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: EdgeInsetsGeometry.only(bottom: 12.h),
-                      child: Container(
-                        width: 36.w,
-                        height: 18.h,
-                        decoration: BoxDecoration(
-                          color: const Color(0x8C000000),
-                          // #8C000000 (alpha first in Flutter)
-                          borderRadius: BorderRadius.circular(11.0), // 11dp
-                        ),
-                        child: Center(
-                          child: Text(
-                            "${gameData.foodCount}",
-                            style: TextStyle(
-                              color: Color(0xFFF4FF72),
-                              fontSize: 14.sp,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    left: 16.w,
-                    bottom: 5.h,
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.7,
-                      child: Image.asset("assets/images/ic_pearl.webp",width: 67.w,height: 67.h,),
-                      onPressed: () async {
-                        GlobalTimerManager().cancelTimer();
-                        var pearlCount  = gameData.pearlCount;
-                        //游戏结束
-                        // var result = await PopManager().show(
-                        //   context: context,
-                        //   child: GamePearlPop(pearlCount:pearlCount,targetIndex: 2,),
-                        // );
-                        await PopManager().show(
-                          context: context,
-                          child: GameAwardPop(type:0),
-                        );
-                        registerTimer();
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            top: 295.h,
-            right: 22.w,
-            child: CupertinoButton(
-              padding: EdgeInsets.zero,
-              pressedOpacity: 0.7,
+            buildShark(),
+            Positioned(
+              top: 43.h,
+              left: 8.w,
+              right: 0,
               child: SizedBox(
-                width: 70.w,
-                height: 70.h,
+                width: double.infinity,
+                height: 45.h,
                 child: Stack(
                   children: [
-                    Image.asset(
-                      "assets/images/ic_props.webp",
-                      fit: BoxFit.fill,
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: EdgeInsetsGeometry.only(bottom: 2.h),
-                        child: RepaintBoundary(
-                          child: ValueListenableBuilder<double>(
-                            valueListenable: propsNotifier,
-                            builder: (_, value, __) {
-                              return PropsProgress(
-                                progress: value, // 进度 0~1
-                                progressColor: GameConfig.color3,
-                              ); // 只重建这一小块
-                            },
-                          ),
+                    Positioned(
+                      right: 15.w,
+                      child: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        pressedOpacity: 0.7,
+                        child: Image.asset(
+                          "assets/images/ic_setting.webp",
+                          width: 45.w,
+                          height: 45.h,
                         ),
+                        onPressed: () async {
+                          AudioUtils().playClickAudio();
+                          var result = await PopManager().show(
+                            context: context,
+                            child: SettingPop(),
+                          );
+                          if (result == 1) {
+                            //联系我们
+                          } else if (result == 0) {
+                            //隐私
+                          }
+                        },
                       ),
                     ),
                   ],
                 ),
               ),
-              onPressed: () async {
-                AudioUtils().playClickAudio();
-                var progress = GameManager.instance.getPropsProgress(propsTime);
-                if (NetWorkManager().isNetError(context)) return;
-                if (!ClickManager.canClick()) return;
-                if (progress == 1) {
-                  var result = await PopManager().show(
-                    context: context,
-                    child: GameAwardPop(type:0),
-                  );
-                  if (result == 1) {
-                    setState(() {
-                      propsTime = 0;
-                    });
-                  }
-                }
-              },
             ),
-          ),
-          buildDanger(),
-          Positioned(
-            top: 220.h,
-            right: 22.w,
-            child: CupertinoButton(
-              padding: EdgeInsets.zero,
-              pressedOpacity: 0.7,
-              child: SizedBox(
-                width: 70.w,
-                height: 70.h,
-                child: Image.asset("assets/images/ic_protect.webp"),
+            //progress
+            Padding(
+              padding: EdgeInsetsGeometry.only(top: 94.h),
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: RepaintBoundary(
+                  child: ValueListenableBuilder<double>(
+                    valueListenable: globalTimeListener,
+                    builder: (_, value, __) {
+                      return GameProgress(
+                        gameData: gameData,
+                        progress: value,
+                        onConfirm: (result) {
+                          setState(() {});
+                        },
+                      ); // 只重建这一小块
+                    },
+                  ),
+                ),
               ),
-              onPressed: () {
-                AudioUtils().playClickAudio();
-                gameData = LocalCacheUtils.getGameData();
-                gameData.protectTime += getProtectTime();
-                LocalCacheUtils.putGameData(gameData);
-                setState(() {
-                  if (globalShowDanger1) {
-                    GameManager.instance.hideDanger();
-                    ArrowOverlay.hide();
-                  }
-                });
-                GameManager.instance.showProtect();
-                GameManager.instance.updateProtectTime(gameData.protectTime);
-              },
             ),
-          ),
-        ],
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: SizedBox(
+                width: double.infinity,
+                height: 110.h,
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Image.asset(
+                        "assets/images/bg_game_bottom.webp",
+                        width: double.infinity,
+                        height: 76.h,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                    // 其他内容
+                    Align(
+                      alignment: Alignment.center,
+                      child: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        pressedOpacity: 0.7,
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Image.asset(
+                            key: globalGuideNew1,
+                            "assets/images/ic_play.webp",
+                            height: 109.h,
+                            width: 197.w,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        onPressed: () {
+                          clickFood();
+                        },
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: EdgeInsetsGeometry.only(bottom: 12.h),
+                        child: Container(
+                          width: 36.w,
+                          height: 18.h,
+                          decoration: BoxDecoration(
+                            color: const Color(0x8C000000),
+                            // #8C000000 (alpha first in Flutter)
+                            borderRadius: BorderRadius.circular(11.0), // 11dp
+                          ),
+                          child: Center(
+                            child: Text(
+                              "${gameData.foodCount}",
+                              style: TextStyle(
+                                color: Color(0xFFF4FF72),
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 16.w,
+                      bottom: 5.h,
+                      child: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        pressedOpacity: 0.7,
+                        child: Image.asset(
+                          "assets/images/ic_pearl.webp",
+                          width: 67.w,
+                          height: 67.h,
+                        ),
+                        onPressed: () async {
+                          GlobalTimerManager().cancelTimer();
+                          var pearlCount = gameData.pearlCount;
+                          //游戏结束
+                          // var result = await PopManager().show(
+                          //   context: context,
+                          //   child: GamePearlPop(pearlCount:pearlCount,targetIndex: 2,),
+                          // );
+                          await PopManager().show(
+                            context: context,
+                            child: GameAwardPop(type: 0),
+                          );
+                          registerTimer();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              top: 295.h,
+              right: 22.w,
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                pressedOpacity: 0.7,
+                child: SizedBox(
+                  width: 70.w,
+                  height: 70.h,
+                  child: Stack(
+                    children: [
+                      Image.asset(
+                        "assets/images/ic_props.webp",
+                        fit: BoxFit.fill,
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: EdgeInsetsGeometry.only(bottom: 2.h),
+                          child: RepaintBoundary(
+                            child: ValueListenableBuilder<double>(
+                              valueListenable: propsNotifier,
+                              builder: (_, value, __) {
+                                return PropsProgress(
+                                  progress: value, // 进度 0~1
+                                  progressColor: GameConfig.color3,
+                                ); // 只重建这一小块
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                onPressed: () async {
+                  AudioUtils().playClickAudio();
+                  var progress = GameManager.instance.getPropsProgress(
+                    propsTime,
+                  );
+                  if (NetWorkManager().isNetError(context)) return;
+                  if (!ClickManager.canClick()) return;
+                  if (progress == 1) {
+                    var result = await PopManager().show(
+                      context: context,
+                      child: GameAwardPop(type: 0),
+                    );
+                    if (result == 1) {
+                      setState(() {
+                        propsTime = 0;
+                      });
+                    }
+                  }
+                },
+              ),
+            ),
+            buildDanger(),
+            Positioned(
+              top: 220.h,
+              right: 22.w,
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                pressedOpacity: 0.7,
+                child: SizedBox(
+                  width: 70.w,
+                  height: 70.h,
+                  child: Image.asset("assets/images/ic_protect.webp"),
+                ),
+                onPressed: () {
+                  AudioUtils().playClickAudio();
+                  gameData = LocalCacheUtils.getGameData();
+                  gameData.protectTime += getProtectTime();
+                  LocalCacheUtils.putGameData(gameData);
+                  setState(() {
+                    if (globalShowDanger1) {
+                      GameManager.instance.hideDanger();
+                      ArrowOverlay.hide();
+                    }
+                  });
+                  GameManager.instance.showProtect();
+                  GameManager.instance.updateProtectTime(gameData.protectTime);
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -670,6 +691,55 @@ class _GamePageState extends State<GamePage>
       LogUtils.logD("${TAG} paused");
       GameManager.instance.pauseMovement();
       GlobalTimerManager().cancelTimer();
+    }
+  }
+
+  TutorialCoachMark? tutorialCoachMark;
+  late List<TargetFocus> globalGuideNew1Keys;
+  GlobalKey globalGuideNew1 = GlobalKey();
+
+  void showMarkNew1() {
+    globalGuideNew1Keys = [];
+    globalGuideNew1Keys.add(TargetFocus(
+      identify: "guideNew1",
+      keyTarget: globalGuideNew1,
+      alignSkip: Alignment.topRight,
+      shape: ShapeLightFocus.Circle,
+      radius: 1.0,
+      // 圆角半径，自行调整
+      contents: [],
+    ),);
+    tutorialCoachMark = TutorialCoachMark(
+      targets: globalGuideNew1Keys,
+      colorShadow: Colors.black.withOpacity(0.8),
+      textSkip: "",
+      paddingFocus: 0,
+      onFinish: () {},
+      onClickTarget: (target) {
+        clickFood();
+      },
+    );
+    tutorialCoachMark?.show(context: context);
+  }
+
+  void clickFood() {
+    AudioUtils().playClickAudio();
+    if (gameData.foodCount < 10) {
+      GameManager.instance.showTips(
+        "app_not_enough_food".tr(),
+      );
+      return;
+    } else {
+      setState(() {
+        if (globalShowFood) return;
+        globalShowFood = true;
+        gameData.foodCount -= 10;
+        GameManager.instance.addLife(gameData);
+        LocalCacheUtils.putGameData(gameData);
+      });
+      Future.delayed(Duration(seconds: 1), () {
+        globalShowFood = false;
+      });
     }
   }
 }

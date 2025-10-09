@@ -3,5 +3,5 @@ class LocalCacheConfig{
   static const allowTempAudioKey = "allowTempAudioKey";
   static const allowBGMKey = "allowBGMKey";
   static const firstShowProtectKey = "firstShowProtectKey";
-  static const firstShowGuide1 = "firstShowGuide1";
+  static const cacheKeyUserData = "cacheKeyUserData";
 }

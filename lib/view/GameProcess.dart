@@ -51,11 +51,7 @@ class _GameProgressState extends State<GameProgress>
       duration: const Duration(seconds: 3), // 一圈时间
     )..repeat(); // 无限旋转
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      var firstShowGuide1 = LocalCacheUtils.getBool(LocalCacheConfig.firstShowGuide1,defaultValue: true);
-      if(firstShowGuide1){
-        showMarkLevel1_2();
-        LocalCacheUtils.putBool(LocalCacheConfig.firstShowGuide1,false);
-      }
+      // showMarkLevel1_2();
     });
   }
 

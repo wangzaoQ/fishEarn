@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/data/GameData.dart';
+import 'package:fish_earn/data/UserData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalCacheUtils{
@@ -79,6 +80,25 @@ class LocalCacheUtils{
     Map<String, dynamic> map = jsonDecode(jsonStr);
     return GameData.fromJson(map);
   }
+
+  // 保存Game，序列化成json字符串
+  static Future<bool> putUserData(UserData user) async {
+    String jsonStr = jsonEncode(user.toJson());
+    return await _prefs!.setString(LocalCacheConfig.cacheKeyUserData, jsonStr);
+  }
+
+  // 读取Game，反序列化
+  static UserData getUserData() {
+    String? jsonStr = _prefs?.getString(LocalCacheConfig.cacheKeyUserData);
+    if (jsonStr == null) {
+      var user = UserData();
+      putUserData(user);
+      return user;
+    }
+    Map<String, dynamic> map = jsonDecode(jsonStr);
+    return UserData.fromJson(map);
+  }
+
 
 
 
