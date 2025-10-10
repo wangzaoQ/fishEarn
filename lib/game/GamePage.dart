@@ -41,6 +41,7 @@ import '../view/GameLifeProgress.dart';
 import '../view/GameText.dart';
 import '../view/PropsProgress.dart';
 import '../view/pop/LevelPop2_3.dart';
+import '../view/pop/PropsAwardPop.dart';
 import '../view/pop/SettingPop.dart';
 import 'AnimalGameHolder.dart';
 import 'ArrowWidget.dart';
@@ -306,18 +307,14 @@ class _GamePageState extends State<GamePage>
                           height: 67.h,
                         ),
                         onPressed: () async {
-                          GlobalTimerManager().cancelTimer();
+                          GameManager.instance.pauseMovement();
                           var pearlCount = gameData.pearlCount;
                           //游戏结束
-                          // var result = await PopManager().show(
-                          //   context: context,
-                          //   child: GamePearlPop(pearlCount:pearlCount,targetIndex: 2,),
-                          // );
-                          await PopManager().show(
+                          var result = await PopManager().show(
                             context: context,
-                            child: GameAwardPop(type: 0),
+                            child: GamePearlPop(pearlCount:pearlCount,targetIndex: 2,),
                           );
-                          registerTimer();
+                          GameManager.instance.resumeMovement();
                         },
                       ),
                     ),
@@ -372,9 +369,12 @@ class _GamePageState extends State<GamePage>
                   if (progress == 1 || userData.new5) {
                     var result = await PopManager().show(
                       context: context,
-                      child: GameAwardPop(type: 0),
+                      child: PropsAwardPop(),
                     );
-                    if (result == 1) {
+                    if (result!=null) {
+                      gameData.coin+=result;
+                      GameManager.instance.updateCoinToGame(gameData.coin);
+                      LocalCacheUtils.putGameData(gameData);
                       setState(() {
                         propsTime = 0;
                       });
@@ -813,6 +813,7 @@ class _GamePageState extends State<GamePage>
   }
 
   void showMarkNew5() {
+    GameManager.instance.pauseMovement();
     // 创建控制器
     globalGuideNew1Keys = [];
     globalGuideNew1Keys.add(
@@ -833,9 +834,20 @@ class _GamePageState extends State<GamePage>
       paddingFocus: 0,
       onFinish: () {
       },
-      onClickTarget: (target) {
+      onClickTarget: (target) async {
         AudioUtils().playClickAudio();
-        // GameManager.instance.pauseMovement();
+        tutorialCoachMark?.skip();
+
+        var result = await PopManager().show(
+          context: context,
+          child: PropsAwardPop(),
+        );
+        if(result!=null){
+          gameData.coin+=result;
+          GameManager.instance.updateCoinToGame(gameData.coin);
+          LocalCacheUtils.putGameData(gameData);
+        }
+        GameManager.instance.resumeMovement();
       },
     );
     tutorialCoachMark?.show(context: context);
