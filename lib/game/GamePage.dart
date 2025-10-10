@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/config/GameConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/utils/AudioUtils.dart';
@@ -12,6 +13,8 @@ import 'package:fish_earn/utils/NetWorkManager.dart';
 import 'package:fish_earn/view/DropFadeImage.dart';
 import 'package:fish_earn/view/GameProcess.dart';
 import 'package:fish_earn/view/SharkWidget.dart';
+import 'package:fish_earn/view/bubbleWidget.dart';
+import 'package:fish_earn/view/pop/CoinAnimalPop.dart';
 import 'package:fish_earn/view/pop/GameAward.dart';
 import 'package:fish_earn/view/pop/GameFailPop.dart';
 import 'package:fish_earn/view/pop/GamePearlPop.dart';
@@ -29,6 +32,7 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import '../config/global.dart';
 import '../data/GameData.dart';
 import '../data/UserData.dart';
+import '../event/NotifyEvent.dart';
 import '../model/GameViewModel.dart';
 import '../utils/ArrowOverlay.dart';
 import '../utils/ClickManager.dart';
@@ -67,7 +71,10 @@ class _GamePageState extends State<GamePage>
   var aliveTime = 0;
   Timer? _timer = null;
 
+  //第一次展示危险提示
   var firstShowProtectKey = true;
+  //展示金币泡泡
+  var showCoinBubbles = true;
 
   late UserData userData;
 
@@ -93,6 +100,7 @@ class _GamePageState extends State<GamePage>
       parent: _controller,
       curve: Curves.easeOutCubic,
     );
+
     firstShowProtectKey = LocalCacheUtils.getBool(
       LocalCacheConfig.firstShowProtectKey,
       defaultValue: true,
@@ -104,11 +112,23 @@ class _GamePageState extends State<GamePage>
           userData.new3 ||
           userData.new4 ||
           userData.new5) {
-        if(userData.new1){
+        if (userData.new1) {
           showMarkNew1();
+        } else if (userData.new2) {
+          showMarkNew2();
+        }else if(userData.new3){
+          eventBus.fire(NotifyEvent(EventConfig.new3));
         }
-      } else {
-        registerTimer();
+      }
+      registerTimer();
+    });
+    eventBus.on<NotifyEvent>().listen((event) {
+      if(event.message == EventConfig.new4){
+        GameManager.instance.pauseMovement();
+        setState(() {
+          globalShowDanger2 = true;
+          // GameManager.instance.swimToCenter();
+        });
       }
     });
   }
@@ -303,6 +323,7 @@ class _GamePageState extends State<GamePage>
                 ),
               ),
             ),
+            //漂流瓶
             Positioned(
               top: 295.h,
               right: 22.w,
@@ -310,6 +331,7 @@ class _GamePageState extends State<GamePage>
                 padding: EdgeInsets.zero,
                 pressedOpacity: 0.7,
                 child: SizedBox(
+                  key: globalGuideNew5,
                   width: 70.w,
                   height: 70.h,
                   child: Stack(
@@ -345,7 +367,7 @@ class _GamePageState extends State<GamePage>
                   );
                   if (NetWorkManager().isNetError(context)) return;
                   if (!ClickManager.canClick()) return;
-                  if (progress == 1) {
+                  if (progress == 1 || userData.new5) {
                     var result = await PopManager().show(
                       context: context,
                       child: GameAwardPop(type: 0),
@@ -360,6 +382,7 @@ class _GamePageState extends State<GamePage>
               ),
             ),
             buildDanger(),
+            //防护
             Positioned(
               top: 220.h,
               right: 22.w,
@@ -377,16 +400,28 @@ class _GamePageState extends State<GamePage>
                   gameData.protectTime += getProtectTime();
                   LocalCacheUtils.putGameData(gameData);
                   setState(() {
+                    globalShowDanger2 = false;
+                    ArrowOverlay.hide();
                     if (globalShowDanger1) {
                       GameManager.instance.hideDanger();
-                      ArrowOverlay.hide();
                     }
                   });
                   GameManager.instance.showProtect();
                   GameManager.instance.updateProtectTime(gameData.protectTime);
+                  GameManager.instance.resumeMovement();
+                  if(userData.new5){
+                    showMarkNew5();
+                  }
                 },
               ),
             ),
+            //现金气泡
+            showCoinBubbles?
+            Positioned(
+              left: 38.w,
+              bottom: 241.h,
+              child: BubbleWidget(key: globalGuideNew2, type: 0),
+            ):SizedBox.shrink(),
           ],
         ),
       ),
@@ -697,24 +732,31 @@ class _GamePageState extends State<GamePage>
   TutorialCoachMark? tutorialCoachMark;
   late List<TargetFocus> globalGuideNew1Keys;
   GlobalKey globalGuideNew1 = GlobalKey();
+  GlobalKey globalGuideNew2 = GlobalKey();
+  GlobalKey globalGuideNew5 = GlobalKey();
 
   void showMarkNew1() {
     globalGuideNew1Keys = [];
-    globalGuideNew1Keys.add(TargetFocus(
-      identify: "guideNew1",
-      keyTarget: globalGuideNew1,
-      alignSkip: Alignment.topRight,
-      shape: ShapeLightFocus.Circle,
-      radius: 1.0,
-      // 圆角半径，自行调整
-      contents: [],
-    ),);
+    globalGuideNew1Keys.add(
+      TargetFocus(
+        identify: "guideNew1",
+        keyTarget: globalGuideNew1,
+        alignSkip: Alignment.topRight,
+        shape: ShapeLightFocus.Circle,
+        radius: 1.0,
+        // 圆角半径，自行调整
+        contents: [],
+      ),
+    );
     tutorialCoachMark = TutorialCoachMark(
       targets: globalGuideNew1Keys,
       colorShadow: Colors.black.withOpacity(0.8),
       textSkip: "",
       paddingFocus: 0,
-      onFinish: () {},
+      onFinish: () {
+        // eventBus.fire(NotifyEvent("new2"));
+        showMarkNew2();
+      },
       onClickTarget: (target) {
         clickFood();
       },
@@ -722,12 +764,82 @@ class _GamePageState extends State<GamePage>
     tutorialCoachMark?.show(context: context);
   }
 
+  void showMarkNew2() {
+    // 创建控制器
+    globalGuideNew1Keys = [];
+    globalGuideNew1Keys.add(
+      TargetFocus(
+        identify: "guideNew2",
+        keyTarget: globalGuideNew2,
+        alignSkip: Alignment.topRight,
+        shape: ShapeLightFocus.Circle,
+        radius: 1.0,
+        // 圆角半径，自行调整
+        contents: [],
+      ),
+    );
+    tutorialCoachMark = TutorialCoachMark(
+      targets: globalGuideNew1Keys,
+      colorShadow: Colors.black.withOpacity(0.8),
+      textSkip: "",
+      paddingFocus: 0,
+      onFinish: () {
+      },
+      onClickTarget: (target) {
+        GameManager.instance.pauseMovement();
+        setState(() {
+          showCoinBubbles = false;
+        });
+        Future.delayed(Duration(milliseconds: 500), () async {
+          await PopManager().show(
+            context: context,
+            needAlpha: 0,
+            child: CoinAnimalPop(),
+          );
+          gameData.coin+=1;
+          LocalCacheUtils.putGameData(gameData);
+          GameManager.instance.updateCoinToGame(gameData.coin);
+          GameManager.instance.resumeMovement();
+          eventBus.fire(NotifyEvent(EventConfig.new3));
+        });
+      },
+    );
+    tutorialCoachMark?.show(context: context);
+  }
+
+  void showMarkNew5() {
+    // 创建控制器
+    globalGuideNew1Keys = [];
+    globalGuideNew1Keys.add(
+      TargetFocus(
+        identify: "guideNew5",
+        keyTarget: globalGuideNew5,
+        alignSkip: Alignment.topRight,
+        shape: ShapeLightFocus.Circle,
+        radius: 1.0,
+        // 圆角半径，自行调整
+        contents: [],
+      ),
+    );
+    tutorialCoachMark = TutorialCoachMark(
+      targets: globalGuideNew1Keys,
+      colorShadow: Colors.black.withOpacity(0.8),
+      textSkip: "",
+      paddingFocus: 0,
+      onFinish: () {
+      },
+      onClickTarget: (target) {
+        // GameManager.instance.pauseMovement();
+      },
+    );
+    tutorialCoachMark?.show(context: context);
+  }
+
+
   void clickFood() {
     AudioUtils().playClickAudio();
     if (gameData.foodCount < 10) {
-      GameManager.instance.showTips(
-        "app_not_enough_food".tr(),
-      );
+      GameManager.instance.showTips("app_not_enough_food".tr());
       return;
     } else {
       setState(() {
@@ -742,4 +854,5 @@ class _GamePageState extends State<GamePage>
       });
     }
   }
+
 }

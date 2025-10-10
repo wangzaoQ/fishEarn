@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/data/GameData.dart';
+import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameText.dart';
 import 'package:fish_earn/view/pop/LevelPop1_2.dart';
@@ -18,6 +20,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../config/GameConfig.dart';
+import '../config/global.dart';
+import '../event/NotifyEvent.dart';
 import '../utils/AudioUtils.dart';
 import 'GradientProgressBar.dart';
 
@@ -50,8 +54,12 @@ class _GameProgressState extends State<GameProgress>
       vsync: this,
       duration: const Duration(seconds: 3), // 一圈时间
     )..repeat(); // 无限旋转
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // showMarkLevel1_2();
+
+    eventBus.on<NotifyEvent>().listen((event) {
+      if(event.message == EventConfig.new3){
+        GameManager.instance.pauseMovement();
+        showMarkNew3();
+      }
     });
   }
 
@@ -94,7 +102,7 @@ class _GameProgressState extends State<GameProgress>
             left: 5.w,
             right: 5.w,
             child: SizedBox(
-              key: globalKeyGuide1_2,
+              key: globalKeyNew3,
               width: double.infinity,
               height: 100.h,
               child: Stack(
@@ -274,45 +282,45 @@ class _GameProgressState extends State<GameProgress>
                     ),
                   ),
                   // widget.gameData.level == 2 && widget.progress == 1?SizedBox.shrink():
-                  // Positioned(
-                  //   left: 110.w,
-                  //   top: 55.h, // 在进度条下方一点
-                  //   child: CupertinoButton(
-                  //     padding: EdgeInsets.zero,
-                  //     pressedOpacity: 0.7,
-                  //     onPressed: null,
-                  //     child: SizedBox(
-                  //       width: 46.w,
-                  //       height: 25.h,
-                  //       child: Stack(
-                  //         children: [
-                  //           Image.asset(
-                  //             "assets/images/ic_up_arrow.webp",
-                  //             width: 23.w,
-                  //             height: 23.h,
-                  //           ),
-                  //           Positioned(
-                  //             left: 15.w,
-                  //             bottom: 0.h,
-                  //             child: GameText(
-                  //               showText: "app_up".tr(),
-                  //               fontSize: 12.sp,
-                  //               strokeColor: Color(0xFF000000),
-                  //             ),
-                  //           ),
-                  //           // Positioned(
-                  //           //   left: 13.w,
-                  //           //   child: Image.asset(
-                  //           //     "assets/images/ic_ad_tips.webp",
-                  //           //     width: 15.w,
-                  //           //     height: 15.h,
-                  //           //   ),
-                  //           // ),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
+                  Positioned(
+                    left: 110.w,
+                    top: 55.h, // 在进度条下方一点
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      pressedOpacity: 0.7,
+                      onPressed: null,
+                      child: SizedBox(
+                        width: 46.w,
+                        height: 25.h,
+                        child: Stack(
+                          children: [
+                            Image.asset(
+                              "assets/images/ic_up_arrow.webp",
+                              width: 23.w,
+                              height: 23.h,
+                            ),
+                            Positioned(
+                              left: 15.w,
+                              bottom: 0.h,
+                              child: GameText(
+                                showText: "app_up".tr(),
+                                fontSize: 12.sp,
+                                strokeColor: Color(0xFF000000),
+                              ),
+                            ),
+                            Positioned(
+                              left: 13.w,
+                              child: Image.asset(
+                                "assets/images/ic_ad_tips.webp",
+                                width: 15.w,
+                                height: 15.h,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -323,15 +331,15 @@ class _GameProgressState extends State<GameProgress>
   }
 
   TutorialCoachMark? tutorialCoachMark;
-  late List<TargetFocus> guideLevel1_2Keys;
-  GlobalKey globalKeyGuide1_2 = GlobalKey();
+  late List<TargetFocus> globalKeyNew3Keys;
+  GlobalKey globalKeyNew3 = GlobalKey();
 
-  void showMarkLevel1_2() {
-    guideLevel1_2Keys = [];
-    guideLevel1_2Keys.add(
+  void showMarkNew3() {
+    globalKeyNew3Keys = [];
+    globalKeyNew3Keys.add(
       TargetFocus(
-        identify: "guide1_2",
-        keyTarget: globalKeyGuide1_2,
+        identify: "guide3",
+        keyTarget: globalKeyNew3,
         alignSkip: Alignment.topRight,
         shape: ShapeLightFocus.RRect,
         radius: 12.0,
@@ -392,11 +400,14 @@ class _GameProgressState extends State<GameProgress>
       ),
     );
     tutorialCoachMark = TutorialCoachMark(
-      targets: guideLevel1_2Keys,
+      targets: globalKeyNew3Keys,
       colorShadow: Colors.black.withOpacity(0.8),
       textSkip: "",
       paddingFocus: 0,
-      onFinish: () {},
+      onFinish: () {
+        GameManager.instance.resumeMovement();
+        eventBus.fire(NotifyEvent(EventConfig.new4));
+      },
       onClickTarget: (target) {},
     );
     tutorialCoachMark?.show(context: context);
