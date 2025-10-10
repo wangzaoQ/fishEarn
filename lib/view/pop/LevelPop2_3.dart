@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/utils/GlobalConfigManager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../utils/AudioUtils.dart';
 import '../GameText.dart';
@@ -13,7 +14,37 @@ class LevelPop2_3 extends StatefulWidget {
   State<LevelPop2_3> createState() => _LevelPop2_3State();
 }
 
-class _LevelPop2_3State extends State<LevelPop2_3> {
+class _LevelPop2_3State extends State<LevelPop2_3> with TickerProviderStateMixin{
+
+  var showAnimal = false;
+  late final AnimationController _lottieController;
+
+  @override
+  void initState() {
+    super.initState();
+    AudioUtils().playTempAudio("audio/levelUp.mp3");
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        showAnimal = true;
+      });
+      Future.delayed(Duration(seconds: 2), () {
+        Navigator.pop(context, null);
+      });
+    });
+    _lottieController = AnimationController(vsync: this);
+    // 监听播放状态
+    _lottieController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {}
+    });
+  }
+
+
+  @override
+  void dispose() {
+    _lottieController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -98,6 +129,20 @@ class _LevelPop2_3State extends State<LevelPop2_3> {
             ),
           ),
         ),
+        showAnimal
+            ? Positioned.fill(
+          child: Lottie.asset(
+            'assets/animations1/coin.json',
+            controller: _lottieController,
+            onLoaded: (composition) {
+              // 动画加载完后自动播放一次
+              _lottieController
+                ..duration = composition.duration
+                ..forward();
+            },
+          ),
+        )
+            : SizedBox.shrink(),
       ],
     );
   }

@@ -85,6 +85,7 @@ class GameManager{
   }
 
   cutLife(GameData gameData){
+    if(gameData.level == 1)return;
     gameData.life-=GameConfig.lifeIncreaseAmount;
     if(gameData.life<0){
       gameData.life = 0;

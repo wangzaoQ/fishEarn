@@ -2,9 +2,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/utils/GlobalConfigManager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../utils/AudioUtils.dart';
 import '../GameText.dart';
+import 'CoinAnimalPop.dart';
+import 'PopManger.dart';
 
 class LevelPop1_2 extends StatefulWidget {
   const LevelPop1_2({super.key});
@@ -13,13 +16,36 @@ class LevelPop1_2 extends StatefulWidget {
   State<LevelPop1_2> createState() => _LevelPop1_2State();
 }
 
-class _LevelPop1_2State extends State<LevelPop1_2> {
+class _LevelPop1_2State extends State<LevelPop1_2>
+    with TickerProviderStateMixin {
+  var showAnimal = false;
+  late final AnimationController _lottieController;
 
   @override
   void initState() {
     super.initState();
     AudioUtils().playTempAudio("audio/levelUp.mp3");
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        showAnimal = true;
+      });
+      Future.delayed(Duration(seconds: 2), () {
+        Navigator.pop(context, null);
+      });
+    });
+    _lottieController = AnimationController(vsync: this);
+    // 监听播放状态
+    _lottieController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {}
+    });
   }
+
+  @override
+  void dispose() {
+    _lottieController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -66,13 +92,20 @@ class _LevelPop1_2State extends State<LevelPop1_2> {
           child: Padding(
             padding: EdgeInsetsGeometry.only(top: 258.h),
             child: Row(
-                mainAxisAlignment: MainAxisAlignment.center, // 水平居中
-                children: [
-                  Image.asset("assets/images/ic_coin2.webp",width: 46.w,height: 46.h),
-                  GameText(showText:GlobalConfigManager.instance.getCommonCoin(2),
-                    fontSize: 25.sp,
-                    fillColor: Color(0xFFFFEF50),)
-                ]),
+              mainAxisAlignment: MainAxisAlignment.center, // 水平居中
+              children: [
+                Image.asset(
+                  "assets/images/ic_coin2.webp",
+                  width: 46.w,
+                  height: 46.h,
+                ),
+                GameText(
+                  showText: GlobalConfigManager.instance.getCommonCoin(2),
+                  fontSize: 25.sp,
+                  fillColor: Color(0xFFFFEF50),
+                ),
+              ],
+            ),
           ),
         ),
         Positioned(
@@ -95,7 +128,12 @@ class _LevelPop1_2State extends State<LevelPop1_2> {
             child: Center(
               child: Text(
                 'app_pop_1_2_tips1'.tr(),
-                style: TextStyle(color: Color(0xFFF0E261), fontSize: 16.sp,fontFamily: "AHV",fontWeight: FontWeight.w900),
+                style: TextStyle(
+                  color: Color(0xFFF0E261),
+                  fontSize: 16.sp,
+                  fontFamily: "AHV",
+                  fontWeight: FontWeight.w900,
+                ),
               ),
             ),
           ),
@@ -120,11 +158,30 @@ class _LevelPop1_2State extends State<LevelPop1_2> {
             child: Center(
               child: Text(
                 'app_pop_1_2_tips2'.tr(),
-                style: TextStyle(color: Color(0xFFF0E261), fontSize: 16.sp,fontFamily: "AHV",fontWeight: FontWeight.w900),
+                style: TextStyle(
+                  color: Color(0xFFF0E261),
+                  fontSize: 16.sp,
+                  fontFamily: "AHV",
+                  fontWeight: FontWeight.w900,
+                ),
               ),
             ),
           ),
         ),
+        showAnimal
+            ? Positioned.fill(
+                child: Lottie.asset(
+                  'assets/animations1/coin.json',
+                  controller: _lottieController,
+                  onLoaded: (composition) {
+                    // 动画加载完后自动播放一次
+                    _lottieController
+                      ..duration = composition.duration
+                      ..forward();
+                  },
+                ),
+              )
+            : SizedBox.shrink(),
       ],
     );
   }

@@ -44,7 +44,7 @@ Future<void> main() async {
   GlobalConfigManager.instance.init();
   runApp(
     EasyLocalization(
-      supportedLocales: [Locale('en'), Locale('pt')],
+      supportedLocales: [Locale('en')],
       path:
       'assets/translations', // <-- change the path of the translation files
       fallbackLocale: Locale('en'),

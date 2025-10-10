@@ -106,7 +106,7 @@ class _GamePageState extends State<GamePage>
       defaultValue: true,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      userData = LocalCacheUtils.getUserData();
+      registerTimer();
       if (userData.new1 ||
           userData.new2 ||
           userData.new3 ||
@@ -120,14 +120,16 @@ class _GamePageState extends State<GamePage>
           eventBus.fire(NotifyEvent(EventConfig.new3));
         }
       }
-      registerTimer();
+
     });
     eventBus.on<NotifyEvent>().listen((event) {
       if(event.message == EventConfig.new4){
+        gameData.coin+=GameConfig.coin_1_2;
+        LocalCacheUtils.putGameData(gameData);
+        GameManager.instance.updateCoinToGame(gameData.coin);
         GameManager.instance.pauseMovement();
         setState(() {
           globalShowDanger2 = true;
-          // GameManager.instance.swimToCenter();
         });
       }
     });
@@ -437,6 +439,7 @@ class _GamePageState extends State<GamePage>
 
   Future<void> registerTimer() async {
     gameData = LocalCacheUtils.getGameData();
+    userData = LocalCacheUtils.getUserData();
     bool result = await isGameOver();
     if (result) {
       return;
@@ -758,6 +761,7 @@ class _GamePageState extends State<GamePage>
         showMarkNew2();
       },
       onClickTarget: (target) {
+        AudioUtils().playClickAudio();
         clickFood();
       },
     );
@@ -786,6 +790,7 @@ class _GamePageState extends State<GamePage>
       onFinish: () {
       },
       onClickTarget: (target) {
+        AudioUtils().playClickAudio();
         GameManager.instance.pauseMovement();
         setState(() {
           showCoinBubbles = false;
@@ -829,6 +834,7 @@ class _GamePageState extends State<GamePage>
       onFinish: () {
       },
       onClickTarget: (target) {
+        AudioUtils().playClickAudio();
         // GameManager.instance.pauseMovement();
       },
     );

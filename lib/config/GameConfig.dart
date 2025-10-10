@@ -12,6 +12,8 @@ class GameConfig {
   static const time_1_2 = 3 * 60;
   //进度1升2(正式 10 * 60)
   static const time_2_3 = 2 * 30;
+  static const coin_1_2 = 10;
+  static const coin_2_3 = 20;
   // ====== 生命值相关 ======
   //生命值每 lifeDecreaseInterval 秒进行一次减少。生命值默认100 (正式60s)
   static const lifeDecreaseInterval = 60;

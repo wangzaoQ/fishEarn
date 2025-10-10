@@ -6,6 +6,7 @@ import 'package:fish_earn/data/GameData.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameText.dart';
+import 'package:fish_earn/view/pop/CoinAnimalPop.dart';
 import 'package:fish_earn/view/pop/LevelPop1_2.dart';
 import 'package:fish_earn/view/pop/LevelPop2_3.dart';
 import 'package:fish_earn/view/pop/LevelUp1_2.dart';
@@ -23,6 +24,8 @@ import '../config/GameConfig.dart';
 import '../config/global.dart';
 import '../event/NotifyEvent.dart';
 import '../utils/AudioUtils.dart';
+import '../utils/ClickManager.dart';
+import '../utils/NetWorkManager.dart';
 import 'GradientProgressBar.dart';
 
 class GameProgress extends StatefulWidget {
@@ -56,7 +59,7 @@ class _GameProgressState extends State<GameProgress>
     )..repeat(); // 无限旋转
 
     eventBus.on<NotifyEvent>().listen((event) {
-      if(event.message == EventConfig.new3){
+      if (event.message == EventConfig.new3) {
         GameManager.instance.pauseMovement();
         showMarkNew3();
       }
@@ -72,7 +75,6 @@ class _GameProgressState extends State<GameProgress>
     if (oldWidget.progress != widget.progress) {
       _oldProgress = widget.progress;
     }
-
   }
 
   @override
@@ -189,26 +191,65 @@ class _GameProgressState extends State<GameProgress>
                       ),
                       onPressed: () async {
                         AudioUtils().playClickAudio();
+                        if (NetWorkManager().isNetError(context)) return;
+                        if (!ClickManager.canClick()) return;
                         if (widget.gameData.level == 1 &&
                             widget.progress == 0.5) {
-                          var result = await PopManager().show(
-                            context: context,
-                            child: LevelUp1_2(),
-                          );
-                          if (result == 1) {
-                            widget.gameData.level = 2;
-                            widget.gameData.levelTime = GameConfig.time_2_3;
-                            LocalCacheUtils.putGameData(widget.gameData);
-                            widget.onConfirm(2);
-                            PopManager().show(
+                          var userData = LocalCacheUtils.getUserData();
+                          if (!userData.new3) {
+                            var result = await PopManager().show(
                               context: context,
-                              child: LevelPop1_2(),
+                              child: LevelUp1_2(),
                             );
+                            if (result == 1) {
+                              toLevel2(context);
+                            }
                           }
                         }
                       },
                     ),
                   ),
+                  widget.gameData.level == 1
+                      ? Positioned(
+                          left: 180.w,
+                          top: 6.h,
+                          child: SizedBox(
+                            width: 58.w,
+                            height: 27.h,
+                            child: Stack(
+                              children: [
+                                Image.asset(
+                                  "assets/images/bg_tips_level.webp",
+                                  width: 58.w,
+                                  height: 27.h,
+                                  fit: BoxFit.fill,
+                                ),
+                                Positioned(
+                                  left: 2.w,
+                                  top: 1.h,
+                                  child: Image.asset(
+                                    "assets/images/ic_coin2.webp",
+                                    width: 20.w,
+                                    height: 20.h,
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 22.w,
+                                  top: 2.h,
+                                  child: Text(
+                                    "+\$${GameConfig.coin_1_2}",
+                                    style: TextStyle(
+                                      color: Color(0xFF561C3E),
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink(),
                   Positioned(
                     left: 160.w,
                     top: 55.h,
@@ -252,6 +293,9 @@ class _GameProgressState extends State<GameProgress>
                       ),
                       onPressed: () async {
                         AudioUtils().playClickAudio();
+                        if (NetWorkManager().isNetError(context)) return;
+                        if (!ClickManager.canClick()) return;
+                        GameManager.instance.pauseMovement();
                         if (widget.gameData.level == 2 &&
                             widget.progress == 1) {
                           var result = await PopManager().show(
@@ -262,15 +306,57 @@ class _GameProgressState extends State<GameProgress>
                             widget.gameData.level = 3;
                             LocalCacheUtils.putGameData(widget.gameData);
                             widget.onConfirm(3);
-                            PopManager().show(
+                            await PopManager().show(
                               context: context,
                               child: LevelPop2_3(),
                             );
                           }
                         }
+                        GameManager.instance.resumeMovement();
                       },
                     ),
                   ),
+                  widget.gameData.level == 2
+                      ? Positioned(
+                    right: 30.w,
+                    top: 6.h,
+                    child: SizedBox(
+                      width: 60.w,
+                      height: 27.h,
+                      child: Stack(
+                        children: [
+                          Image.asset(
+                            "assets/images/bg_tips_level.webp",
+                            width: 60.w,
+                            height: 27.h,
+                            fit: BoxFit.fill,
+                          ),
+                          Positioned(
+                            left: 2.w,
+                            top: 1.h,
+                            child: Image.asset(
+                              "assets/images/ic_coin2.webp",
+                              width: 20.w,
+                              height: 20.h,
+                            ),
+                          ),
+                          Positioned(
+                            left: 22.w,
+                            top: 2.h,
+                            child: Text(
+                              "+\$${GameConfig.coin_2_3}",
+                              style: TextStyle(
+                                color: Color(0xFF561C3E),
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                      : SizedBox.shrink(),
                   Positioned(
                     right: 60.w,
                     top: 55.h,
@@ -330,6 +416,16 @@ class _GameProgressState extends State<GameProgress>
     );
   }
 
+  Future<void> toLevel2(BuildContext context) async {
+    widget.gameData.level = 2;
+    widget.gameData.levelTime = GameConfig.time_2_3;
+    LocalCacheUtils.putGameData(widget.gameData);
+    widget.onConfirm(2);
+    await PopManager().show(context: context, child: LevelPop1_2());
+    GameManager.instance.resumeMovement();
+    eventBus.fire(NotifyEvent(EventConfig.new4));
+  }
+
   TutorialCoachMark? tutorialCoachMark;
   late List<TargetFocus> globalKeyNew3Keys;
   GlobalKey globalKeyNew3 = GlobalKey();
@@ -363,11 +459,13 @@ class _GameProgressState extends State<GameProgress>
                       Padding(
                         padding: EdgeInsets.only(left: 17.w, right: 8.w),
                         child: Center(
-                          child:
-                          Text.rich(
+                          child: Text.rich(
                             TextSpan(
                               text: "", // 默认样式
-                              style: TextStyle(fontSize: 16, color: Colors.black),
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
                               children: [
                                 TextSpan(
                                   text: "app_level_up_tips1".tr(),
@@ -387,7 +485,7 @@ class _GameProgressState extends State<GameProgress>
                                 ),
                               ],
                             ),
-                          )
+                          ),
                         ),
                       ),
                     ],
@@ -404,11 +502,11 @@ class _GameProgressState extends State<GameProgress>
       colorShadow: Colors.black.withOpacity(0.8),
       textSkip: "",
       paddingFocus: 0,
-      onFinish: () {
-        GameManager.instance.resumeMovement();
-        eventBus.fire(NotifyEvent(EventConfig.new4));
+      onFinish: () {},
+      onClickTarget: (target) {
+        AudioUtils().playClickAudio();
+        toLevel2(context);
       },
-      onClickTarget: (target) {},
     );
     tutorialCoachMark?.show(context: context);
   }
