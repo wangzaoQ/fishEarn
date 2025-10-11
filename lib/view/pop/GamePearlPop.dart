@@ -1,7 +1,10 @@
 import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../GameText.dart';
 
 /// GamePearlPop
 /// - 首次中间静止，点击开始
@@ -40,10 +43,11 @@ class _GamePearlPopState extends State<GamePearlPop>
   // pre-transition 参数（用于平滑从当前角度过渡到带 bias 的起点）
   final Duration preDuration = const Duration(milliseconds: 150);
   final Curve preCurve = Curves.easeOut;
+
   // =====================================
 
-  static const double leftLimit = -70 * pi / 180;
-  static const double rightLimit = 70 * pi / 180;
+  static const double leftLimit = -90 * pi / 180;
+  static const double rightLimit = 90 * pi / 180;
   static const int moduleCount = 5;
   static final double moduleAngle = (rightLimit - leftLimit) / moduleCount;
 
@@ -68,7 +72,11 @@ class _GamePearlPopState extends State<GamePearlPop>
     _mainController = AnimationController(vsync: this);
     _settleController = AnimationController(vsync: this);
     _preController = AnimationController(vsync: this);
-    _combined = CombinedListenable([_mainController, _settleController, _preController]);
+    _combined = CombinedListenable([
+      _mainController,
+      _settleController,
+      _preController,
+    ]);
   }
 
   @override
@@ -90,7 +98,12 @@ class _GamePearlPopState extends State<GamePearlPop>
   double _clampToLimits(double v) => v.clamp(leftLimit, rightLimit).toDouble();
 
   /// 主动画的连续角度计算（与之前相同）
-  double _computeAngleAt(double t, double animStart, double animTarget, int cycles) {
+  double _computeAngleAt(
+    double t,
+    double animStart,
+    double animTarget,
+    int cycles,
+  ) {
     t = t.clamp(0.0, 1.0);
 
     // 最后一圈开始的 t（cycles = 完整圈数）
@@ -105,14 +118,18 @@ class _GamePearlPopState extends State<GamePearlPop>
       baseline = animStart;
       amp = fullAmp;
     } else {
-      final double nt = (lastStartT == 1.0) ? 1.0 : ((t - lastStartT) / (1.0 - lastStartT)).clamp(0.0, 1.0);
+      final double nt = (lastStartT == 1.0)
+          ? 1.0
+          : ((t - lastStartT) / (1.0 - lastStartT)).clamp(0.0, 1.0);
       final double curved = baselineCurve.transform(nt);
       baseline = animStart + (animTarget - animStart) * curved;
       amp = fullAmp * (1.0 - nt * nt); // 平滑衰减到 0
     }
 
     // sin 的频率为 cycles，总共 cycles 个完整往返
-    final double oscillation = fullAmp == 0 ? 0.0 : (fullAmp * sin(2 * pi * cycles * t) * (amp / fullAmp));
+    final double oscillation = fullAmp == 0
+        ? 0.0
+        : (fullAmp * sin(2 * pi * cycles * t) * (amp / fullAmp));
     return _clampToLimits(baseline + oscillation);
   }
 
@@ -135,7 +152,9 @@ class _GamePearlPopState extends State<GamePearlPop>
 
     // 1) 确定目标索引：优先使用传入参数；若为 null 则使用 widget.targetIndex（若不合法再随机）
     int newTargetIndex;
-    if (incomingTargetIndex != null && incomingTargetIndex >= 0 && incomingTargetIndex < moduleCount) {
+    if (incomingTargetIndex != null &&
+        incomingTargetIndex >= 0 &&
+        incomingTargetIndex < moduleCount) {
       newTargetIndex = incomingTargetIndex;
     } else if (widget.targetIndex >= 0 && widget.targetIndex < moduleCount) {
       newTargetIndex = widget.targetIndex;
@@ -145,7 +164,10 @@ class _GamePearlPopState extends State<GamePearlPop>
     final double targetAngle = leftLimit + moduleAngle * (newTargetIndex + 0.5);
 
     // 判断是否为“中断重启”（之前正在跑）
-    final bool wasAnimating = _mainController.isAnimating || _settleController.isAnimating || _preController.isAnimating;
+    final bool wasAnimating =
+        _mainController.isAnimating ||
+        _settleController.isAnimating ||
+        _preController.isAnimating;
 
     // 计算起点：若传入 incomingTargetIndex 则使用折中起点；否则按当前 controllers 计算 visual startAngle（以做到平滑中断/续接）
     final double midPoint = (leftLimit + rightLimit) / 2;
@@ -186,14 +208,20 @@ class _GamePearlPopState extends State<GamePearlPop>
       return;
     }
 
-
     // ------------------------
     // 否则（incomingTargetIndex == null）走智能衔接逻辑：
     if (_preController.isAnimating && _animStartAngle != null) {
       startAngle = _animStartAngle!;
-    } else if (_mainController.isAnimating && _animStartAngle != null && _animTargetAngle != null) {
+    } else if (_mainController.isAnimating &&
+        _animStartAngle != null &&
+        _animTargetAngle != null) {
       final double curT = _mainController.value.clamp(0.0, 1.0);
-      startAngle = _computeAngleAt(curT, _animStartAngle!, _animTargetAngle!, cycles);
+      startAngle = _computeAngleAt(
+        curT,
+        _animStartAngle!,
+        _animTargetAngle!,
+        cycles,
+      );
     } else if (_settleController.isAnimating && _animTargetAngle != null) {
       final double s = _settleController.value.clamp(0.0, 1.0);
       startAngle = _computeSettleAngle(s, _animTargetAngle!);
@@ -240,7 +268,8 @@ class _GamePearlPopState extends State<GamePearlPop>
       // 准备并记录 listener，以便之后能 remove
       _preListener = () {
         final double v = _preController.value.clamp(0.0, 1.0);
-        final double interpolated = startAngle + (biasedStart - startAngle) * preCurve.transform(v);
+        final double interpolated =
+            startAngle + (biasedStart - startAngle) * preCurve.transform(v);
         _animStartAngle = interpolated;
       };
 
@@ -308,6 +337,153 @@ class _GamePearlPopState extends State<GamePearlPop>
                   height: double.infinity,
                   fit: BoxFit.fill,
                 ),
+                //target0
+                Positioned(
+                  left: 15.w,
+                  top: 123.h,
+                  child: SizedBox(
+                    width: 68.w,
+                    height: 68.h,
+                    child: Stack(
+                      children: [
+                        Image.asset(
+                          "assets/images/ic_coin3.webp",
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.fill,
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: GameText(
+                            showText: "+\$20",
+                            fontSize: 20.sp,
+                            fillColor: Color(0xFFFDFF59),
+                            strokeColor: Colors.black,
+                            strokeWidth: 1.w,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                //target1
+                Positioned(
+                  left: 52.w,
+                  top: 62.h,
+                  child: SizedBox(
+                    width: 68.w,
+                    height: 68.h,
+                    child: Stack(
+                      children: [
+                        Image.asset(
+                          "assets/images/ic_coin3.webp",
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.fill,
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: GameText(
+                            showText: "+\$20",
+                            fontSize: 20.sp,
+                            fillColor: Color(0xFFFDFF59),
+                            strokeColor: Colors.black,
+                            strokeWidth: 1.w,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                //target2
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.only(top: 35.h),
+                    child: SizedBox(
+                      width: 68.w,
+                      height: 68.h,
+                      child: Stack(
+                        children: [
+                          Image.asset(
+                            "assets/images/ic_coin3.webp",
+                            width: double.infinity,
+                            height: double.infinity,
+                            fit: BoxFit.fill,
+                          ),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: GameText(
+                              showText: "+\$20",
+                              fontSize: 20.sp,
+                              fillColor: Color(0xFFFDFF59),
+                              strokeColor: Colors.black,
+                              strokeWidth: 1.w,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                //target3
+                Positioned(
+                  right: 52.w,
+                  top: 62.h,
+                  child: SizedBox(
+                    width: 68.w,
+                    height: 68.h,
+                    child: Stack(
+                      children: [
+                        Image.asset(
+                          "assets/images/ic_coin3.webp",
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.fill,
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: GameText(
+                            showText: "+\$20",
+                            fontSize: 20.sp,
+                            fillColor: Color(0xFFFDFF59),
+                            strokeColor: Colors.black,
+                            strokeWidth: 1.w,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                //target4
+                Positioned(
+                  right: 15.w,
+                  top: 123.h,
+                  child: SizedBox(
+                    width: 68.w,
+                    height: 68.h,
+                    child: Stack(
+                      children: [
+                        Image.asset(
+                          "assets/images/ic_coin3.webp",
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.fill,
+                        ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: GameText(
+                            showText: "+\$20",
+                            fontSize: 20.sp,
+                            fillColor: Color(0xFFFDFF59),
+                            strokeColor: Colors.black,
+                            strokeWidth: 1.w,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
@@ -317,32 +493,50 @@ class _GamePearlPopState extends State<GamePearlPop>
                       animation: _combined,
                       builder: (context, child) {
                         // 如果 settle 在跑 -> 使用 settle 计算（在微摆阶段）
-                        if (_settleController.isAnimating && _animTargetAngle != null) {
-                          final double s = _settleController.value.clamp(0.0, 1.0);
-                          final double angle = _computeSettleAngle(s, _animTargetAngle!);
+                        if (_settleController.isAnimating &&
+                            _animTargetAngle != null) {
+                          final double s = _settleController.value.clamp(
+                            0.0,
+                            1.0,
+                          );
+                          final double angle = _computeSettleAngle(
+                            s,
+                            _animTargetAngle!,
+                          );
                           return Transform.rotate(
                             angle: angle,
-                            alignment: const Alignment(0, 1),
+                            alignment: const Alignment(0,  0.2),
                             child: child,
                           );
                         }
 
                         // 否则如果 main 在跑 -> 使用主动画计算
-                        if (_mainController.isAnimating && _animStartAngle != null && _animTargetAngle != null) {
-                          final double t = _mainController.value.clamp(0.0, 1.0);
-                          final double angle = _computeAngleAt(t, _animStartAngle!, _animTargetAngle!, cycles);
+                        if (_mainController.isAnimating &&
+                            _animStartAngle != null &&
+                            _animTargetAngle != null) {
+                          final double t = _mainController.value.clamp(
+                            0.0,
+                            1.0,
+                          );
+                          final double angle = _computeAngleAt(
+                            t,
+                            _animStartAngle!,
+                            _animTargetAngle!,
+                            cycles,
+                          );
                           return Transform.rotate(
                             angle: angle,
-                            alignment: const Alignment(0, 1),
+                            alignment: const Alignment(0, 0.2),
                             child: child,
                           );
                         }
 
                         // 如果 pre 在跑（平滑过渡到 biased 起点），我们直接用 _animStartAngle（pre listener 已更新）
-                        if (_preController.isAnimating && _animStartAngle != null) {
+                        if (_preController.isAnimating &&
+                            _animStartAngle != null) {
                           return Transform.rotate(
                             angle: _animStartAngle!,
-                            alignment: const Alignment(0, 1),
+                            alignment: const Alignment(0,  0.2),
                             child: child,
                           );
                         }
@@ -350,7 +544,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                         // 否则显示当前角度（静止）
                         return Transform.rotate(
                           angle: _currentAngle,
-                          alignment: const Alignment(0, 1),
+                          alignment: const Alignment(0,  0.2),
                           child: child,
                         );
                       },
@@ -402,7 +596,7 @@ class _GamePearlPopState extends State<GamePearlPop>
             child: CupertinoButton(
               padding: EdgeInsets.zero,
               pressedOpacity: 0.7,
-              onPressed: () => _onSpinPressed(2),
+              onPressed: () => _onSpinPressed(4),
               child: SizedBox(
                 width: 172.w,
                 height: 50.h,
@@ -435,11 +629,13 @@ class _GamePearlPopState extends State<GamePearlPop>
 class CombinedListenable implements Listenable {
   final List<Listenable> _listenables;
   final List<VoidCallback> _listeners = [];
+
   CombinedListenable(this._listenables) {
     for (final l in _listenables) {
       l.addListener(_notify);
     }
   }
+
   void _notify() {
     for (final cb in List<VoidCallback>.from(_listeners)) {
       try {

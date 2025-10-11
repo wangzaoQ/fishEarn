@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flame/components.dart';
