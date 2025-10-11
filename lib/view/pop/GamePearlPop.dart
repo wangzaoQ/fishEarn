@@ -1,10 +1,12 @@
 import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/view/pop/GameAward.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../GameText.dart';
+import 'BasePopView.dart';
 
 /// GamePearlPop
 /// - 首次中间静止，点击开始
@@ -14,7 +16,7 @@ import '../GameText.dart';
 class GamePearlPop extends StatefulWidget {
   final int pearlCount;
   final Duration totalDuration;
-  final int targetIndex; // 0..4 ; 若传入无效则随机
+  final int targetIndex; // 0..5; 若传入无效则随机
   final int wobbleCount; // 完整振荡圈数（例如 3 表示 3 圈）
 
   const GamePearlPop({
@@ -31,6 +33,9 @@ class GamePearlPop extends StatefulWidget {
 
 class _GamePearlPopState extends State<GamePearlPop>
     with TickerProviderStateMixin {
+
+  late final VoidCallback onFinish; // ✅ 新增：动画结束回调
+
   // ======= 可调参数（按需微调） =======
   final Curve baselineCurve = Curves.easeInOut; // 最后一圈基线曲线
   final double amplitudeRatio = 0.95; // 前几圈振幅相对于半跨距
@@ -69,6 +74,7 @@ class _GamePearlPopState extends State<GamePearlPop>
   @override
   void initState() {
     super.initState();
+    foodIndex = random.nextInt(4);
     _mainController = AnimationController(vsync: this);
     _settleController = AnimationController(vsync: this);
     _preController = AnimationController(vsync: this);
@@ -307,12 +313,26 @@ class _GamePearlPopState extends State<GamePearlPop>
         _animStartAngle = null;
         _animTargetAngle = null;
         _settleController.reset();
+        isRunning = false; // ✅ 解锁可再次点击
       });
+      Navigator.pop(context,foodIndex == targetIndex? -1:20);
     });
   }
 
+  var isRunning = false;
+  var targetIndex = 2;
+  var foodIndex = 0;
+  var random = Random();
   /// 点击触发：接受可选 targetIndex 并传给 _setupMainAnim
-  void _onSpinPressed([int? targetIndex]) {
+  void _onSpinPressed() {
+    if(isRunning)return;
+    isRunning = true;
+    if(widget.pearlCount <=0){
+      isRunning = false;
+      Navigator.pop(context,-2);
+      return;
+    }
+    targetIndex = random.nextInt(5);
     _setupMainAnim(targetIndex);
   }
 
@@ -347,7 +367,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                     child: Stack(
                       children: [
                         Image.asset(
-                          "assets/images/ic_coin3.webp",
+                          foodIndex == 0?"assets/images/ic_food3.webp":"assets/images/ic_coin3.webp",
                           width: double.infinity,
                           height: double.infinity,
                           fit: BoxFit.fill,
@@ -355,7 +375,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: GameText(
-                            showText: "+\$20",
+                            showText: foodIndex == 0?"+30":"+\$20",
                             fontSize: 20.sp,
                             fillColor: Color(0xFFFDFF59),
                             strokeColor: Colors.black,
@@ -376,7 +396,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                     child: Stack(
                       children: [
                         Image.asset(
-                          "assets/images/ic_coin3.webp",
+                          foodIndex == 1?"assets/images/ic_food3.webp":"assets/images/ic_coin3.webp",
                           width: double.infinity,
                           height: double.infinity,
                           fit: BoxFit.fill,
@@ -384,7 +404,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: GameText(
-                            showText: "+\$20",
+                            showText: foodIndex == 1?"+30":"+\$20",
                             fontSize: 20.sp,
                             fillColor: Color(0xFFFDFF59),
                             strokeColor: Colors.black,
@@ -406,7 +426,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                       child: Stack(
                         children: [
                           Image.asset(
-                            "assets/images/ic_coin3.webp",
+                            foodIndex == 2?"assets/images/ic_food3.webp":"assets/images/ic_coin3.webp",
                             width: double.infinity,
                             height: double.infinity,
                             fit: BoxFit.fill,
@@ -414,7 +434,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                           Align(
                             alignment: Alignment.bottomCenter,
                             child: GameText(
-                              showText: "+\$20",
+                              showText: foodIndex == 2?"+30":"+\$20",
                               fontSize: 20.sp,
                               fillColor: Color(0xFFFDFF59),
                               strokeColor: Colors.black,
@@ -436,7 +456,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                     child: Stack(
                       children: [
                         Image.asset(
-                          "assets/images/ic_coin3.webp",
+                          foodIndex == 3?"assets/images/ic_food3.webp":"assets/images/ic_coin3.webp",
                           width: double.infinity,
                           height: double.infinity,
                           fit: BoxFit.fill,
@@ -444,7 +464,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: GameText(
-                            showText: "+\$20",
+                            showText: foodIndex == 3?"+30":"+\$20",
                             fontSize: 20.sp,
                             fillColor: Color(0xFFFDFF59),
                             strokeColor: Colors.black,
@@ -465,7 +485,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                     child: Stack(
                       children: [
                         Image.asset(
-                          "assets/images/ic_coin3.webp",
+                          foodIndex == 4?"assets/images/ic_food3.webp":"assets/images/ic_coin3.webp",
                           width: double.infinity,
                           height: double.infinity,
                           fit: BoxFit.fill,
@@ -596,7 +616,7 @@ class _GamePearlPopState extends State<GamePearlPop>
             child: CupertinoButton(
               padding: EdgeInsets.zero,
               pressedOpacity: 0.7,
-              onPressed: () => _onSpinPressed(4),
+              onPressed: () => _onSpinPressed(),
               child: SizedBox(
                 width: 172.w,
                 height: 50.h,

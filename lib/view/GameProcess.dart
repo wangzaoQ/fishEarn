@@ -190,9 +190,7 @@ class _GameProgressState extends State<GameProgress>
                         ),
                       ),
                       onPressed: () async {
-                        AudioUtils().playClickAudio();
-                        if (NetWorkManager().isNetError(context)) return;
-                        if (!ClickManager.canClick()) return;
+                        if (!ClickManager.canClick(context: context)) return;
                         if (widget.gameData.level == 1 &&
                             widget.progress == 0.5) {
                           var userData = LocalCacheUtils.getUserData();
@@ -292,9 +290,7 @@ class _GameProgressState extends State<GameProgress>
                         ),
                       ),
                       onPressed: () async {
-                        AudioUtils().playClickAudio();
-                        if (NetWorkManager().isNetError(context)) return;
-                        if (!ClickManager.canClick()) return;
+                        if (!ClickManager.canClick(context: context)) return;
                         GameManager.instance.pauseMovement();
                         if (widget.gameData.level == 2 &&
                             widget.progress == 1) {

@@ -11,10 +11,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class GameAwardPop extends StatefulWidget {
 
   // 0 金钱 1 食物
-  var type= 0;
+  final int type;
+  final int money;
 
-  GameAwardPop({super.key, required int type});
-
+  const GameAwardPop({
+    super.key,
+    required this.type,
+    this.money = 0,
+  });
   @override
   State<GameAwardPop> createState() => _GameAwardPopState();
 }
@@ -34,19 +38,18 @@ class _GameAwardPopState extends State<GameAwardPop>
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false, // 禁止默认返回
       onPopInvokedWithResult: (didPop, result) {},
       child: Stack(
         children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsetsGeometry.only(top: 252.h),
-              child: GameText(showText: "app_fail_title".tr()),
-            ),
-          ),
           Positioned(
             left: 23.w,
             right: 23.w,
@@ -88,6 +91,19 @@ class _GameAwardPopState extends State<GameAwardPop>
               ),
             ),
           ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsetsGeometry.only(bottom: 285.h),
+              child:  GameText(
+                showText: widget.type == 0?"+\$${widget.money}":"+30",
+                fontSize: 28.sp,
+                fillColor: Color(0xFFFDFF59),
+                strokeColor: Color(0xFF9B4801),
+                strokeWidth: 1.w,
+              ),
+            ),
+          ),
           Positioned(
             left: 0,
             right: 0,
@@ -104,7 +120,7 @@ class _GameAwardPopState extends State<GameAwardPop>
                     Image.asset("assets/images/bg_confirm.webp"),
                     Center(
                       child: AutoSizeText(
-                        "app_claim".tr(),
+                        widget.type == 0?"${"app_claim".tr()} \$${widget.money}":"app_free".tr(),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -118,13 +134,23 @@ class _GameAwardPopState extends State<GameAwardPop>
               ),
               onPressed: () {
                 AudioUtils().playClickAudio();
-                var gameData = LocalCacheUtils.getGameData();
-                gameData.foodCount += 10;
-                LocalCacheUtils.putGameData(gameData);
-                Navigator.pop(context, 1);
+                if(widget.type == 1){
+                  Navigator.pop(context, 1);
+                }else{
+                  Navigator.pop(context, 2);
+                }
               },
             ),
           ),
+          widget.type == 0?Positioned(
+            right: 100.w,
+            top: 597.h,
+            child: Image.asset(
+              "assets/images/ic_ad_tips.webp",
+              width: 36.w,
+              height: 36.h,
+            ),
+          ):SizedBox.shrink(),
           Align(alignment: Alignment.topCenter,child: Padding(padding: EdgeInsetsGeometry.only(top: 314.h),child: GameText(
             showText: "app_wave_treasure".tr(),
             fontSize: 19.sp,
@@ -143,7 +169,7 @@ class _GameAwardPopState extends State<GameAwardPop>
               ),
               onPressed: () {
                 AudioUtils().playClickAudio();
-                Navigator.pop(context, null);
+                Navigator.pop(context, 1);
               },
             ),
           ),

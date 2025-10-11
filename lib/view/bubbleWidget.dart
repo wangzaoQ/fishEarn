@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class BubbleWidget extends StatefulWidget {
   // 0 金币 1 食物 2 珍珠
   var type;
-  BubbleWidget({super.key,required type});
+  BubbleWidget({super.key,required this.type});
 
   @override
   State<BubbleWidget> createState() => _BubbleWidgetState();

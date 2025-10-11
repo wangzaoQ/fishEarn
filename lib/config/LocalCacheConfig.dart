@@ -4,4 +4,5 @@ class LocalCacheConfig{
   static const allowBGMKey = "allowBGMKey";
   static const firstShowProtectKey = "firstShowProtectKey";
   static const cacheKeyUserData = "cacheKeyUserData";
+  static const cacheKeyFoodCount = "cacheKeyFoodCount";
 }

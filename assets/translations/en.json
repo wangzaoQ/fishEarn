@@ -4,12 +4,14 @@
   "app_pop_1_2_tips2": "Earning speed up",
   "app_satiety": "Satiety",
   "app_fail_title": "WEALTH INTERRUPTION",
+  "app_no_pearls": "NO PEARLS",
   "app_resurrection": "Resurrection",
   "app_starting_over": "Starting Over",
   "app_resurrection_tips": "Resurrection cost is 10 gold coins",
   "app_not_enough_food": "Not enough food",
   "app_level_up": "Level Up",
   "app_claim": "Claim",
+  "app_free": "Free",
   "app_wave_treasure": "WAVE TREASURES",
   "app_net_error": "Net Error",
   "app_bgm": "Background Music",
@@ -22,6 +24,8 @@
   "app_spin": "Spin",
   "app_all": "All",
   "app_props_tips": "The tides have washed ashore untold wealth... Will you claim pearls or fortune",
-  "app_award_first_tips": "Treasure Gifts From The Waves"
+  "app_award_first_tips": "Treasure Gifts From The Waves",
+  "app_fish_to_exchange": "Interact with the fish to exchange",
+  "app_play": "Play"
 
 }

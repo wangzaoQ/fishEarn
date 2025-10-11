@@ -19,6 +19,7 @@ import 'package:fish_earn/view/pop/GameAward.dart';
 import 'package:fish_earn/view/pop/GameFailPop.dart';
 import 'package:fish_earn/view/pop/GamePearlPop.dart';
 import 'package:fish_earn/view/pop/LevelPop1_2.dart';
+import 'package:fish_earn/view/pop/NoPearlPop.dart';
 import 'package:fish_earn/view/pop/PopManger.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,6 +41,7 @@ import '../utils/LogUtils.dart';
 import '../view/GameLifeProgress.dart';
 import '../view/GameText.dart';
 import '../view/PropsProgress.dart';
+import '../view/pop/BasePopView.dart';
 import '../view/pop/LevelPop2_3.dart';
 import '../view/pop/PropsAwardPop.dart';
 import '../view/pop/SettingPop.dart';
@@ -74,8 +76,12 @@ class _GamePageState extends State<GamePage>
 
   //第一次展示危险提示
   var firstShowProtectKey = true;
+
   //展示金币泡泡
   var showCoinBubbles = true;
+  var showFoodBubbles = true;
+  var showPearlBubbles1 = true;
+  var showPearlBubbles2 = false;
 
   late UserData userData;
 
@@ -108,24 +114,23 @@ class _GamePageState extends State<GamePage>
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       registerTimer();
-      if (userData.new1 ||
-          userData.new2 ||
-          userData.new3 ||
-          userData.new4 ||
-          userData.new5) {
-        if (userData.new1) {
-          showMarkNew1();
-        } else if (userData.new2) {
-          showMarkNew2();
-        }else if(userData.new3){
-          eventBus.fire(NotifyEvent(EventConfig.new3));
-        }
-      }
-
+      // if (userData.new1 ||
+      //     userData.new2 ||
+      //     userData.new3 ||
+      //     userData.new4 ||
+      //     userData.new5) {
+      //   if (userData.new1) {
+      //     showMarkNew1();
+      //   } else if (userData.new2) {
+      //     showMarkNew2();
+      //   }else if(userData.new3){
+      //     eventBus.fire(NotifyEvent(EventConfig.new3));
+      //   }
+      // }
     });
     eventBus.on<NotifyEvent>().listen((event) {
-      if(event.message == EventConfig.new4){
-        gameData.coin+=GameConfig.coin_1_2;
+      if (event.message == EventConfig.new4) {
+        gameData.coin += GameConfig.coin_1_2;
         LocalCacheUtils.putGameData(gameData);
         GameManager.instance.updateCoinToGame(gameData.coin);
         GameManager.instance.pauseMovement();
@@ -312,8 +317,44 @@ class _GamePageState extends State<GamePage>
                           //游戏结束
                           var result = await PopManager().show(
                             context: context,
-                            child: GamePearlPop(pearlCount:pearlCount,targetIndex: 2,),
+                            child: GamePearlPop(
+                              pearlCount: pearlCount,
+                              targetIndex: 2,
+                            ),
                           );
+                          //2 双倍 1单倍
+                          var awardResult = 1;
+                          if (result == -2) {
+                            await PopManager().show(
+                              context: context,
+                              child: NoPearlPop(),
+                            );
+                          } else if (result == -1) {
+                            //食物
+                            awardResult = await BasePopView().showScaleDialog(
+                              context: context,
+                              child: GameAwardPop(type: 1, money: 30),
+                            );
+                          } else {
+                            awardResult = await BasePopView().showScaleDialog(
+                              context: context,
+                              child: GameAwardPop(type: 0, money: result),
+                            );
+                          }
+                          if (result == -2) {
+                          } else if (result == -1) {
+                            setState(() {
+                              gameData.foodCount += 30;
+                            });
+                          } else {
+                            await PopManager().show(
+                              context: context,
+                              needAlpha: 0,
+                              child: CoinAnimalPop(),
+                            );
+                            gameData.coin += result * awardResult;
+                          }
+                          LocalCacheUtils.putGameData(gameData);
                           GameManager.instance.resumeMovement();
                         },
                       ),
@@ -360,19 +401,17 @@ class _GamePageState extends State<GamePage>
                   ),
                 ),
                 onPressed: () async {
-                  AudioUtils().playClickAudio();
                   var progress = GameManager.instance.getPropsProgress(
                     propsTime,
                   );
-                  if (NetWorkManager().isNetError(context)) return;
-                  if (!ClickManager.canClick()) return;
+                  if (!ClickManager.canClick(context: context)) return;
                   if (progress == 1 || userData.new5) {
                     var result = await PopManager().show(
                       context: context,
                       child: PropsAwardPop(),
                     );
-                    if (result!=null) {
-                      gameData.coin+=result;
+                    if (result != null) {
+                      gameData.coin += result;
                       GameManager.instance.updateCoinToGame(gameData.coin);
                       LocalCacheUtils.putGameData(gameData);
                       setState(() {
@@ -397,7 +436,7 @@ class _GamePageState extends State<GamePage>
                   child: Image.asset("assets/images/ic_protect.webp"),
                 ),
                 onPressed: () {
-                  AudioUtils().playClickAudio();
+                  if (!ClickManager.canClick(context: context)) return;
                   gameData = LocalCacheUtils.getGameData();
                   gameData.protectTime += getProtectTime();
                   LocalCacheUtils.putGameData(gameData);
@@ -411,19 +450,89 @@ class _GamePageState extends State<GamePage>
                   GameManager.instance.showProtect();
                   GameManager.instance.updateProtectTime(gameData.protectTime);
                   GameManager.instance.resumeMovement();
-                  if(userData.new5){
+                  if (userData.new5) {
                     showMarkNew5();
                   }
                 },
               ),
             ),
             //现金气泡
-            showCoinBubbles?
-            Positioned(
-              left: 38.w,
-              bottom: 241.h,
-              child: BubbleWidget(key: globalGuideNew2, type: 0),
-            ):SizedBox.shrink(),
+            showCoinBubbles
+                ? Positioned(
+                    left: 38.w,
+                    bottom: 241.h,
+                    child:  CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      pressedOpacity: 0.7,
+                      child: BubbleWidget(key: globalGuideNew2, type: 0),
+                      onPressed: () {
+                        if (!ClickManager.canClick(context: context)) return;
+                        setState(() {
+                          showCoinBubbles = false;
+                          gameData.coin += 1;
+                          LocalCacheUtils.putGameData(gameData);
+                        });
+                      },
+                    ),
+                  )
+                : SizedBox.shrink(),
+            showFoodBubbles
+                ? Positioned(
+                    left: 18.w,
+                    top: 300.h,
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      pressedOpacity: 0.7,
+                      child: BubbleWidget(type: 1),
+                      onPressed: () {
+                        if (!ClickManager.canClick(context: context)) return;
+                        setState(() {
+                          showFoodBubbles = false;
+                          gameData.foodCount += 10;
+                          LocalCacheUtils.putGameData(gameData);
+                        });
+                      },
+                    ),
+                  )
+                : SizedBox.shrink(),
+            showPearlBubbles1
+                ? Positioned(
+                    right: 26.w,
+                    bottom: 300.h,
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      pressedOpacity: 0.7,
+                      child: BubbleWidget(type: 2),
+                      onPressed: () {
+                        if (!ClickManager.canClick(context: context)) return;
+                        setState(() {
+                          showPearlBubbles1 = false;
+                          gameData.pearlCount += 1;
+                          LocalCacheUtils.putGameData(gameData);
+                        });
+                      },
+                    ),
+                  )
+                : SizedBox.shrink(),
+            showPearlBubbles2
+                ? Positioned(
+                    right: 26.w,
+                    bottom: 160.h,
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      pressedOpacity: 0.7,
+                      child: BubbleWidget(type: 2),
+                      onPressed: () {
+                        if (!ClickManager.canClick(context: context)) return;
+                        setState(() {
+                          showPearlBubbles2 = false;
+                          gameData.pearlCount += 1;
+                          LocalCacheUtils.putGameData(gameData);
+                        });
+                      },
+                    ),
+                  )
+                : SizedBox.shrink(),
           ],
         ),
       ),
@@ -787,8 +896,7 @@ class _GamePageState extends State<GamePage>
       colorShadow: Colors.black.withOpacity(0.8),
       textSkip: "",
       paddingFocus: 0,
-      onFinish: () {
-      },
+      onFinish: () {},
       onClickTarget: (target) {
         AudioUtils().playClickAudio();
         GameManager.instance.pauseMovement();
@@ -801,7 +909,7 @@ class _GamePageState extends State<GamePage>
             needAlpha: 0,
             child: CoinAnimalPop(),
           );
-          gameData.coin+=1;
+          gameData.coin += 1;
           LocalCacheUtils.putGameData(gameData);
           GameManager.instance.updateCoinToGame(gameData.coin);
           GameManager.instance.resumeMovement();
@@ -832,8 +940,7 @@ class _GamePageState extends State<GamePage>
       colorShadow: Colors.black.withOpacity(0.8),
       textSkip: "",
       paddingFocus: 0,
-      onFinish: () {
-      },
+      onFinish: () {},
       onClickTarget: (target) async {
         AudioUtils().playClickAudio();
         tutorialCoachMark?.skip();
@@ -842,8 +949,8 @@ class _GamePageState extends State<GamePage>
           context: context,
           child: PropsAwardPop(),
         );
-        if(result!=null){
-          gameData.coin+=result;
+        if (result != null) {
+          gameData.coin += result;
           GameManager.instance.updateCoinToGame(gameData.coin);
           LocalCacheUtils.putGameData(gameData);
         }
@@ -853,14 +960,25 @@ class _GamePageState extends State<GamePage>
     tutorialCoachMark?.show(context: context);
   }
 
-
   void clickFood() {
     AudioUtils().playClickAudio();
     if (gameData.foodCount < 10) {
       GameManager.instance.showTips("app_not_enough_food".tr());
       return;
     } else {
+      var foodCount = LocalCacheUtils.getInt(
+        LocalCacheConfig.cacheKeyFoodCount,
+      );
+      foodCount += 1;
+      var showBubble = false;
+      if (foodCount % 2 == 0) {
+        showBubble = true;
+      }
+      LocalCacheUtils.putInt(LocalCacheConfig.cacheKeyFoodCount, foodCount);
       setState(() {
+        if(showBubble){
+          showPearlBubbles2 = true;
+        }
         if (globalShowFood) return;
         globalShowFood = true;
         gameData.foodCount -= 10;
@@ -872,5 +990,4 @@ class _GamePageState extends State<GamePage>
       });
     }
   }
-
 }
