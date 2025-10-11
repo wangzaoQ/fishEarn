@@ -38,6 +38,12 @@ class _PropsAwardPopState extends State<PropsAwardPop>
   int selectedCoin = 0;
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [

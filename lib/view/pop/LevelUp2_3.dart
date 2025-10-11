@@ -115,6 +115,30 @@ class _LevelUp2_3State extends State<LevelUp2_3>
             ),
           ),
         ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: Padding(
+            padding: EdgeInsetsGeometry.only(top: 268.h),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center, // ← 子元素水平居中
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/ic_coin2.webp",
+                  width: 45.w,
+                  height: 45.h,
+                ),
+                GameText(
+                  showText: "+0.05/1s",
+                  fontSize: 25.sp,
+                  fillColor: Color(0xFFFFEF50),
+                  strokeColor: Color(0xFF9B4801),
+                  strokeWidth: 2.w,
+                ),
+              ],
+            ),
+          ),
+        ),
         Positioned(
           left: 40.w,
           top: 417.h,
@@ -157,6 +181,15 @@ class _LevelUp2_3State extends State<LevelUp2_3>
               AudioUtils().playClickAudio();
               Navigator.pop(context, 1);
             },
+          ),
+        ),
+        Positioned(
+          right: 100.w,
+          top: 538.h,
+          child: Image.asset(
+            "assets/images/ic_ad_tips.webp",
+            width: 36.w,
+            height: 36.h,
           ),
         ),
       ],

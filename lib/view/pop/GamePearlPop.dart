@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -10,7 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class GamePearlPop extends StatefulWidget {
   final int pearlCount;
   final Duration totalDuration;
-  final int targetIndex; // 0..4
+  final int targetIndex; // 0..4 ; 若传入无效则随机
   final int wobbleCount; // 完整振荡圈数（例如 3 表示 3 圈）
 
   const GamePearlPop({
@@ -35,6 +36,10 @@ class _GamePearlPopState extends State<GamePearlPop>
   final double settleAmpRatio = 0.06; // 相对于 moduleAngle 的小幅度（微摆幅度）
   final double settleDecay = 5.0; // 指数衰减系数（越大衰减越快）
   final int settleCycles = 2; // 微摆的完整往返圈数
+
+  // pre-transition 参数（用于平滑从当前角度过渡到带 bias 的起点）
+  final Duration preDuration = const Duration(milliseconds: 150);
+  final Curve preCurve = Curves.easeOut;
   // =====================================
 
   static const double leftLimit = -70 * pi / 180;
@@ -44,32 +49,45 @@ class _GamePearlPopState extends State<GamePearlPop>
 
   late final AnimationController _mainController; // 主动画（前几圈 + 最后一圈靠近）
   late final AnimationController _settleController; // 到达后的小幅阻尼晃动
-  late final CombinedListenable _combined; // 同时监听两个 controller 的变更
+  late final AnimationController _preController; // 平滑偏移过渡（短）
+  late final CombinedListenable _combined; // 同时监听 controllers 的变更
 
-  // 初始显示角度（首次中间）
+  // 初始显示角度（首次中点）
   double _currentAngle = (leftLimit + rightLimit) / 2;
 
   // 缓存主动画开始时的固定起点与目标（避免 builder 中反复修改）
   double? _animStartAngle;
   double? _animTargetAngle;
 
+  // 记录 pre 的 listener，便于移除
+  VoidCallback? _preListener;
+
   @override
   void initState() {
     super.initState();
     _mainController = AnimationController(vsync: this);
     _settleController = AnimationController(vsync: this);
-    _combined = CombinedListenable([_mainController, _settleController]);
+    _preController = AnimationController(vsync: this);
+    _combined = CombinedListenable([_mainController, _settleController, _preController]);
   }
 
   @override
   void dispose() {
+    // 清理 pre listener
+    if (_preListener != null) {
+      try {
+        _preController.removeListener(_preListener!);
+      } catch (_) {}
+      _preListener = null;
+    }
     _combined.dispose();
     _mainController.dispose();
     _settleController.dispose();
+    _preController.dispose();
     super.dispose();
   }
 
-  double _clampToLimits(double v) => v.clamp(leftLimit, rightLimit);
+  double _clampToLimits(double v) => v.clamp(leftLimit, rightLimit).toDouble();
 
   /// 主动画的连续角度计算（与之前相同）
   double _computeAngleAt(double t, double animStart, double animTarget, int cycles) {
@@ -94,8 +112,7 @@ class _GamePearlPopState extends State<GamePearlPop>
     }
 
     // sin 的频率为 cycles，总共 cycles 个完整往返
-    final double oscillation = amp * sin(2 * pi * cycles * t);
-
+    final double oscillation = fullAmp == 0 ? 0.0 : (fullAmp * sin(2 * pi * cycles * t) * (amp / fullAmp));
     return _clampToLimits(baseline + oscillation);
   }
 
@@ -110,60 +127,152 @@ class _GamePearlPopState extends State<GamePearlPop>
     return _clampToLimits(target + oscillation);
   }
 
-  /// 启动主动画（缓存起点与目标，支持中断衔接）
-  void _setupMainAnim() {
-    var targetIndex = 0;
+  /// 启动主动画（接受可选 incomingTargetIndex）
+  /// 折中方案：如果传入 incomingTargetIndex，则起点使用 (midPoint + _currentAngle)/2，
+  /// 既不会强制瞬移到中点，也不会完全从当前角度衔接（避免范围被限定）。
+  void _setupMainAnim([int? incomingTargetIndex]) {
     final int cycles = max(1, widget.wobbleCount);
-    final double targetAngle = leftLimit + moduleAngle * (targetIndex + 0.5);
 
-    // 若主动画或 settle 正在运行：先计算当前显示角度作为新起点
-    if ((_mainController.isAnimating || _settleController.isAnimating) &&
-        _animStartAngle != null &&
-        _animTargetAngle != null) {
-      // 使用当前 controller 值和已缓存的 animStart/animTarget 来算当前显示角度
-      final double curT = _mainController.isAnimating ? _mainController.value.clamp(0.0, 1.0) : 1.0;
-      final double curAngle = _computeAngleAt(curT, _animStartAngle!, _animTargetAngle!, cycles);
-      _currentAngle = curAngle;
-      // 停止当前所有控制器
+    // 1) 确定目标索引：优先使用传入参数；若为 null 则使用 widget.targetIndex（若不合法再随机）
+    int newTargetIndex;
+    if (incomingTargetIndex != null && incomingTargetIndex >= 0 && incomingTargetIndex < moduleCount) {
+      newTargetIndex = incomingTargetIndex;
+    } else if (widget.targetIndex >= 0 && widget.targetIndex < moduleCount) {
+      newTargetIndex = widget.targetIndex;
+    } else {
+      newTargetIndex = Random().nextInt(moduleCount);
+    }
+    final double targetAngle = leftLimit + moduleAngle * (newTargetIndex + 0.5);
+
+    // 判断是否为“中断重启”（之前正在跑）
+    final bool wasAnimating = _mainController.isAnimating || _settleController.isAnimating || _preController.isAnimating;
+
+    // 计算起点：若传入 incomingTargetIndex 则使用折中起点；否则按当前 controllers 计算 visual startAngle（以做到平滑中断/续接）
+    final double midPoint = (leftLimit + rightLimit) / 2;
+    double startAngle;
+
+    if (incomingTargetIndex != null) {
+      // 之前：startAngle = (midPoint + _currentAngle) / 2.0;
+      // 改为：每次强制从中点开始（保证每次 full-range 摆动）
+      startAngle = midPoint;
+
+      // 清理并重置 controllers（避免残留 listener）
       _mainController.stop();
       _settleController.stop();
+      if (_preListener != null) {
+        try {
+          _preController.removeListener(_preListener!);
+        } catch (_) {}
+        _preListener = null;
+      }
+      _preController.stop();
       _mainController.reset();
       _settleController.reset();
+      _preController.reset();
+
+      // 直接缓存起点与目标并启动主动画（不走 pre-bias）
+      _animStartAngle = startAngle;
+      _animTargetAngle = targetAngle;
+
+      // 立即更新当前角度以保证 UI 不会瞬跳（动画由 mainController 驱动）
+      setState(() {
+        _currentAngle = startAngle;
+      });
+
+      _mainController.duration = widget.totalDuration;
+      _mainController.reset();
+      _mainController.forward(from: 0).whenComplete(_startSettle);
+
+      return;
     }
 
-    // 缓存新的起点与目标（固定值）
-    _animStartAngle = _currentAngle;
-    _animTargetAngle = targetAngle;
 
-    // 取消任何正在进行的 settle
-    if (_settleController.isAnimating) {
-      _settleController.stop();
-      _settleController.reset();
+    // ------------------------
+    // 否则（incomingTargetIndex == null）走智能衔接逻辑：
+    if (_preController.isAnimating && _animStartAngle != null) {
+      startAngle = _animStartAngle!;
+    } else if (_mainController.isAnimating && _animStartAngle != null && _animTargetAngle != null) {
+      final double curT = _mainController.value.clamp(0.0, 1.0);
+      startAngle = _computeAngleAt(curT, _animStartAngle!, _animTargetAngle!, cycles);
+    } else if (_settleController.isAnimating && _animTargetAngle != null) {
+      final double s = _settleController.value.clamp(0.0, 1.0);
+      startAngle = _computeSettleAngle(s, _animTargetAngle!);
+    } else {
+      startAngle = _currentAngle;
     }
 
-    // 配置并启动主 controller
-    _mainController.duration = widget.totalDuration;
+    // 清理并重置 controller（同原逻辑）
+    _mainController.stop();
+    _settleController.stop();
+    if (_preListener != null) {
+      try {
+        _preController.removeListener(_preListener!);
+      } catch (_) {}
+      _preListener = null;
+    }
+    _preController.stop();
     _mainController.reset();
-    _mainController.forward(from: 0).whenComplete(() {
-      // 主动画到达“结束”时（理论上已在目标），不要直接固定到目标，改为启动 settle 微摆
-      _startSettle();
-    });
+    _settleController.reset();
+    _preController.reset();
 
-    setState(() {}); // 触发 AnimatedBuilder 去监听 controller
+    // 只有在“中断重开”时，且起点与目标太接近，才人工拉开距离（bias）
+    final double diff = (targetAngle - startAngle).abs();
+    final double span = (rightLimit - leftLimit) / 2;
+    final bool needBias = wasAnimating && diff < span * 0.2;
+
+    if (!needBias) {
+      _animStartAngle = startAngle;
+      _animTargetAngle = targetAngle;
+      _mainController.duration = widget.totalDuration;
+      _mainController.reset();
+      _mainController.forward(from: 0).whenComplete(_startSettle);
+    } else {
+      // 原有 pre-bias 平滑流程（保留）
+      final double biasDir = Random().nextBool() ? 1.0 : -1.0;
+      final double bias = biasDir * span * 0.5;
+      final double biasedStart = _clampToLimits(startAngle + bias);
+
+      _animTargetAngle = targetAngle;
+
+      _preController.duration = preDuration;
+      _preController.reset();
+
+      // 准备并记录 listener，以便之后能 remove
+      _preListener = () {
+        final double v = _preController.value.clamp(0.0, 1.0);
+        final double interpolated = startAngle + (biasedStart - startAngle) * preCurve.transform(v);
+        _animStartAngle = interpolated;
+      };
+
+      _preController.addListener(_preListener!);
+
+      _preController.forward(from: 0).whenComplete(() {
+        // 移除 listener 并清空记录
+        if (_preListener != null) {
+          try {
+            _preController.removeListener(_preListener!);
+          } catch (_) {}
+          _preListener = null;
+        }
+        // 确保起点为最终 biasedStart
+        _animStartAngle = biasedStart;
+        // 启动主动画
+        _mainController.duration = widget.totalDuration;
+        _mainController.reset();
+        _mainController.forward(from: 0).whenComplete(_startSettle);
+      });
+    }
+
+    setState(() {});
   }
 
   /// 启动 settle（到达目标后的小幅阻尼晃动），完成后固定在目标并清缓存
   void _startSettle() {
-    // 如果没有目标就直接返回（理论不会发生）
-    if (_animTargetAngle == null) {
-      return;
-    }
+    if (_animTargetAngle == null) return;
 
-    // 配置 settle controller
     _settleController.duration = settleDuration;
     _settleController.reset();
     _settleController.forward(from: 0).whenComplete(() {
-      // settle 结束，固定到目标并清缓存
       setState(() {
         _currentAngle = _animTargetAngle!;
         _animStartAngle = null;
@@ -173,12 +282,9 @@ class _GamePearlPopState extends State<GamePearlPop>
     });
   }
 
-  void _onSpinPressed() {
-    // 新触发：中断并开始新动画
-    if (_mainController.isAnimating || _settleController.isAnimating) {
-      // will be handled in _setupMainAnim
-    }
-    _setupMainAnim();
+  /// 点击触发：接受可选 targetIndex 并传给 _setupMainAnim
+  void _onSpinPressed([int? targetIndex]) {
+    _setupMainAnim(targetIndex);
   }
 
   @override
@@ -207,7 +313,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                   child: Padding(
                     padding: EdgeInsets.only(top: 92.h),
                     child: AnimatedBuilder(
-                      // 监听主+settle 两个 controller（CombinedListenable 会在它们任一 tick 时触发）
+                      // 监听 main + settle + pre 三个 controller（CombinedListenable 会在它们任一 tick 时触发）
                       animation: _combined,
                       builder: (context, child) {
                         // 如果 settle 在跑 -> 使用 settle 计算（在微摆阶段）
@@ -221,12 +327,21 @@ class _GamePearlPopState extends State<GamePearlPop>
                           );
                         }
 
-                        // 否则如果主动画在跑 -> 使用主动画计算
+                        // 否则如果 main 在跑 -> 使用主动画计算
                         if (_mainController.isAnimating && _animStartAngle != null && _animTargetAngle != null) {
                           final double t = _mainController.value.clamp(0.0, 1.0);
                           final double angle = _computeAngleAt(t, _animStartAngle!, _animTargetAngle!, cycles);
                           return Transform.rotate(
                             angle: angle,
+                            alignment: const Alignment(0, 1),
+                            child: child,
+                          );
+                        }
+
+                        // 如果 pre 在跑（平滑过渡到 biased 起点），我们直接用 _animStartAngle（pre listener 已更新）
+                        if (_preController.isAnimating && _animStartAngle != null) {
+                          return Transform.rotate(
+                            angle: _animStartAngle!,
                             alignment: const Alignment(0, 1),
                             child: child,
                           );
@@ -287,7 +402,7 @@ class _GamePearlPopState extends State<GamePearlPop>
             child: CupertinoButton(
               padding: EdgeInsets.zero,
               pressedOpacity: 0.7,
-              onPressed: _onSpinPressed,
+              onPressed: () => _onSpinPressed(2),
               child: SizedBox(
                 width: 172.w,
                 height: 50.h,
@@ -297,7 +412,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                     Image.asset("assets/images/bg_confirm.webp"),
                     Center(
                       child: Text(
-                        "app_spin",
+                        "app_spin".tr(),
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

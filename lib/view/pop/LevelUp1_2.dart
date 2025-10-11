@@ -92,7 +92,7 @@ class _LevelUp1_2State extends State<LevelUp1_2>
                           height: 45.h,
                         ),
                         GameText(
-                          showText: "+0.001/1s",
+                          showText: "+0.02/1s",
                           fontSize: 25.sp,
                           fillColor: Color(0xFFFFEF50),
                           strokeColor: Color(0xFF9B4801),
@@ -157,6 +157,15 @@ class _LevelUp1_2State extends State<LevelUp1_2>
               AudioUtils().playClickAudio();
               Navigator.pop(context, 1);
             },
+          ),
+        ),
+        Positioned(
+          right: 100.w,
+          top: 538.h,
+          child: Image.asset(
+            "assets/images/ic_ad_tips.webp",
+            width: 36.w,
+            height: 36.h,
           ),
         ),
       ],
