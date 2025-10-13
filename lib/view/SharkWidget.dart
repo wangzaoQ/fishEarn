@@ -1,4 +1,3 @@
-// SharkWidget_positioned.dart
 import 'package:flutter/material.dart';
 
 class SharkWidget extends StatefulWidget {
@@ -62,26 +61,28 @@ class _SharkWidgetState extends State<SharkWidget>
 
   @override
   void dispose() {
-    _controller.stop();
     _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedPositioned(
-      duration: _controller.duration ?? Duration(milliseconds: 300),
-      top: widget.top,
-      right: _rightAnim.value, // 动态值
-      child: Opacity(
-        opacity: _fadeAnim.value,
-        child: SizedBox(
-          width: widget.width,
-          height: widget.height,
-          child: Image.asset(widget.imagePath, fit: BoxFit.cover),
-        ),
-      ),
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Positioned(
+          top: widget.top, // ✅ 现在可以正常生效
+          right: _rightAnim.value,
+          child: Opacity(
+            opacity: _fadeAnim.value,
+            child: SizedBox(
+              width: widget.width,
+              height: widget.height,
+              child: Image.asset(widget.imagePath, fit: BoxFit.cover),
+            ),
+          ),
+        );
+      },
     );
   }
-
 }
