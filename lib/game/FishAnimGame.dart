@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../config/global.dart';
+import '../utils/GameManager.dart';
 import '../utils/GlobalTimerManager.dart';
 import 'FishComponent.dart';
 
@@ -61,7 +62,7 @@ class SimpleAnimGame extends FlameGame {
 
     // 金币图标
     coinIcon = SpriteComponent()
-      ..sprite = await Sprite.load("ic_coin2.webp")
+      ..sprite = await Sprite.load("ic_coin4.webp")
       ..size = Vector2(45.w, 45.h)
       ..position = Vector2(8.w, 43.h); // top + left
     add(coinIcon);
@@ -76,7 +77,7 @@ class SimpleAnimGame extends FlameGame {
     );
 
     coinText = TextComponent(
-      text: LocalCacheUtils.getGameData().coin.toStringAsFixed(2),
+      text: GameManager.instance.getCoinShow(LocalCacheUtils.getGameData().coin),
       textRenderer: textPaint,
       anchor: Anchor.center,
     )
@@ -114,7 +115,7 @@ class SimpleAnimGame extends FlameGame {
   /// 外部调用以更新 coin 文本（只修改 TextComponent，不触发 Flutter rebuild）
   void updateCoin(double coin) {
     if(coinText == null)return;
-    final formatted = coin.toStringAsFixed(3);
+    final formatted = 1000.590.toStringAsFixed(2);
     if (coinText!.text != formatted) {
       coinText!.text = formatted;
     }

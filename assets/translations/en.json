@@ -26,6 +26,10 @@
   "app_props_tips": "The tides have washed ashore untold wealth... Will you claim pearls or fortune",
   "app_award_first_tips": "Treasure Gifts From The Waves",
   "app_fish_to_exchange": "Interact with the fish to exchange",
-  "app_play": "Play"
+  "app_play": "Play",
+  "app_balance": "Balance",
+  "app_withdrawal": "select withdrawal method",
+  "app_withdraw": "Withdraw",
+  "app_cash_out": "Cash Out"
 
 }

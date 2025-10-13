@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/cash/CashMain.dart';
 import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/config/GameConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
@@ -312,6 +313,7 @@ class _GamePageState extends State<GamePage>
                           height: 67.h,
                         ),
                         onPressed: () async {
+                          if (!ClickManager.canClick(context: context)) return;
                           GameManager.instance.pauseMovement();
                           var pearlCount = gameData.pearlCount;
                           //游戏结束
@@ -355,6 +357,34 @@ class _GamePageState extends State<GamePage>
                             gameData.coin += result * awardResult;
                           }
                           LocalCacheUtils.putGameData(gameData);
+                          GameManager.instance.resumeMovement();
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      right: 16.w,
+                      bottom: 5.h,
+                      child: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        pressedOpacity: 0.7,
+                        child: Image.asset(
+                          "assets/images/ic_coin2.webp",
+                          width: 67.w,
+                          height: 67.h,
+                          fit: BoxFit.cover,
+                        ),
+                        onPressed: () async {
+                          if (!ClickManager.canClick(context: context)) return;
+                          GameManager.instance.pauseMovement();
+                          GlobalTimerManager().cancelTimer();
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CashMain(),
+                              settings: const RouteSettings(name: '/CashMain'),
+                            ),
+                          );
+                          registerTimer();
                           GameManager.instance.resumeMovement();
                         },
                       ),
@@ -643,19 +673,15 @@ class _GamePageState extends State<GamePage>
   }
 
   buildShark() {
-    return Positioned(
-      top: 0,
-      right: 0,
-      child: globalShowShark
-          ? SharkWidget(
-              key: GlobalKey(),
-              imagePath: "assets/images/ic_shark.webp",
-              top: 420.h,
-              width: 204.w,
-              height: 101.h,
-            )
-          : SizedBox.shrink(),
-    );
+    return  globalShowShark
+        ? SharkWidget(
+      key: GlobalKey(),
+      imagePath: "assets/images/ic_shark.webp",
+      top: 420.h,
+      width: 204.w,
+      height: 101.h,
+    )
+        : SizedBox.shrink();
   }
 
   buildDanger() {

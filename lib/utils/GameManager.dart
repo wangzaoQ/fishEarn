@@ -142,4 +142,8 @@ class GameManager{
     }
   }
 
+  String getCoinShow(double coin) {
+    return coin.toStringAsFixed(2);
+  }
+
 }

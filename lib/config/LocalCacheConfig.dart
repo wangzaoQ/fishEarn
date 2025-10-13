@@ -5,4 +5,6 @@ class LocalCacheConfig{
   static const firstShowProtectKey = "firstShowProtectKey";
   static const cacheKeyUserData = "cacheKeyUserData";
   static const cacheKeyFoodCount = "cacheKeyFoodCount";
+  //1 500 2 800 3 1000
+  static const cacheKeyCash = "cacheKeyCash";
 }
