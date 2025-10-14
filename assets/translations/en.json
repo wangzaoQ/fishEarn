@@ -30,6 +30,7 @@
   "app_balance": "Balance",
   "app_withdrawal": "select withdrawal method",
   "app_withdraw": "Withdraw",
-  "app_cash_out": "Cash Out"
+  "app_cash_out": "Cash Out",
+  "app_process": "Processing"
 
 }

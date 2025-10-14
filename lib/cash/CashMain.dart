@@ -263,7 +263,11 @@ class _CashMainState extends State<CashMain> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center, // 水平居中
                           children: [
-                            CashWidget(gameData:gameData,payType:payType,money:500)
+                            CashWidget(gameData:gameData,payType:payType,money:500,payStatus: 0,),
+                            SizedBox(height: 4.h,),
+                            CashWidget(gameData:gameData,payType:payType,money:500,payStatus: 1),
+                            SizedBox(height: 4.h,),
+                            CashWidget(gameData:gameData,payType:payType,money:500,payStatus: 2)
                           ],
                         ),
                       ],
