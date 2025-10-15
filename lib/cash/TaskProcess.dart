@@ -17,11 +17,11 @@ class _TaskProcessState extends State<TaskProcess> {
   @override
   Widget build(BuildContext context) {
     var taskList = TaskManager.instance.getCurrentSubTaskNames();
-    var taskMap = TaskManager.instance.getCurrentSubTasks();
     var task1 = taskList[0];
     var task2 = taskList[1];
     var task1Current = LocalCacheUtils.getInt(task1);
     var task2Current = LocalCacheUtils.getInt(task2);
+    var taskMap = TaskManager.instance.getCurrentSubTasks();
     var task1Config = taskMap[task1];
     var task2Config = taskMap[task2];
     var task1Complete = false;

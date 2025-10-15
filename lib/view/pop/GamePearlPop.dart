@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../task/TaskManager.dart';
 import '../GameText.dart';
 import 'BasePopView.dart';
 
@@ -327,6 +328,7 @@ class _GamePearlPopState extends State<GamePearlPop>
   void _onSpinPressed() {
     if(isRunning)return;
     isRunning = true;
+    TaskManager.instance.addTask("spins");
     if(widget.pearlCount <=0){
       isRunning = false;
       Navigator.pop(context,-2);

@@ -10,4 +10,5 @@ class LocalCacheConfig{
   static const taskCurrentKey = "taskCurrentKey";
   static const deviceIdKey = "deviceIdKey";
   static const cacheGuideKey = "cacheGuideKey";
+  static const cacheDataRestKey = "cacheDataRestKey";
 }

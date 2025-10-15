@@ -154,5 +154,86 @@ class TaskManager {
     LogUtils.logD("${TAG} currentTask : $_currentTask");
     tasks.forEach((k, v) => print("$k: $v"));
   }
+
+  /**
+   * defend 防御
+   * feed 食物
+   * bubbles 气泡
+   * spins 转盘
+   * login 连续登录
+   */
+  void addTask(String task) {
+    LogUtils.logD("$TAG: addTask:$task");
+    var taskName = TaskManager.instance.getCurrentTaskName();
+    if(taskName.isNotEmpty){
+      var taskList = TaskManager.instance.getCurrentSubTaskNames();
+      var task1 = taskList[0];
+      var task2 = taskList[1];
+      LogUtils.logD("$TAG: currentTask:$taskName task1:$task1 task2:$task2");
+      var task1Count = LocalCacheUtils.getInt(task1);
+      var task2Count = LocalCacheUtils.getInt(task2);
+      if(task1 == task){
+        LogUtils.logD("$TAG: task1 == $task");
+        task1Count+=1;
+        LocalCacheUtils.putInt(task1,task1Count);
+      }
+      if(task2 == task){
+        LogUtils.logD("$TAG: task2 == $task");
+        task2Count+=1;
+        LocalCacheUtils.putInt(task2,task2Count);
+      }
+      nextTask(task1, task2, task1Count, task2Count, taskName);
+    }
+  }
+
+  void nextTask(String task1, String task2, int task1Count, int task2Count, String taskName) {
+    var taskMap = TaskManager.instance.getCurrentSubTasks();
+    var task1Config = taskMap[task1];
+    var task2Config = taskMap[task2];
+    if(task1Count>=task1Config && task2Count>=task2Config){
+      var nextTask = "";
+      if(taskName == "task1"){
+        nextTask = "task2";
+      }else if(taskName == "task2"){
+        nextTask = "task3";
+      }else if(taskName == "task3"){
+        nextTask = "task4";
+      }else if(taskName == "task4"){
+        nextTask = "task5";
+      } else if(taskName == "task5"){
+        nextTask = "task6";
+      } else if(taskName == "task6"){
+        nextTask = "task7";
+      }
+      LogUtils.logD("$TAG: task next currentTask:$taskName nextTask:$nextTask ");
+      LocalCacheUtils.putInt(task1,0);
+      LocalCacheUtils.putInt(task2,0);
+    }
+  }
+
+  void addLogin(int lastDay, int currentDay) {
+    LogUtils.logD("$TAG: addLogin:");
+    var taskName = TaskManager.instance.getCurrentTaskName();
+    if(taskName.isNotEmpty){
+      var taskList = TaskManager.instance.getCurrentSubTaskNames();
+      var task1 = taskList[0];
+      var task2 = taskList[1];
+      LogUtils.logD("$TAG: currentTask:$taskName task1:$task1 task2:$task2");
+      var task1Count = LocalCacheUtils.getInt(task1);
+      var task2Count = LocalCacheUtils.getInt(task2);
+      if(task1 == "login"){
+        LogUtils.logD("$TAG: task1 == login");
+        task1Count+=1;
+        LocalCacheUtils.putInt(task1,task1Count);
+      }
+      if(task2 == "login"){
+        LogUtils.logD("$TAG: task2 == login");
+        task2Count+=1;
+        LocalCacheUtils.putInt(task2,task2Count);
+      }
+      nextTask(task1, task2, task1Count, task2Count, taskName);
+    }
+  }
+
 }
 

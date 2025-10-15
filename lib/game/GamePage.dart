@@ -6,6 +6,7 @@ import 'package:fish_earn/cash/CashMain.dart';
 import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/config/GameConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
+import 'package:fish_earn/task/TaskManager.dart';
 import 'package:fish_earn/utils/AudioUtils.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/GlobalTimerManager.dart';
@@ -134,6 +135,7 @@ class _GamePageState extends State<GamePage>
           toCashMain(context);
         }
       }
+      // TaskManager.instance.addTask("login");
     });
     eventBus.on<NotifyEvent>().listen((event) {
       if (event.message == EventConfig.new4) {
@@ -498,6 +500,7 @@ class _GamePageState extends State<GamePage>
                           showCoinBubbles = false;
                           gameData.coin += 1;
                           LocalCacheUtils.putGameData(gameData);
+                          TaskManager.instance.addTask("bubbles");
                         });
                       },
                     ),
@@ -517,6 +520,7 @@ class _GamePageState extends State<GamePage>
                           showFoodBubbles = false;
                           gameData.foodCount += 10;
                           LocalCacheUtils.putGameData(gameData);
+                          TaskManager.instance.addTask("bubbles");
                         });
                       },
                     ),
@@ -536,6 +540,7 @@ class _GamePageState extends State<GamePage>
                           showPearlBubbles1 = false;
                           gameData.pearlCount += 1;
                           LocalCacheUtils.putGameData(gameData);
+                          TaskManager.instance.addTask("bubbles");
                         });
                       },
                     ),
@@ -555,6 +560,7 @@ class _GamePageState extends State<GamePage>
                           showPearlBubbles2 = false;
                           gameData.pearlCount += 1;
                           LocalCacheUtils.putGameData(gameData);
+                          TaskManager.instance.addTask("bubbles");
                         });
                       },
                     ),
@@ -857,6 +863,8 @@ class _GamePageState extends State<GamePage>
             if (result) {
               return;
             }
+          }else{
+            TaskManager.instance.addTask("defend");
           }
         });
       }
@@ -907,7 +915,6 @@ class _GamePageState extends State<GamePage>
         showMarkNew2();
       },
       onClickTarget: (target) {
-        if (!ClickManager.canClick(context: context)) return;
         clickFood();
       },
     );
@@ -1001,7 +1008,7 @@ class _GamePageState extends State<GamePage>
   }
 
   void clickFood() {
-    AudioUtils().playClickAudio();
+    if (!ClickManager.canClick(context: context)) return;
     if (gameData.foodCount < 10) {
       GameManager.instance.showTips("app_not_enough_food".tr());
       return;
@@ -1028,6 +1035,7 @@ class _GamePageState extends State<GamePage>
       Future.delayed(Duration(seconds: 1), () {
         globalShowFood = false;
       });
+      TaskManager.instance.addTask("feed");
     }
   }
 }

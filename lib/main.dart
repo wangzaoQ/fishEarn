@@ -13,6 +13,7 @@ import 'package:fish_earn/utils/GlobalConfigManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/LogUtils.dart';
 import 'package:fish_earn/utils/NetWorkManager.dart';
+import 'package:fish_earn/utils/TimeUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -43,6 +44,8 @@ Future<void> main() async {
     }
   }
   GlobalConfigManager.instance.init();
+  TimeUtils.dataReset();
+
   TaskManager.instance.init(null);
   runApp(
     EasyLocalization(
