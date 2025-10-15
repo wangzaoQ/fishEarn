@@ -70,6 +70,13 @@ class TaskManager {
     };
   }
 
+  String getCurrentTaskName(){
+    final current = getCurrentTask();
+    if (current == null || current.isEmpty) return "";
+    // 当前任务的任务名，例如 "task1"
+    return current.keys.first;
+  }
+
   /// 获取当前任务的所有子任务名（如 defend、feed 等）
   List<String> getCurrentSubTaskNames() {
     final current = getCurrentTask();

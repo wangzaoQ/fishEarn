@@ -44,5 +44,8 @@ class GameConfig {
   static const taskBubbles = 5;
   static const taskSpins = 10;
   static const taskLogin = 2;
-
+  // ====== 提现金额 ======
+  static const cash1 = 500;
+  static const cash2 = 800;
+  static const cash3 = 1000;
 }

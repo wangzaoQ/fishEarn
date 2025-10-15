@@ -14,6 +14,7 @@ class TaskPop extends StatelessWidget {
   Widget build(BuildContext context) {
     var taskList = TaskManager.instance.getCurrentSubTaskNames();
     var taskMap = TaskManager.instance.getCurrentSubTasks();
+    var taskName = TaskManager.instance.getCurrentTaskName();
     var task1 = taskList[0];
     var task2 = taskList[1];
     var task1Current = LocalCacheUtils.getInt(task1);
@@ -22,6 +23,8 @@ class TaskPop extends StatelessWidget {
     var task2Config = taskMap[task2];
     var task1Need = getTaskContent(task1, task1Config);
     var task2Need = getTaskContent(task2, task2Config);
+    var title = getTaskTitle(taskName);
+    var content = getTaskTips(taskName);
 
     return Center(
       child: Container(
@@ -65,9 +68,9 @@ class TaskPop extends StatelessWidget {
 
                 /// 顶部标题
                 Padding(
-                  padding: EdgeInsets.only(left: 21.w, right: 21.w, top: 5.h),
+                  padding: EdgeInsets.only(left: 21.w, right: 21.w, top: 0.h),
                   child: Text(
-                    "app_task2_title".tr(),
+                    title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       height: 1,
@@ -82,7 +85,7 @@ class TaskPop extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 13.w),
                   child: Text(
-                    "app_task2_content".tr(),
+                    content,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 14.sp,
@@ -260,5 +263,38 @@ class TaskPop extends StatelessWidget {
       img = "assets/images/ic_task_login.webp";
     }
     return img;
+  }
+
+  String getTaskTitle(String taskName) {
+    String title = "";
+    if (taskName == "task1") {
+      title = "app_task1_title".tr();
+    } else if (taskName == "task2") {
+      title = "app_task2_title".tr();
+    } else if (taskName == "task3") {
+      title = "app_task3_title".tr();
+    } else if (taskName == "task4") {
+      title = "app_task4_title".tr();
+    } else if (taskName == "task5") {
+      title = "app_task5_title".tr();
+    }
+    return title;
+  }
+
+
+  String getTaskTips(String taskName) {
+    String title = "";
+    if (taskName == "task1") {
+      title = "app_task1_content".tr();
+    } else if (taskName == "task2") {
+      title = "app_task2_content".tr();
+    } else if (taskName == "task3") {
+      title = "app_task3_content".tr();
+    } else if (taskName == "task4") {
+      title = "app_task4_content".tr();
+    } else if (taskName == "task5") {
+      title = "app_task5_content".tr();
+    }
+    return title;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/cash/CashPage.dart';
+import 'package:fish_earn/config/GameConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/data/GameData.dart';
 import 'package:fish_earn/utils/GameManager.dart';
@@ -11,7 +12,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../utils/ClickManager.dart';
 import '../view/PropsProgress.dart';
+import '../view/pop/BasePopView.dart';
+import '../view/pop/CashErrorPop.dart';
 import '../view/pop/PopManger.dart';
 import 'TaskProcess.dart';
 
@@ -136,6 +140,15 @@ class _CashWidgetState extends State<CashItemView> {
                       ],
                     ),
                     onPressed: () async {
+                      if (!ClickManager.canClick(context: context)) return;
+                      var gameData = LocalCacheUtils.getGameData();
+                      if(gameData.coin<widget.money){
+                        BasePopView().showScaleDialog(
+                          context: context,
+                          child: CashErrorPop( money: widget.money),
+                        );
+                        return;
+                      }
                       await Navigator.push(
                         context,
                         MaterialPageRoute(

@@ -52,5 +52,14 @@
   "app_task1_content": "Your withdrawal is under security verification. Please complete the required task to confirm account authenticity.",
   "app_task2_title": "The Device Being Used Is Not Your Usual Device",
   "app_task2_content": "just one more step to withdraw",
-  "app_complete": "Complete"
+  "app_task3_title": "Human Verfication",
+  "app_task3_content": "please complete human verfication before withdrawing",
+  "app_task4_title": "Identity Confirmation",
+  "app_task4_content": "Suspicious activity detected. Please complete verification tasks to confirm your identity and proceed with withdrawal.",
+  "app_task5_title": "Compliance Check",
+  "app_task5_content": "Your withdrawal is pending compliance review. Complete the required steps to validate your account and release funds.",
+  "app_complete": "Complete",
+  "app_title_cash_error": "Not Enough To Withdraw Yet",
+  "app_play_now": "Play Now",
+  "app_content_cash_error": "Play Now & Instantly Win UP TO {money}!Top up easily and withdraw instantly!"
 }
