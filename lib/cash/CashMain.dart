@@ -1,14 +1,19 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/cash/CashItemView.dart';
+import 'package:fish_earn/config/LocalCacheConfig.dart';
+import 'package:fish_earn/data/UserData.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/view/GameText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../data/GameData.dart';
+import '../utils/ClickManager.dart';
 import '../utils/LocalCacheUtils.dart';
+import 'CashPage.dart';
 
 class CashMain extends StatefulWidget {
   const CashMain({super.key});
@@ -19,11 +24,26 @@ class CashMain extends StatefulWidget {
 
 class _CashMainState extends State<CashMain> {
   late GameData gameData;
+  late UserData userData;
+
 
   @override
   void initState() {
     super.initState();
     gameData = LocalCacheUtils.getGameData();
+    userData = LocalCacheUtils.getUserData();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userData.new6) {
+        Future.delayed(Duration(milliseconds: 500), () {
+          showMarkNew6();
+        });
+      }else if(userData.new7){
+        Future.delayed(Duration(milliseconds: 500), () {
+          showMarkNew7();
+        });
+      }
+    });
   }
 
   // 0 paypal 1 cash
@@ -204,6 +224,7 @@ class _CashMainState extends State<CashMain> {
                   right: 15.w,
                   top: 37.h,
                   child: SizedBox(
+                    key: globalKeyNew6,
                     width: double.infinity,
                     height: 56.h,
                     child: Stack(
@@ -263,23 +284,215 @@ class _CashMainState extends State<CashMain> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center, // 水平居中
                           children: [
-                            CashItemView(gameData:gameData,payType:payType,money:500,payStatus: 0,),
-                            SizedBox(height: 4.h,),
-                            CashItemView(gameData:gameData,payType:payType,money:500,payStatus: 1),
-                            SizedBox(height: 4.h,),
-                            CashItemView(gameData:gameData,payType:payType,money:500,payStatus: 2)
+                            CashItemView(
+                              key: globalKeyNew7,
+                              gameData: gameData,
+                              payType: payType,
+                              money: 500,
+                              payStatus: 0,
+                            ),
+                            SizedBox(height: 4.h),
+                            CashItemView(
+                              gameData: gameData,
+                              payType: payType,
+                              money: 500,
+                              payStatus: 1,
+                            ),
+                            SizedBox(height: 4.h),
+                            CashItemView(
+                              gameData: gameData,
+                              payType: payType,
+                              money: 500,
+                              payStatus: 2,
+                            ),
                           ],
                         ),
                       ],
                     ),
                   ),
                 ),
-
               ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  TutorialCoachMark? tutorialCoachMark;
+  late List<TargetFocus> globalKeyNew6Keys;
+  GlobalKey globalKeyNew6 = GlobalKey();
+  GlobalKey globalKeyNew7 = GlobalKey();
+
+  void showMarkNew6() {
+    globalKeyNew6Keys = [];
+    globalKeyNew6Keys.add(
+      TargetFocus(
+        identify: "guide6",
+        keyTarget: globalKeyNew6,
+        shape: ShapeLightFocus.RRect,
+        radius: 12.0,
+        // 圆角半径，自行调整
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom, // 内容在高亮 widget 下方
+            child: Stack(
+              clipBehavior: Clip.none, // 防止溢出裁剪
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.fromLTRB(0, 60.h, 0, 0),
+                    child: Image.asset(
+                      "assets/images/ic_fish_tips.webp",
+                      width: 75.w,
+                      height: 75.h,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.fromLTRB(68.w, 50.h, 0, 0),
+                    child: Container(
+                      width: 268.w,
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      height: 72.h, // 让高度自适应文字
+                      child: Stack(
+                        children: [
+                          Image.asset(
+                            "assets/images/bg_level_up.webp",
+                            width: double.infinity,
+                            height: double.infinity,
+                            fit: BoxFit.fill,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(30.w, 0, 20.w, 0),
+                            child: Center(
+                              child: Text(
+                                "app_mask6_tips".tr(),
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF651922),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+    tutorialCoachMark = TutorialCoachMark(
+      targets: globalKeyNew6Keys,
+      colorShadow: Colors.black.withOpacity(0.8),
+      textSkip: "",
+      paddingFocus: 0,
+      onFinish: () {
+        showMarkNew7();
+      },
+      onClickTarget: (target) async {
+        if (!ClickManager.canClick(context: context)) return;
+      },
+    );
+    tutorialCoachMark?.show(context: context);
+  }
+
+  void showMarkNew7() {
+    userData.new6 = false;
+    LocalCacheUtils.putUserData(userData);
+    globalKeyNew6Keys = [];
+    globalKeyNew6Keys.add(
+      TargetFocus(
+        identify: "guide7",
+        keyTarget: globalKeyNew7,
+        shape: ShapeLightFocus.RRect,
+        radius: 12.0,
+        // 圆角半径，自行调整
+        contents: [
+          TargetContent(
+            align: ContentAlign.top, // 内容在高亮 widget 下方
+            child: Stack(
+              clipBehavior: Clip.none, // 防止溢出裁剪
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.fromLTRB(0, 0, 0, 50.h),
+                    child: Image.asset(
+                      "assets/images/ic_fish_tips.webp",
+                      width: 75.w,
+                      height: 75.h,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.fromLTRB(68.w, 0, 0, 60.h),
+                    child: Container(
+                      width: 268.w,
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      height: 72.h, // 让高度自适应文字
+                      child: Stack(
+                        children: [
+                          Image.asset(
+                            "assets/images/bg_level_up.webp",
+                            width: double.infinity,
+                            height: double.infinity,
+                            fit: BoxFit.fill,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(30.w, 0, 20.w, 0),
+                            child: Center(
+                              child: Text(
+                                "app_mask7_tips".tr(),
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF651922),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+    tutorialCoachMark = TutorialCoachMark(
+      targets: globalKeyNew6Keys,
+      colorShadow: Colors.black.withOpacity(0.8),
+      textSkip: "",
+      paddingFocus: 0,
+      onFinish: () {},
+      onClickTarget: (target) {
+        if (!ClickManager.canClick(context: context)) return;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CashPage(
+              payType: 0,
+              payStatus:1,
+              isGuide: true,
+            ),
+          ),
+        );
+      },
+    );
+    tutorialCoachMark?.show(context: context);
   }
 }

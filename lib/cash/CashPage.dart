@@ -29,6 +29,9 @@ class _CashPage2State extends State<CashPage> {
   @override
   void initState() {
     super.initState();
+    var userData = LocalCacheUtils.getUserData();
+    userData.new7 = false;
+    LocalCacheUtils.putUserData(userData);
     _initAsync();
   }
 
@@ -184,7 +187,7 @@ class _CashPage2State extends State<CashPage> {
                           ),
                           onPressed: () {
                             if (widget.isGuide) {
-                              Navigator.pop(context, -1);
+                              Navigator.popUntil(context, (route) => route.isFirst);
                               return;
                             }
                             // if ((widget.payType == 0) &&

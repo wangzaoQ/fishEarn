@@ -115,25 +115,28 @@ class _GamePageState extends State<GamePage>
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       registerTimer();
-      // if (userData.new1 ||
-      //     userData.new2 ||
-      //     userData.new3 ||
-      //     userData.new4 ||
-      //     userData.new5) {
-      //   if (userData.new1) {
-      //     showMarkNew1();
-      //   } else if (userData.new2) {
-      //     showMarkNew2();
-      //   }else if(userData.new3){
-      //     eventBus.fire(NotifyEvent(EventConfig.new3));
-      //   }
-      // }
+      if (userData.new1 ||
+          userData.new2 ||
+          userData.new3 ||
+          userData.new4 ||
+          userData.new5) {
+        if (userData.new1) {
+          showMarkNew1();
+        } else if (userData.new2) {
+          showMarkNew2();
+        }else if(userData.new3){
+          eventBus.fire(NotifyEvent(EventConfig.new3));
+        }else if(userData.new4){
+          eventBus.fire(NotifyEvent(EventConfig.new4));
+        }else if(userData.new5){
+          showMarkNew5();
+        }else if(userData.new6 || userData.new7){
+          toCashMain(context);
+        }
+      }
     });
     eventBus.on<NotifyEvent>().listen((event) {
       if (event.message == EventConfig.new4) {
-        gameData.coin += GameConfig.coin_1_2;
-        LocalCacheUtils.putGameData(gameData);
-        GameManager.instance.updateCoinToGame(gameData.coin);
         GameManager.instance.pauseMovement();
         setState(() {
           globalShowDanger2 = true;
@@ -375,17 +378,7 @@ class _GamePageState extends State<GamePage>
                         ),
                         onPressed: () async {
                           if (!ClickManager.canClick(context: context)) return;
-                          GameManager.instance.pauseMovement();
-                          GlobalTimerManager().cancelTimer();
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CashMain(),
-                              settings: const RouteSettings(name: '/CashMain'),
-                            ),
-                          );
-                          registerTimer();
-                          GameManager.instance.resumeMovement();
+                          await toCashMain(context);
                         },
                       ),
                     ),
@@ -467,6 +460,10 @@ class _GamePageState extends State<GamePage>
                 ),
                 onPressed: () {
                   if (!ClickManager.canClick(context: context)) return;
+                  if(userData.new4){
+                    userData.new4 = false;
+                    LocalCacheUtils.putUserData(userData);
+                  }
                   gameData = LocalCacheUtils.getGameData();
                   gameData.protectTime += getProtectTime();
                   LocalCacheUtils.putGameData(gameData);
@@ -567,6 +564,20 @@ class _GamePageState extends State<GamePage>
         ),
       ),
     );
+  }
+
+  Future<void> toCashMain(BuildContext context) async {
+    GameManager.instance.pauseMovement();
+    GlobalTimerManager().cancelTimer();
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CashMain(),
+        settings: const RouteSettings(name: '/CashMain'),
+      ),
+    );
+    registerTimer();
+    GameManager.instance.resumeMovement();
   }
 
   Widget buildAnimal() {
@@ -896,7 +907,7 @@ class _GamePageState extends State<GamePage>
         showMarkNew2();
       },
       onClickTarget: (target) {
-        AudioUtils().playClickAudio();
+        if (!ClickManager.canClick(context: context)) return;
         clickFood();
       },
     );
@@ -904,6 +915,8 @@ class _GamePageState extends State<GamePage>
   }
 
   void showMarkNew2() {
+    userData.new1 = false;
+    LocalCacheUtils.putUserData(userData);
     // 创建控制器
     globalGuideNew1Keys = [];
     globalGuideNew1Keys.add(
@@ -924,7 +937,7 @@ class _GamePageState extends State<GamePage>
       paddingFocus: 0,
       onFinish: () {},
       onClickTarget: (target) {
-        AudioUtils().playClickAudio();
+        if (!ClickManager.canClick(context: context)) return;
         GameManager.instance.pauseMovement();
         setState(() {
           showCoinBubbles = false;
@@ -968,9 +981,9 @@ class _GamePageState extends State<GamePage>
       paddingFocus: 0,
       onFinish: () {},
       onClickTarget: (target) async {
-        AudioUtils().playClickAudio();
+        if (!ClickManager.canClick(context: context)) return;
         tutorialCoachMark?.skip();
-
+        userData.new5 = false;
         var result = await PopManager().show(
           context: context,
           child: PropsAwardPop(),
@@ -981,6 +994,7 @@ class _GamePageState extends State<GamePage>
           LocalCacheUtils.putGameData(gameData);
         }
         GameManager.instance.resumeMovement();
+        await toCashMain(context);
       },
     );
     tutorialCoachMark?.show(context: context);

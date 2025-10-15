@@ -413,11 +413,17 @@ class _GameProgressState extends State<GameProgress>
   }
 
   Future<void> toLevel2(BuildContext context) async {
+    var userData = LocalCacheUtils.getUserData();
+    userData.new3 = false;
+    LocalCacheUtils.putUserData(userData);
     widget.gameData.level = 2;
     widget.gameData.levelTime = GameConfig.time_2_3;
     LocalCacheUtils.putGameData(widget.gameData);
     widget.onConfirm(2);
     await PopManager().show(context: context, child: LevelPop1_2());
+    widget.gameData.coin += GameConfig.coin_1_2;
+    LocalCacheUtils.putGameData(widget.gameData);
+    GameManager.instance.updateCoinToGame(widget.gameData.coin);
     GameManager.instance.resumeMovement();
     eventBus.fire(NotifyEvent(EventConfig.new4));
   }
@@ -427,6 +433,9 @@ class _GameProgressState extends State<GameProgress>
   GlobalKey globalKeyNew3 = GlobalKey();
 
   void showMarkNew3() {
+    var userData = LocalCacheUtils.getUserData();
+    userData.new2 = false;
+    LocalCacheUtils.putUserData(userData);
     globalKeyNew3Keys = [];
     globalKeyNew3Keys.add(
       TargetFocus(
@@ -500,7 +509,7 @@ class _GameProgressState extends State<GameProgress>
       paddingFocus: 0,
       onFinish: () {},
       onClickTarget: (target) {
-        AudioUtils().playClickAudio();
+        if (!ClickManager.canClick(context: context)) return;
         toLevel2(context);
       },
     );

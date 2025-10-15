@@ -14,6 +14,10 @@ class UserData{
   bool new4 = true;
   //    5.高亮漂流瓶选择页面
   bool new5 = true;
+  // 6.手势引导Paypal
+  bool new6 = true;
+  // 7.高亮100美金提现栏
+  bool new7 = true;
 
   UserData();
 
