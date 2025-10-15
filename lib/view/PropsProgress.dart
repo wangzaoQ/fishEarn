@@ -22,7 +22,6 @@ class PropsProgress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final clampedProgress = progress.clamp(0.0, 1.0).toDouble();
-
     return Container(
       width: width,
       height: height,

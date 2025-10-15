@@ -289,6 +289,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.2"
+  email_validator:
+    dependency: "direct main"
+    description:
+      name: email_validator
+      sha256: e9a90f27ab2b915a27d7f9c2a7ddda5dd752d6942616ee83529b686fc086221b
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.17"
   event_bus:
     dependency: "direct main"
     description:
@@ -384,6 +392,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_udid:
+    dependency: "direct main"
+    description:
+      name: flutter_udid
+      sha256: "166bee5989a58c66b8b62000ea65edccc7c8167bbafdbb08022638db330dd030"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter

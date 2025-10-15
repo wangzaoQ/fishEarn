@@ -31,6 +31,26 @@
   "app_withdrawal": "select withdrawal method",
   "app_withdraw": "Withdraw",
   "app_cash_out": "Cash Out",
-  "app_process": "Processing"
+  "app_process": "Processing",
+  "app_safe": "Safe & Secure",
+  "app_account": "Account",
+  "app_phone": "Phone",
+  "app_confirm": "Confirm",
+  "app_cash_tips": "Direct to Your {from} • Instant Payment",
+  "app_task_defend": "Defend {currentCount}/{count} attacks",
+  "app_task_feed": "Feed fish {currentCount}/{count} time",
+  "app_task_bubbles": "Collect {currentCount}/{count} bubbles",
+  "app_task_spins": "Join {currentCount}/{count} spins",
+  "app_task_login": "Log in {currentCount}/{count} days.",
+  "app_task_pop_defend": "Defend {count} attacks",
+  "app_task_pop_feed": "Feed fish {count} time",
+  "app_task_pop_bubbles": "Collect {count} bubbles",
+  "app_task_pop_spins": "Join {count} spins",
+  "app_task_pop_login": "Log in {count} days.",
 
+  "app_task1_title": "Security Verification",
+  "app_task1_content": "Your withdrawal is under security verification. Please complete the required task to confirm account authenticity.",
+  "app_task2_title": "The Device Being Used Is Not Your Usual Device",
+  "app_task2_content": "just one more step to withdraw",
+  "app_complete": "Complete"
 }

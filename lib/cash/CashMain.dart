@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:fish_earn/cash/CashWidget.dart';
+import 'package:fish_earn/cash/CashItemView.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/view/GameText.dart';
 import 'package:flutter/cupertino.dart';
@@ -263,11 +263,11 @@ class _CashMainState extends State<CashMain> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center, // 水平居中
                           children: [
-                            CashWidget(gameData:gameData,payType:payType,money:500,payStatus: 0,),
+                            CashItemView(gameData:gameData,payType:payType,money:500,payStatus: 0,),
                             SizedBox(height: 4.h,),
-                            CashWidget(gameData:gameData,payType:payType,money:500,payStatus: 1),
+                            CashItemView(gameData:gameData,payType:payType,money:500,payStatus: 1),
                             SizedBox(height: 4.h,),
-                            CashWidget(gameData:gameData,payType:payType,money:500,payStatus: 2)
+                            CashItemView(gameData:gameData,payType:payType,money:500,payStatus: 2)
                           ],
                         ),
                       ],
