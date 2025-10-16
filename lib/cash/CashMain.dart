@@ -295,14 +295,14 @@ class _CashMainState extends State<CashMain> {
                             CashItemView(
                               gameData: gameData,
                               payType: payType,
-                              money: 500,
+                              money: 800,
                               payStatus: 1,
                             ),
                             SizedBox(height: 4.h),
                             CashItemView(
                               gameData: gameData,
                               payType: payType,
-                              money: 500,
+                              money: 1000,
                               payStatus: 2,
                             ),
                           ],

@@ -32,4 +32,14 @@ class CashConfig{
       }
     ]
   };
+
+
+  static Map<String, dynamic> defaultRank = {
+    "queue": [
+      {
+        "m_m": [5, 8],
+        "s_s": [25, 35]
+      }
+    ]
+  };
 }

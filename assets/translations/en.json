@@ -66,5 +66,6 @@
   "app_content_cash_error": "Play Now & Instantly Win UP TO {money}!Top up easily and withdraw instantly!",
   "app_withdraw_approval": "Withdraw Approval",
   "app_cash_queue": "Congratulations, You are in the withdrawal approval queue.",
-  "app_cash_queue_tips": "{allCount} in queue，Your Current rank {currentCount}"
+  "app_cash_queue_tips": "{allCount} In Queue，Your Current Rank {currentCount}",
+  "app_skip_wait": "Skip Wait"
 }

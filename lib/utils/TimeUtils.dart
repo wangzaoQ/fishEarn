@@ -51,4 +51,12 @@ class TimeUtils{
     LogUtils.logD("${TAG} diff:$diff");
     return diff == 1;
   }
+
+  static int minutesBetweenTimestamps(int timestamp1, int timestamp2) {
+    DateTime time1 = DateTime.fromMillisecondsSinceEpoch(timestamp1);
+    DateTime time2 = DateTime.fromMillisecondsSinceEpoch(timestamp2);
+
+    Duration diff = time2.difference(time1);
+    return diff.inMinutes.abs(); // 取绝对值，确保为正数
+  }
 }

@@ -99,8 +99,17 @@ class LocalCacheUtils{
     return UserData.fromJson(map);
   }
 
+  static Future<void> saveIntList(String key, List<int> list) async {
+    String encoded = jsonEncode(list); // 转 JSON
+    await _prefs?.setString(key, encoded);
+  }
 
-
+  static List<int> loadIntList(String key)  {
+    String? encoded = _prefs?.getString(key);
+    if (encoded == null) return [];
+    List<dynamic> decoded = jsonDecode(encoded);
+    return decoded.cast<int>();
+  }
 
   // 清空所有数据
   static Future<bool> clear() async {

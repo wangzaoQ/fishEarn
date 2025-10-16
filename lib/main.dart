@@ -7,6 +7,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/config/LocalConfig.dart';
 import 'package:fish_earn/game/GamePage.dart';
+import 'package:fish_earn/task/CashManager.dart';
 import 'package:fish_earn/task/TaskManager.dart';
 import 'package:fish_earn/utils/AudioUtils.dart';
 import 'package:fish_earn/utils/GlobalConfigManager.dart';
@@ -47,6 +48,7 @@ Future<void> main() async {
   TimeUtils.dataReset();
 
   TaskManager.instance.init(null);
+  CashManager.instance.init(null);
   runApp(
     EasyLocalization(
       supportedLocales: [Locale('en')],
