@@ -29,6 +29,12 @@ class _LevelUp2_3State extends State<LevelUp2_3>
   }
 
   @override
+  void dispose() {
+    _controller.dispose(); // ✅ 必须在 super.dispose() 之前
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [

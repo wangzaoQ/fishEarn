@@ -12,7 +12,7 @@ import '../utils/GlobalTimerManager.dart';
 import 'FishComponent.dart';
 
 class SimpleAnimGame extends FlameGame {
-  late final FishComponent fishComment;
+  FishComponent? fishComment;
   late SpriteComponent coinBg;
   late SpriteComponent coinIcon;
   late SpriteComponent settingIcon;
@@ -48,7 +48,7 @@ class SimpleAnimGame extends FlameGame {
       picName: picName, // 对应 assets/images/fish/... 的资源
       size: Vector2(width, height),
     );
-    add(fishComment);
+    add(fishComment!);
 
     // --- 新增：创建并添加 coinText (只负责文本显示) ---
     // 使用画布宽度做简单缩放映射（设计宽度按 375）
@@ -136,33 +136,33 @@ class SimpleAnimGame extends FlameGame {
 
   void showProtect(){
     globalShowProtect = true;
-    fishComment.showOverlay();
+    fishComment?.showOverlay();
   }
 
   void hideProtect(){
-    fishComment.hideOverlay();
+    fishComment?.hideOverlay();
   }
 
   void showDanger(){
     globalShowDanger1 = true;
-    fishComment.showDanger();
+    fishComment?.showDanger();
   }
 
   void hideDanger(){
     globalShowDanger1 = false;
-    fishComment.hideDanger();
+    fishComment?.hideDanger();
   }
 
   void pauseMovement(){
-    fishComment.pauseMovement();
+    fishComment?.pauseMovement();
   }
 
   void resumeMovement(){
-    fishComment.resumeMovement();
+    fishComment?.resumeMovement();
   }
 
   void swimToCenter(){
-    fishComment.swimToCenter();
+    fishComment?.swimToCenter();
   }
 
   @override
