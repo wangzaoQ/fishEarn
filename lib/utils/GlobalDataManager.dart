@@ -7,12 +7,12 @@ import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 
-class GlobalConfigManager{
+class GlobalDataManager{
   // 私有构造函数
-  GlobalConfigManager._();
+  GlobalDataManager._();
 
   // 全局唯一实例
-  static final GlobalConfigManager instance = GlobalConfigManager._();
+  static final GlobalDataManager instance = GlobalDataManager._();
 
   bool _isBrazil = false;
 

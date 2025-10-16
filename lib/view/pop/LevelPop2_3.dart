@@ -1,5 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:fish_earn/utils/GlobalConfigManager.dart';
+import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
@@ -98,7 +98,7 @@ class _LevelPop2_3State extends State<LevelPop2_3> with TickerProviderStateMixin
                 mainAxisAlignment: MainAxisAlignment.center, // 水平居中
                 children: [
               Image.asset("assets/images/ic_coin2.webp",width: 46.w,height: 46.h),
-              GameText(showText:GlobalConfigManager.instance.getCommonCoin(3),
+              GameText(showText:GlobalDataManager.instance.getCommonCoin(3),
                 fontSize: 25.sp,
                 fillColor: Color(0xFFFFEF50),)
             ]),

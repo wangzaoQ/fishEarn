@@ -1,5 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:fish_earn/utils/GlobalConfigManager.dart';
+import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
@@ -100,7 +100,7 @@ class _LevelPop1_2State extends State<LevelPop1_2>
                   height: 46.h,
                 ),
                 GameText(
-                  showText: GlobalConfigManager.instance.getCommonCoin(2),
+                  showText: GlobalDataManager.instance.getCommonCoin(2),
                   fontSize: 25.sp,
                   fillColor: Color(0xFFFFEF50),
                 ),

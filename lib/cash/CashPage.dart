@@ -1,6 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:fish_earn/utils/GlobalConfigManager.dart';
+import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';

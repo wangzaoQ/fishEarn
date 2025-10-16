@@ -10,7 +10,7 @@ import 'package:fish_earn/game/GamePage.dart';
 import 'package:fish_earn/task/CashManager.dart';
 import 'package:fish_earn/task/TaskManager.dart';
 import 'package:fish_earn/utils/AudioUtils.dart';
-import 'package:fish_earn/utils/GlobalConfigManager.dart';
+import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/LogUtils.dart';
 import 'package:fish_earn/utils/NetWorkManager.dart';
