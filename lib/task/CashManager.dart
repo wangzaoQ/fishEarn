@@ -24,9 +24,14 @@ class CashManager {
   Map<String, dynamic> ranks = {};
 
   void init(Map<String, dynamic>? initialTasks) async{
-    if (initialTasks != null) {
-      ranks = Map<String, dynamic>.from(initialTasks);
-    }else{
+    try{
+      if (initialTasks != null) {
+        ranks = Map<String, dynamic>.from(initialTasks);
+      }
+    }catch (e){
+      LogUtils.logE("$TAG init error $e");
+    }
+    if(ranks == null){
       ranks = Map<String, dynamic>.from(CashConfig.defaultRank);
     }
   }

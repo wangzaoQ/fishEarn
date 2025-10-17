@@ -28,9 +28,14 @@ class TaskManager {
   Map<String, dynamic> tasks = {};
 
   void init(Map<String, dynamic>? initialTasks) async{
-    if (initialTasks != null) {
-      tasks = Map<String, dynamic>.from(initialTasks);
-    }else{
+    try{
+      if (initialTasks != null) {
+        tasks = Map<String, dynamic>.from(initialTasks);
+      }
+    }catch (e){
+      LogUtils.logE("$TAG init error $e");
+    }
+    if(tasks == null){
       tasks = Map<String, dynamic>.from(CashConfig.defaultTask);
     }
   }

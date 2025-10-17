@@ -8,6 +8,7 @@ import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/config/LocalConfig.dart';
 import 'package:fish_earn/game/GamePage.dart';
 import 'package:fish_earn/task/CashManager.dart';
+import 'package:fish_earn/task/RewardManager.dart';
 import 'package:fish_earn/task/TaskManager.dart';
 import 'package:fish_earn/utils/AudioUtils.dart';
 import 'package:fish_earn/utils/FishNFManager.dart';
@@ -50,6 +51,7 @@ Future<void> main() async {
 
   TaskManager.instance.init(null);
   CashManager.instance.init(null);
+  RewardManager.instance.init(null);
   // 延迟3秒执行
   Future.delayed(const Duration(seconds: 3), () async {
     await FishNFManager.instance.init();
