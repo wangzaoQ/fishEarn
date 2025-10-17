@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../data/UserData.dart';
 import '../../utils/AudioUtils.dart';
+import '../../utils/ClickManager.dart';
 import '../GameText.dart';
 
 class PropsAwardPop extends StatefulWidget {
@@ -77,7 +80,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
           right: 28.w,
           left: 28.w,
           child: Text(
-            "app_app_props_tips".tr(),
+            "app_props_tips".tr(),
             textAlign: TextAlign.center, // ✅ 多行文字居中
             style: TextStyle(color: Colors.white, fontSize: 14.sp),
           ),
@@ -85,7 +88,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
         Positioned(
           left: 0,
           right: 0,
-          top: 390.h,
+          top: 330.h,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center, // 横向居中
             children: [
@@ -142,13 +145,17 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                           ),
                         ),
                         onPressed: () {
+                          if (!ClickManager.canClick(context: context)) return;
+                          if(selectedCoin>0){
+                            return;
+                          }
                           setState(() {
                             selected = 0;
                             selectedCoin = 8;
-                            if(userData.new5){
-                              Navigator.pop(context,selectedCoin);
-                            }
                           });
+                          if(userData.new5){
+                            startTimer();
+                          }
                         },
                       ),
                     ),
@@ -239,13 +246,17 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                           ),
                         ),
                         onPressed: () {
+                          if (!ClickManager.canClick(context: context)) return;
+                          if(selectedCoin>0){
+                            return;
+                          }
                           setState(() {
                             selected = 1;
                             selectedCoin = 9;
-                            if(userData.new5){
-                              Navigator.pop(context,selectedCoin);
-                            }
                           });
+                          if(userData.new5){
+                            startTimer();
+                          }
                         },
                       ),
                     ),
@@ -336,13 +347,17 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                           ),
                         ),
                         onPressed: () {
+                          if (!ClickManager.canClick(context: context)) return;
+                          if(selectedCoin>0){
+                            return;
+                          }
                           setState(() {
                             selected = 2;
                             selectedCoin = 10;
-                            if(userData.new5){
-                              Navigator.pop(context,selectedCoin);
-                            }
                           });
+                          if(userData.new5){
+                            startTimer();
+                          }
                         },
                       ),
                     ),
@@ -383,10 +398,23 @@ class _PropsAwardPopState extends State<PropsAwardPop>
             ],
           ),
         ),
+        userData.new5?
+        Positioned(
+            left: 0,
+            right: 0,
+            top: 490.h,
+            child: Transform.rotate(
+          angle: math.pi / 4,
+          child: Image.asset(
+            "assets/images/ic_arrow.webp",
+            width: 100.w,
+            height: 100.h,
+          ),
+        )):SizedBox.shrink(),
         Positioned(
           left: 101.w,
           right: 101.w,
-          top: 600.h,
+          top: 540.h,
           child: Visibility(
             visible: selected != -1 && !userData.new5,
             child: CupertinoButton(
@@ -418,7 +446,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
         ),
         Positioned(
           right: 100.w,
-          top: 585.h,
+          top: 525.h,
           child: Visibility(
             visible: selected != -1 && !userData.new5,
             child: Image.asset(
@@ -431,7 +459,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
         Align(
           alignment: Alignment.topCenter,
           child: Padding(
-            padding: EdgeInsetsGeometry.only(top: 660.h),
+            padding: EdgeInsetsGeometry.only(top: 600.h),
             child: Visibility(
               visible: selected != -1 && !userData.new5,
               child: CupertinoButton(
@@ -456,7 +484,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
         ),
         Positioned(
           left: 23.w,
-          bottom: 160.h,
+          bottom: 100.h,
           child: Visibility(
             visible: userData.new5,
             child: Image.asset(
@@ -467,7 +495,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
           ),
         ),
         Positioned(
-          bottom: 171.h,
+          bottom: 111.h,
           left: 84.w,
           right: 25.w,
           child: Visibility(
@@ -509,5 +537,12 @@ class _PropsAwardPopState extends State<PropsAwardPop>
         ),
       ],
     );
+  }
+
+  void startTimer() {
+    Future.delayed(const Duration(milliseconds: 1500), () async {
+      if (!mounted) return;
+      Navigator.pop(context,selectedCoin);
+    });
   }
 }

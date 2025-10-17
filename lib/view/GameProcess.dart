@@ -446,54 +446,75 @@ class _GameProgressState extends State<GameProgress>
         radius: 12.0,
         // 圆角半径，自行调整
         contents: [
+
+
           TargetContent(
             align: ContentAlign.bottom, // 内容在高亮 widget 下方
             child: Stack(
+              clipBehavior: Clip.none, // 防止溢出裁剪
               children: [
-                SizedBox(
-                  width: 268.w,
-                  height: 74.h,
-                  child: Stack(
-                    children: [
-                      Image.asset(
-                        "assets/images/bg_level_up.webp",
-                        width: double.infinity,
-                        height: double.infinity,
-                        fit: BoxFit.fill,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 17.w, right: 8.w),
-                        child: Center(
-                          child: Text.rich(
-                            TextSpan(
-                              text: "", // 默认样式
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.black,
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.fromLTRB(0, 63.h, 0, 0),
+                    child: Image.asset(
+                      "assets/images/ic_fish_tips.webp",
+                      width: 75.w,
+                      height: 75.h,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.fromLTRB(68.w, 74.h, 0, 0),
+                    child: Container(
+                      width: 268.w,
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      height: 74.h, // 让高度自适应文字
+                      child: Stack(
+                        children: [
+                          Image.asset(
+                            "assets/images/bg_level_up.webp",
+                            width: double.infinity,
+                            height: double.infinity,
+                            fit: BoxFit.fill,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(26.w, 0, 16.w, 0),
+                            child: Center(
+                              child: Text.rich(
+                                TextSpan(
+                                  text: "", // 默认样式
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.black,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: "app_level_up_tips1".tr(),
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: Color(0xFF651922),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: "app_level_up_tips2".tr(),
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        color: Color(0xFF2C9814),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              children: [
-                                TextSpan(
-                                  text: "app_level_up_tips1".tr(),
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    color: Color(0xFF651922),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: "app_level_up_tips2".tr(),
-                                  style: TextStyle(
-                                    fontSize: 14.sp,
-                                    color: Color(0xFF2C9814),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ],

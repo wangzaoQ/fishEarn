@@ -67,5 +67,24 @@
   "app_withdraw_approval": "Withdraw Approval",
   "app_cash_queue": "Congratulations, You are in the withdrawal approval queue.",
   "app_cash_queue_tips": "{allCount} In Queue，Your Current Rank {currentCount}",
-  "app_skip_wait": "Skip Wait"
+  "app_skip_wait": "Skip Wait",
+  "app_nf_guide_title": "Turn On Push Notifications",
+  "app_nf_guide_content": "Turn on notifications to claim your $5 reward!",
+  "app_nf_guide_ok": "Allow & Get $5",
+  "app_nf_guide_cancel": "Not Now",
+
+  "nf_t1_1": "\uD83D\uDC20 Your Fish Earned $50!",
+  "nf_t1_2": "\uD83D\uDCB0 Offline Rewards Maxed Out!",
+  "nf_c1_1": "Your fish is making money automatically! Tap to collect now.",
+  "nf_c1_2": "Earn while sleeping! 3 hours of idle income waiting.",
+
+  "nf_t2_1": "⏳ Golden Fish Leaving Soon!",
+  "nf_t2_2": "$50 Ready to Cash Out!",
+  "nf_c2_1": "Limited-time 2x income boost active for 1 more hour!",
+  "nf_c2_2": "Your balance reached payout threshold! Withdraw instantly.",
+
+  "nf_t3_1": "\uD83C\uDF81 Mystery Gift in Bottle!",
+  "nf_t3_2": "$100 Fast – Boost activated!",
+  "nf_c3_1": "Special reward from the ocean - tap to discover!",
+  "nf_c3_2": "Your $100 Fast ticket is ready!"
 }

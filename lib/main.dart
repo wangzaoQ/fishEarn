@@ -10,6 +10,7 @@ import 'package:fish_earn/game/GamePage.dart';
 import 'package:fish_earn/task/CashManager.dart';
 import 'package:fish_earn/task/TaskManager.dart';
 import 'package:fish_earn/utils/AudioUtils.dart';
+import 'package:fish_earn/utils/FishNFManager.dart';
 import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/LogUtils.dart';
@@ -49,6 +50,14 @@ Future<void> main() async {
 
   TaskManager.instance.init(null);
   CashManager.instance.init(null);
+  // 延迟3秒执行
+  Future.delayed(const Duration(seconds: 3), () async {
+    await FishNFManager.instance.init();
+    var allowNF = await FishNFManager.instance.allowNF();
+    if(allowNF){
+      FishNFManager.instance.startNF();
+    }
+  });
   runApp(
     EasyLocalization(
       supportedLocales: [Locale('en')],
