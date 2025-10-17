@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math' as math;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -16,6 +17,7 @@ import 'package:fish_earn/view/DropFadeImage.dart';
 import 'package:fish_earn/view/GameProcess.dart';
 import 'package:fish_earn/view/SharkWidget.dart';
 import 'package:fish_earn/view/bubbleWidget.dart';
+import 'package:fish_earn/view/pop/CashProcessPop.dart';
 import 'package:fish_earn/view/pop/CoinAnimalPop.dart';
 import 'package:fish_earn/view/pop/GameAward.dart';
 import 'package:fish_earn/view/pop/GameFailPop.dart';
@@ -49,7 +51,6 @@ import '../view/pop/PropsAwardPop.dart';
 import '../view/pop/SettingPop.dart';
 import 'AnimalGameHolder.dart';
 import 'ArrowWidget.dart';
-import 'FishAnimGame.dart';
 import 'GameLifePage.dart';
 
 class GamePage extends StatefulWidget {
@@ -143,6 +144,7 @@ class _GamePageState extends State<GamePage>
         setState(() {
           globalShowDanger2 = true;
         });
+        showMarkNew4();
       }
     });
   }
@@ -215,6 +217,9 @@ class _GamePageState extends State<GamePage>
                           } else if (result == 0) {
                             //隐私
                           }
+                          if (!ClickManager.canClick(context: context)) return;
+                          PopManager().show(context: context,
+                              child: CashProcessPop(money: 800,));
                         },
                       ),
                     ),
@@ -348,8 +353,7 @@ class _GamePageState extends State<GamePage>
                               child: GameAwardPop(type: 0, money: result),
                             );
                           }
-                          if (result == -2) {
-                          } else if (result == -1) {
+                          if (result == -2) {} else if (result == -1) {
                             setState(() {
                               gameData.foodCount += 30;
                             });
@@ -456,120 +460,125 @@ class _GamePageState extends State<GamePage>
                 padding: EdgeInsets.zero,
                 pressedOpacity: 0.7,
                 child: SizedBox(
+                  key: globalGuideNew4,
                   width: 70.w,
                   height: 70.h,
                   child: Image.asset("assets/images/ic_protect.webp"),
                 ),
                 onPressed: () {
-                  if (!ClickManager.canClick(context: context)) return;
-                  if(userData.new4){
-                    userData.new4 = false;
-                    LocalCacheUtils.putUserData(userData);
-                  }
-                  gameData = LocalCacheUtils.getGameData();
-                  gameData.protectTime += getProtectTime();
-                  LocalCacheUtils.putGameData(gameData);
-                  setState(() {
-                    globalShowDanger2 = false;
-                    ArrowOverlay.hide();
-                    if (globalShowDanger1) {
-                      GameManager.instance.hideDanger();
-                    }
-                  });
-                  GameManager.instance.showProtect();
-                  GameManager.instance.updateProtectTime(gameData.protectTime);
-                  GameManager.instance.resumeMovement();
-                  if (userData.new5) {
-                    showMarkNew5();
-                  }
+                  clickProtect();
                 },
               ),
             ),
             //现金气泡
             showCoinBubbles
                 ? Positioned(
-                    left: 38.w,
-                    bottom: 241.h,
-                    child:  CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.7,
-                      child: BubbleWidget(key: globalGuideNew2, type: 0),
-                      onPressed: () {
-                        if (!ClickManager.canClick(context: context)) return;
-                        setState(() {
-                          showCoinBubbles = false;
-                          gameData.coin += 1;
-                          LocalCacheUtils.putGameData(gameData);
-                          TaskManager.instance.addTask("bubbles");
-                        });
-                      },
-                    ),
-                  )
+              left: 38.w,
+              bottom: 241.h,
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                pressedOpacity: 0.7,
+                child: BubbleWidget(key: globalGuideNew2, type: 0),
+                onPressed: () {
+                  if (!ClickManager.canClick(context: context)) return;
+                  setState(() {
+                    showCoinBubbles = false;
+                    gameData.coin += 1;
+                    LocalCacheUtils.putGameData(gameData);
+                    TaskManager.instance.addTask("bubbles");
+                  });
+                },
+              ),
+            )
                 : SizedBox.shrink(),
             showFoodBubbles
                 ? Positioned(
-                    left: 18.w,
-                    top: 300.h,
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.7,
-                      child: BubbleWidget(type: 1),
-                      onPressed: () {
-                        if (!ClickManager.canClick(context: context)) return;
-                        setState(() {
-                          showFoodBubbles = false;
-                          gameData.foodCount += 10;
-                          LocalCacheUtils.putGameData(gameData);
-                          TaskManager.instance.addTask("bubbles");
-                        });
-                      },
-                    ),
-                  )
+              left: 18.w,
+              top: 300.h,
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                pressedOpacity: 0.7,
+                child: BubbleWidget(type: 1),
+                onPressed: () {
+                  if (!ClickManager.canClick(context: context)) return;
+                  setState(() {
+                    showFoodBubbles = false;
+                    gameData.foodCount += 10;
+                    LocalCacheUtils.putGameData(gameData);
+                    TaskManager.instance.addTask("bubbles");
+                  });
+                },
+              ),
+            )
                 : SizedBox.shrink(),
             showPearlBubbles1
                 ? Positioned(
-                    right: 26.w,
-                    bottom: 300.h,
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.7,
-                      child: BubbleWidget(type: 2),
-                      onPressed: () {
-                        if (!ClickManager.canClick(context: context)) return;
-                        setState(() {
-                          showPearlBubbles1 = false;
-                          gameData.pearlCount += 1;
-                          LocalCacheUtils.putGameData(gameData);
-                          TaskManager.instance.addTask("bubbles");
-                        });
-                      },
-                    ),
-                  )
+              right: 26.w,
+              bottom: 300.h,
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                pressedOpacity: 0.7,
+                child: BubbleWidget(type: 2),
+                onPressed: () {
+                  if (!ClickManager.canClick(context: context)) return;
+                  setState(() {
+                    showPearlBubbles1 = false;
+                    gameData.pearlCount += 1;
+                    LocalCacheUtils.putGameData(gameData);
+                    TaskManager.instance.addTask("bubbles");
+                  });
+                },
+              ),
+            )
                 : SizedBox.shrink(),
             showPearlBubbles2
                 ? Positioned(
-                    right: 26.w,
-                    bottom: 160.h,
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.7,
-                      child: BubbleWidget(type: 2),
-                      onPressed: () {
-                        if (!ClickManager.canClick(context: context)) return;
-                        setState(() {
-                          showPearlBubbles2 = false;
-                          gameData.pearlCount += 1;
-                          LocalCacheUtils.putGameData(gameData);
-                          TaskManager.instance.addTask("bubbles");
-                        });
-                      },
-                    ),
-                  )
+              right: 26.w,
+              bottom: 160.h,
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                pressedOpacity: 0.7,
+                child: BubbleWidget(type: 2),
+                onPressed: () {
+                  if (!ClickManager.canClick(context: context)) return;
+                  setState(() {
+                    showPearlBubbles2 = false;
+                    gameData.pearlCount += 1;
+                    LocalCacheUtils.putGameData(gameData);
+                    TaskManager.instance.addTask("bubbles");
+                  });
+                },
+              ),
+            )
                 : SizedBox.shrink(),
           ],
         ),
       ),
     );
+  }
+
+  void clickProtect() {
+    if (!ClickManager.canClick(context: context)) return;
+    if (userData.new4) {
+      userData.new4 = false;
+      LocalCacheUtils.putUserData(userData);
+    }
+    gameData = LocalCacheUtils.getGameData();
+    gameData.protectTime += getProtectTime();
+    LocalCacheUtils.putGameData(gameData);
+    setState(() {
+      globalShowDanger2 = false;
+      // ArrowOverlay.hide();
+      if (globalShowDanger1) {
+        GameManager.instance.hideDanger();
+      }
+    });
+    GameManager.instance.showProtect();
+    GameManager.instance.updateProtectTime(gameData.protectTime);
+    GameManager.instance.resumeMovement();
+    if (userData.new5) {
+      showMarkNew5();
+    }
   }
 
   Future<void> toCashMain(BuildContext context) async {
@@ -678,19 +687,19 @@ class _GamePageState extends State<GamePage>
       right: 0,
       child: globalShowFood
           ? DropFadeImage(
-              key: GlobalKey(),
-              child: Image.asset(
-                "assets/images/ic_food.webp",
-                width: 46.w,
-                height: 46.h,
-              ),
-            )
+        key: GlobalKey(),
+        child: Image.asset(
+          "assets/images/ic_food.webp",
+          width: 46.w,
+          height: 46.h,
+        ),
+      )
           : SizedBox.shrink(),
     );
   }
 
   buildShark() {
-    return  globalShowShark
+    return globalShowShark
         ? SharkWidget(
       key: GlobalKey(),
       imagePath: "assets/images/ic_shark.webp",
@@ -704,8 +713,8 @@ class _GamePageState extends State<GamePage>
   buildDanger() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (globalShowDanger2) {
-        ArrowOverlay.hide();
-        ArrowOverlay.show(context, ArrowWidget());
+        // ArrowOverlay.hide();
+        // ArrowOverlay.show(context, ArrowWidget());
         firstShowProtectKey = false;
         LocalCacheUtils.putBool(LocalCacheConfig.firstShowProtectKey, false);
       }
@@ -714,108 +723,108 @@ class _GamePageState extends State<GamePage>
     return Positioned.fill(
       child: globalShowDanger2
           ? Stack(
-              children: [
-                Positioned(
-                  bottom: 110.h,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    width: double.infinity, // 宽度，可根据需求修改
-                    height: 71.h, // 高度，可根据需求修改
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0xBFE5452D), // 上方不透明红色
-                          Color(0x00E5452D), // 下方透明
-                        ],
+        children: [
+          Positioned(
+            bottom: 110.h,
+            left: 0,
+            right: 0,
+            child: Container(
+              width: double.infinity, // 宽度，可根据需求修改
+              height: 71.h, // 高度，可根据需求修改
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xBFE5452D), // 上方不透明红色
+                    Color(0x00E5452D), // 下方透明
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 200.h,
+            left: 0,
+            right: 0,
+            child: Container(
+              width: double.infinity, // 宽度，可根据需求修改
+              height: 71.h, // 高度，可根据需求修改
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xBFE5452D), // 上方不透明红色
+                    Color(0x00E5452D), // 下方透明
+                  ],
+                ),
+              ),
+            ),
+          ),
+          firstShowProtectKey
+              ? Stack(
+            children: [
+              // 全屏黑色遮盖
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withOpacity(
+                    0.6,
+                  ), // 黑色 + 0.8透明度
+                ),
+              ),
+              Positioned(
+                left: 23.w,
+                top: 130.h,
+                child: Image.asset(
+                  "assets/images/ic_fish_tips.webp",
+                  width: 75.w,
+                  height: 75.h,
+                ),
+              ),
+              Positioned(
+                top: 123.h,
+                left: 86.w,
+                right: 21.w,
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 74.h,
+                  child: Stack(
+                    children: [
+                      Image.asset(
+                        "assets/images/bg_level_up.webp",
+                        width: double.infinity,
+                        height: 74.h,
+                        fit: BoxFit.fill,
                       ),
-                    ),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsetsGeometry.fromLTRB(
+                            32.w,
+                            0.h,
+                            20.w,
+                            0.h,
+                          ),
+                          child: AutoSizeText(
+                            "app_danger_tips".tr(),
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF651922),
+                            ),
+                            maxLines: 2,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Positioned(
-                  top: 200.h,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    width: double.infinity, // 宽度，可根据需求修改
-                    height: 71.h, // 高度，可根据需求修改
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color(0xBFE5452D), // 上方不透明红色
-                          Color(0x00E5452D), // 下方透明
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                firstShowProtectKey
-                    ? Stack(
-                        children: [
-                          // 全屏黑色遮盖
-                          Positioned.fill(
-                            child: Container(
-                              color: Colors.black.withOpacity(
-                                0.6,
-                              ), // 黑色 + 0.8透明度
-                            ),
-                          ),
-                          Positioned(
-                            left: 23.w,
-                            top: 130.h,
-                            child: Image.asset(
-                              "assets/images/ic_fish_tips.webp",
-                              width: 75.w,
-                              height: 75.h,
-                            ),
-                          ),
-                          Positioned(
-                            top: 123.h,
-                            left: 86.w,
-                            right: 21.w,
-                            child: SizedBox(
-                              width: double.infinity,
-                              height: 74.h,
-                              child: Stack(
-                                children: [
-                                  Image.asset(
-                                    "assets/images/bg_level_up.webp",
-                                    width: double.infinity,
-                                    height: 74.h,
-                                    fit: BoxFit.fill,
-                                  ),
-                                  Center(
-                                    child: Padding(
-                                      padding: EdgeInsetsGeometry.fromLTRB(
-                                        32.w,
-                                        0.h,
-                                        20.w,
-                                        0.h,
-                                      ),
-                                      child: AutoSizeText(
-                                        "app_danger_tips".tr(),
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFF651922),
-                                        ),
-                                        maxLines: 2,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : SizedBox.shrink(),
-              ],
-            )
+              ),
+            ],
+          )
+              : SizedBox.shrink(),
+        ],
+      )
           : SizedBox.shrink(),
     );
   }
@@ -844,7 +853,7 @@ class _GamePageState extends State<GamePage>
         _timer?.cancel();
         setState(() {
           globalShowDanger2 = false;
-          ArrowOverlay.hide();
+          // ArrowOverlay.hide();
           GameManager.instance.hideDanger();
         });
         Future.delayed(const Duration(milliseconds: 1000), () async {
@@ -863,7 +872,7 @@ class _GamePageState extends State<GamePage>
             if (result) {
               return;
             }
-          }else{
+          } else {
             TaskManager.instance.addTask("defend");
           }
         });
@@ -890,8 +899,16 @@ class _GamePageState extends State<GamePage>
   late List<TargetFocus> globalGuideNew1Keys;
   GlobalKey globalGuideNew1 = GlobalKey();
   GlobalKey globalGuideNew2 = GlobalKey();
+  GlobalKey globalGuideNew4 = GlobalKey();
   GlobalKey globalGuideNew5 = GlobalKey();
 
+  /**
+   * 0°	0	不旋转
+      45°	math.pi / 4	右上方向
+      90°	math.pi / 2	向上
+      180°	math.pi	倒置
+      270°	3 * math.pi / 2
+   */
   void showMarkNew1() {
     globalGuideNew1Keys = [];
     globalGuideNew1Keys.add(
@@ -900,9 +917,32 @@ class _GamePageState extends State<GamePage>
         keyTarget: globalGuideNew1,
         alignSkip: Alignment.topRight,
         shape: ShapeLightFocus.Circle,
-        radius: 1.0,
+        radius: 0.3,
+        // 🔹 原来是 0.5，现在更小
+        paddingFocus: 0,
+        // 🔹 缩紧圆圈贴近目标
         // 圆角半径，自行调整
-        contents: [],
+        contents: [
+          TargetContent(
+            align: ContentAlign.top, // 内容在高亮 widget 下方
+            child: Stack(
+              children: [
+                Transform.translate(
+                  offset: const Offset(30, 30), // 🔹 上移 20 像素，让内容更贴近高亮圈
+                  child: Transform.rotate(
+                    angle: math.pi,
+                    child: Image.asset(
+                      "assets/images/ic_arrow.webp",
+                      width: 100.w,
+                      height: 100.h,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+
+        ],
       ),
     );
     tutorialCoachMark = TutorialCoachMark(
@@ -934,7 +974,24 @@ class _GamePageState extends State<GamePage>
         shape: ShapeLightFocus.Circle,
         radius: 1.0,
         // 圆角半径，自行调整
-        contents: [],
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom, // 内容在高亮 widget 下方
+            child: Stack(
+              children: [
+                Transform.translate(
+                  offset: const Offset(100, 0), // 🔹 上移 20 像素，让内容更贴近高亮圈
+                  child: Image.asset(
+                    "assets/images/ic_arrow.webp",
+                    width: 100.w,
+                    height: 100.h,
+                  ),
+                )
+              ],
+            ),
+          ),
+
+        ],
       ),
     );
     tutorialCoachMark = TutorialCoachMark(
@@ -966,6 +1023,54 @@ class _GamePageState extends State<GamePage>
     tutorialCoachMark?.show(context: context);
   }
 
+  void showMarkNew4() {
+    // 创建控制器
+    globalGuideNew1Keys = [];
+    globalGuideNew1Keys.add(
+      TargetFocus(
+        identify: "guideNew4",
+        keyTarget: globalGuideNew4,
+        alignSkip: Alignment.topRight,
+        shape: ShapeLightFocus.Circle,
+        radius: 1.0,
+        // 圆角半径，自行调整
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom, // 内容在高亮 widget 下方
+            child: Stack(
+              children: [
+                Transform.translate(
+                  offset: Offset(180.w, 0), // 🔹 上移 20 像素，让内容更贴近高亮圈
+                  child: Transform.rotate(
+                    angle: math.pi / 4,
+                    child: Image.asset(
+                      "assets/images/ic_arrow.webp",
+                      width: 100.w,
+                      height: 100.h,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+    tutorialCoachMark = TutorialCoachMark(
+      targets: globalGuideNew1Keys,
+      colorShadow: Colors.black.withOpacity(0.8),
+      textSkip: "",
+      paddingFocus: 0,
+      onFinish: () {
+        clickProtect();
+      },
+      onClickTarget: (target) {
+
+      },
+    );
+    tutorialCoachMark?.show(context: context);
+  }
+
   void showMarkNew5() {
     GameManager.instance.pauseMovement();
     // 创建控制器
@@ -978,7 +1083,26 @@ class _GamePageState extends State<GamePage>
         shape: ShapeLightFocus.Circle,
         radius: 1.0,
         // 圆角半径，自行调整
-        contents: [],
+        contents: [
+          TargetContent(
+            align: ContentAlign.bottom, // 内容在高亮 widget 下方
+            child: Stack(
+              children: [
+                Transform.translate(
+                  offset: Offset(180.w, 0), // 🔹 上移 20 像素，让内容更贴近高亮圈
+                  child: Transform.rotate(
+                    angle: math.pi / 4,
+                    child: Image.asset(
+                      "assets/images/ic_arrow.webp",
+                      width: 100.w,
+                      height: 100.h,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
     tutorialCoachMark = TutorialCoachMark(
@@ -986,11 +1110,9 @@ class _GamePageState extends State<GamePage>
       colorShadow: Colors.black.withOpacity(0.8),
       textSkip: "",
       paddingFocus: 0,
-      onFinish: () {},
-      onClickTarget: (target) async {
+      onFinish: () async {
         if (!ClickManager.canClick(context: context)) return;
         tutorialCoachMark?.skip();
-        userData.new5 = false;
         var result = await PopManager().show(
           context: context,
           child: PropsAwardPop(),
@@ -1001,7 +1123,12 @@ class _GamePageState extends State<GamePage>
           LocalCacheUtils.putGameData(gameData);
         }
         GameManager.instance.resumeMovement();
+        userData.new5 = false;
+        LocalCacheUtils.putUserData(userData);
         await toCashMain(context);
+      },
+      onClickTarget: (target) {
+
       },
     );
     tutorialCoachMark?.show(context: context);
@@ -1023,7 +1150,7 @@ class _GamePageState extends State<GamePage>
       }
       LocalCacheUtils.putInt(LocalCacheConfig.cacheKeyFoodCount, foodCount);
       setState(() {
-        if(showBubble){
+        if (showBubble) {
           showPearlBubbles2 = true;
         }
         if (globalShowFood) return;
