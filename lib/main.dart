@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/config/LocalConfig.dart';
 import 'package:fish_earn/game/GamePage.dart';
@@ -32,21 +32,21 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   LocalCacheUtils.init();
   await EasyLocalization.ensureInitialized();
-  if (Platform.isAndroid) {
-    try {
-      await Firebase.initializeApp();
-      FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-
-      // 捕获 async / isolate 全局错误
-      PlatformDispatcher.instance.onError = (error, stack) {
-        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-        return true;
-      };
-    } catch (e) {
-      LogUtils.logD("Firebase init error");
-    }
-  }
-  GlobalConfigManager.instance.init();
+  // if (Platform.isAndroid) {
+  //   try {
+  //     await Firebase.initializeApp();
+  //     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+  //
+  //     // 捕获 async / isolate 全局错误
+  //     PlatformDispatcher.instance.onError = (error, stack) {
+  //       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+  //       return true;
+  //     };
+  //   } catch (e) {
+  //     LogUtils.logD("Firebase init error");
+  //   }
+  // }
+  GlobalDataManager.instance.init();
   TimeUtils.dataReset();
 
   TaskManager.instance.init(null);

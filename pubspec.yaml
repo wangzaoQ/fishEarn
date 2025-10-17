@@ -50,9 +50,24 @@ dependencies:
   connectivity_plus: ^7.0.0
   audioplayers: ^6.5.1
   tutorial_coach_mark: ^1.3.1
-  firebase_core: ^4.0.0
-  firebase_crashlytics: ^5.0.0
-  firebase_analytics: ^12.0.0
+  event_bus: ^2.0.1
+  money2: ^6.0.5
+  flutter_udid: ^4.0.0
+  email_validator: '^2.1.17'
+  faker: ^2.2.0
+  dio: ^5.8.0+1
+  pretty_dio_logger: ^1.4.0
+  uuid: ^4.5.1
+  advertising_id: ^2.7.1
+  device_info_plus: ^11.5.0
+  package_info_plus: ^8.3.0
+  android_play_install_referrer: ^0.4.0
+  flutter_tba_info: ^0.0.9
+  flutter_local_notifications:
+    path: fish_nf
+  #  firebase_core: ^4.0.0
+#  firebase_crashlytics: ^5.0.0
+#  firebase_analytics: ^12.0.0
 #    firebase_remote_config: ^6.0.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
