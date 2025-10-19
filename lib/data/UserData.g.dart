@@ -13,7 +13,10 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) => UserData()
   ..new4 = json['new4'] as bool
   ..new5 = json['new5'] as bool
   ..new6 = json['new6'] as bool
-  ..new7 = json['new7'] as bool;
+  ..new7 = json['new7'] as bool
+  ..userRiskStatus = json['userRiskStatus'] as bool
+  ..userRiskType = (json['userRiskType'] as num).toInt()
+  ..userRiskFrom = json['userRiskFrom'] as String;
 
 Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
   'new1': instance.new1,
@@ -23,4 +26,7 @@ Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
   'new5': instance.new5,
   'new6': instance.new6,
   'new7': instance.new7,
+  'userRiskStatus': instance.userRiskStatus,
+  'userRiskType': instance.userRiskType,
+  'userRiskFrom': instance.userRiskFrom,
 };

@@ -22,5 +22,8 @@ var globalShowShark = false;
 //防护气泡
 var globalShowProtect = false;
 
+bool adIsPlay = false;
+
+
 var pUrl = "https://sites.google.com/view/fishearn-privacypolicy/home";
 var hUrl = "https://sites.google.com/view/fishearn-useragreement/home";

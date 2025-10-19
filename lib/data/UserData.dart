@@ -19,6 +19,10 @@ class UserData{
   // 7.高亮100美金提现栏
   bool new7 = true;
 
+  var userRiskStatus = false;
+  var userRiskType = 0;
+  var userRiskFrom = "";
+
   UserData();
 
   // JSON 反序列化

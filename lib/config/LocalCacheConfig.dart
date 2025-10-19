@@ -17,4 +17,12 @@ class LocalCacheConfig{
   static const cacheGIDKey = "cacheGIDKey";
   static const cacheDMMKey = "cacheDMMKey";
   static const cacheWUAKey = "cacheWUAKey";
+  static const cacheAdShortShow = "cacheAdShortShow";
+  static const cacheAdShortClose = "cacheAdShortClose";
+  static const cacheLastRvShowTime = "cacheLastRvShowTime";
+  static const cacheWithdraw = "cacheWithdraw";
+  static const cacheRewardCount = "cacheRewardCount";
+  static const cacheADTargetIndex = "cacheADTargetIndex";
+  static const cacheADShowCount = "cacheADShowCount";
+  static const cacheADClickCount = "cacheADClickCount";
 }
