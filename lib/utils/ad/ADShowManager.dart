@@ -1,6 +1,8 @@
 import 'package:applovin_max/applovin_max.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../data/ADResultData.dart';
 import 'ADEnum.dart';
 import 'ADLoadManager.dart';
@@ -45,15 +47,15 @@ class ADShowManager{
     if(tag.contains("reward")){
       adSwitch = ADLoadManager().adRootData?.oxrslSwitch??false;
     }else if(tag.contains("int")){
-      var user = LocalCacheUtils.getUserData();
-      var allow = GlobalCoinRuleUtils().allowShowInt(user.getNewCoin());
+      var gameData = LocalCacheUtils.getGameData();
+      var allow = GlobalDataManager.allowShowInt(gameData.coin);
       if(!allow){
         adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, tag = "int is not allowed");
         return;
       }
     }
     if(allowADChange){
-      NetControl().postEvent(PointConfig.oxrsl_ad_chance,params: {"ad_pos_id":pointTag});
+      // NetControl().postEvent(PointConfig.oxrsl_ad_chance,params: {"ad_pos_id":pointTag});
     }
 
     ADResultData? adResultData ;

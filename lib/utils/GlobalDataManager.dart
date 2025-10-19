@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter/services.dart';
@@ -62,5 +63,9 @@ class GlobalDataManager{
       xorList.add(decode2[i] ^ code);
     }
     return utf8.decode(xorList);
+  }
+
+  static bool allowShowInt(double coin) {
+    return true;
   }
 }

@@ -8,6 +8,9 @@ final ValueNotifier<double> propsNotifier = ValueNotifier(0);
 ValueNotifier<Offset?> overlayNotifier = ValueNotifier<Offset?>(null);
 ValueNotifier<Offset?> overlayNotifier2 = ValueNotifier<Offset?>(null);
 final EventBus eventBus = EventBus();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final globalContext = navigatorKey.currentState?.overlay?.context;
+var allowShowStart = true;
 
 bool isForeground = true;
 

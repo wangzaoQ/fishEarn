@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
@@ -115,11 +116,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   var TAG = "APP_TAG";
 
+  Timer? timeoutTimer;
+  bool isNeedAd = false;
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     // 根据生命周期状态处理逻辑
     if (state == AppLifecycleState.resumed) {
+      timeoutTimer?.cancel();
       isForeground = true;
       LogUtils.logD("$TAG App isForeground:${isForeground}");
       var allowBgm = LocalCacheUtils.getBool(
@@ -129,38 +134,53 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       if (allowBgm) {
         AudioUtils().playBGM("audio/bg1.mp3");
       }
-      // var allowBgm = CacheManager.getBool(
-      //   CacheConfig.cacheBGMKey,
-      //   defaultValue: true,
-      // );
-      // if (allowBgm) {
-      //   AudioManager().playBGM("audio/bgm.mp3");
-      // }
-      // if(pauseTime == 0){
-      //   pauseTime = DateTime.now().millisecondsSinceEpoch;
-      // }
-      // if((DateTime.now().millisecondsSinceEpoch - pauseTime)>2000 && mounted){
-      //   LogUtils.logD("App resume start");
-      //   WidgetsBinding.instance.addPostFrameCallback((_) {
-      //     LogUtils.logD("App resume start2");
-      //     Navigator.push(
-      //       globalContext!,
-      //       MaterialPageRoute(builder: (_) => StartPage(type: 1)),
-      //     );
-      //   });
-      // }
-      // pauseTime = 0;
+      if(isNeedAd&&mounted && globalContext!=null){
+        isNeedAd = false;
+        if(currentRouteName  != "StartPage" && !adIsPlay){
+          allowShowStart = true;
+        }else{
+          allowShowStart = false;
+        }
+        LogUtils.logD("$TAG App resume start allowStart:${allowShowStart} currentRouteName:${currentRouteName} isPlay:${adIsPlay}");
+        if(globalContext != null && allowShowStart){
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            LogUtils.logD("$TAG App resume start2");
+            adIsPlay = false;
+            Navigator.push(
+              globalContext!,
+              MaterialPageRoute(builder: (_) => StartPage(type: 1),settings: const RouteSettings(name: "StartPage"),),
+            );
+          });
+        }
+      }
     } else if (state == AppLifecycleState.paused) {
       isForeground = false;
       LogUtils.logD("$TAG App isForeground:${isForeground}");
       AudioUtils().pauseBGM();
+      timeoutTimer?.cancel();
+      timeoutTimer = Timer(Duration(seconds: 3), () {
+        isNeedAd = true;
+        LogUtils.logD("$TAG App AppLifecycleState.paused isNeedAd:${isNeedAd} ");
+      });
+    }
 
-      // LogUtils.logD("App 进入后台 设置 pauseTime isPlay:${isPlay}");
-      // Future.delayed(Duration(seconds: 1), () {
-      //   if(!isPlay && !isForeground){
-      //     pauseTime = DateTime.now().millisecondsSinceEpoch;
-      //   }
-      // });
+    if (state == AppLifecycleState.resumed) {
+      var allowBgm = CacheManager.getBool(
+        CacheConfig.cacheBGMKey,
+        defaultValue: true,
+      );
+      if (allowBgm) {
+        AudioManager().playBGM("audio/bgm.mp3");
+      }
+
+    } else if (state == AppLifecycleState.paused) {
+      LogUtils.logD("$TAG App state == AppLifecycleState.paused");
+      AudioManager().pauseBGM();
+      timeoutTimer?.cancel();
+      timeoutTimer = Timer(Duration(seconds: 3), () {
+        isNeedAd = true;
+        LogUtils.logD("$TAG App AppLifecycleState.paused isNeedAd:${isNeedAd} ");
+      });
     }
   }
 
@@ -209,6 +229,29 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         LogUtils.logD("$TAG NetWorkManager init error");
       }
     });
+  }
+}
+
+
+String? currentRouteName;
+
+class SimpleRouteObserver extends NavigatorObserver {
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    currentRouteName = route.settings.name ?? route.runtimeType.toString();
+    debugPrint("didPush -> currentRouteName: $currentRouteName");
+  }
+
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    currentRouteName = previousRoute?.settings.name ?? previousRoute?.runtimeType.toString();
+    debugPrint("didPop -> currentRouteName: $currentRouteName");
+  }
+
+  @override
+  void didReplace({Route? newRoute, Route? oldRoute}) {
+    currentRouteName = newRoute?.settings.name ?? newRoute?.runtimeType.toString();
+    debugPrint("didReplace -> currentRouteName: $currentRouteName");
   }
 }
 
