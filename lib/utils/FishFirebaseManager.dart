@@ -42,7 +42,7 @@ class FishFirebaseManager{
     TaskManager.instance.init(toDecode("c116_withdraw_task"));
     CashManager.instance.init(toDecode("c116_queue"));
     RewardManager.instance.init(toDecode("reward_configuration"));
-    getADConfig();
+    RewardManager.instance.init(toDecode("reward_configuration"));
   }
 
   Map<String, dynamic>? toDecode(String tag) {

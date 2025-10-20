@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../data/UserData.dart';
+import '../../task/RewardManager.dart';
 import '../../utils/AudioUtils.dart';
 import '../../utils/ClickManager.dart';
 import '../GameText.dart';
@@ -25,6 +27,10 @@ class _PropsAwardPopState extends State<PropsAwardPop>
 
   late UserData userData;
 
+  List<double> coinList = [];
+
+  var random = Random();
+
   @override
   void initState() {
     super.initState();
@@ -33,11 +39,22 @@ class _PropsAwardPopState extends State<PropsAwardPop>
       duration: const Duration(seconds: 3), // 一圈时间
     )..repeat(); // 无限旋转
     userData = LocalCacheUtils.getUserData();
+    var gameData = LocalCacheUtils.getGameData();
+    var coin1 = RewardManager.instance.findReward(RewardManager.instance.rewardData?.driftBottle?.prize, gameData.coin);
+    var coin2 = RewardManager.instance.findReward(RewardManager.instance.rewardData?.driftBottle?.prize, gameData.coin);
+    var coin3 = RewardManager.instance.findReward(RewardManager.instance.rewardData?.driftBottle?.prize, gameData.coin);
+    coinList.add(coin1);
+    coinList.add(coin2);
+    coinList.add(coin3);
   }
 
   int selected = -1;
 
-  int selectedCoin = 0;
+  double selectedCoin1 = 0.0;
+  double selectedCoin2 = 0.0;
+  double selectedCoin3 = 0.0;
+
+  double selectedCoin = 0.0;
 
   @override
   void dispose() {
@@ -115,10 +132,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                                         fit: BoxFit.fill,
                                       ),
                                     )
-                                  : Image.asset(
-                                      "assets/images/bg_game_progress.webp",
-                                      fit: BoxFit.fill,
-                                    ),
+                                  : SizedBox.shrink(),
                               Positioned(
                                 left: 24.w,
                                 right: 20.w,
@@ -141,6 +155,14 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                                       ),
                                     )
                                   : SizedBox.shrink(),
+                              selectedCoin1>=1?
+                              Align(alignment: Alignment.bottomCenter,child:  Text(
+                                "+\$${selectedCoin1}",
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: Color(0xFFFFEF50),
+                                ),
+                              ),):SizedBox.shrink()
                             ],
                           ),
                         ),
@@ -150,8 +172,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                             return;
                           }
                           setState(() {
-                            selected = 0;
-                            selectedCoin = 8;
+                            click(0);
                           });
                           if(userData.new5){
                             startTimer();
@@ -216,10 +237,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                                         fit: BoxFit.fill,
                                       ),
                                     )
-                                  : Image.asset(
-                                      "assets/images/bg_game_progress.webp",
-                                      fit: BoxFit.fill,
-                                    ),
+                                  : SizedBox.shrink(),
                               Positioned(
                                 left: 24.w,
                                 right: 20.w,
@@ -242,6 +260,14 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                                       ),
                                     )
                                   : SizedBox.shrink(),
+                              selectedCoin2>=1?
+                              Align(alignment: Alignment.bottomCenter,child:  Text(
+                                "+\$${selectedCoin2}",
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: Color(0xFFFFEF50),
+                                ),
+                              ),):SizedBox.shrink()
                             ],
                           ),
                         ),
@@ -251,8 +277,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                             return;
                           }
                           setState(() {
-                            selected = 1;
-                            selectedCoin = 9;
+                            click(1);
                           });
                           if(userData.new5){
                             startTimer();
@@ -317,10 +342,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                                         fit: BoxFit.fill,
                                       ),
                                     )
-                                  : Image.asset(
-                                      "assets/images/bg_game_progress.webp",
-                                      fit: BoxFit.fill,
-                                    ),
+                                  :SizedBox.shrink(),
                               Positioned(
                                 left: 24.w,
                                 right: 20.w,
@@ -343,6 +365,14 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                                       ),
                                     )
                                   : SizedBox.shrink(),
+                              selectedCoin3>=1?
+                              Align(alignment: Alignment.bottomCenter,child:  Text(
+                                "+\$${selectedCoin3}",
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: Color(0xFFFFEF50),
+                                ),
+                              ),):SizedBox.shrink()
                             ],
                           ),
                         ),
@@ -352,8 +382,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                             return;
                           }
                           setState(() {
-                            selected = 2;
-                            selectedCoin = 10;
+                            click(2);
                           });
                           if(userData.new5){
                             startTimer();
@@ -438,8 +467,17 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                 ],
               ),
               onPressed: () {
-                AudioUtils().playClickAudio();
-                Navigator.pop(context, selectedCoin * 2);
+                if (!ClickManager.canClick(context: context)) return;
+                selectedCoin+=selectedCoin1;
+                selectedCoin+=selectedCoin2;
+                selectedCoin+=selectedCoin3;
+                setState(() {
+                  selected = 3;
+                });
+                Future.delayed(const Duration(milliseconds: 1000), () async {
+                  if (!mounted) return;
+                  Navigator.pop(context,selectedCoin);
+                });
               },
             ),
           ),
@@ -544,5 +582,29 @@ class _PropsAwardPopState extends State<PropsAwardPop>
       if (!mounted) return;
       Navigator.pop(context,selectedCoin);
     });
+  }
+
+  void click(int clickType) {
+    var index = random.nextInt(coinList.length);
+    selected = clickType;
+    if(clickType == 0){
+      selectedCoin1 = coinList[index];
+      selectedCoin = selectedCoin1;
+      coinList.removeAt(index);
+      selectedCoin2 = coinList[0];
+      selectedCoin3 = coinList[1];
+    }else if(clickType == 1){
+      selectedCoin2 = coinList[index];
+      selectedCoin = selectedCoin2;
+      coinList.removeAt(index);
+      selectedCoin1 = coinList[0];
+      selectedCoin3 = coinList[1];
+    }else if(clickType == 2){
+      selectedCoin3 = coinList[index];
+      selectedCoin = selectedCoin3;
+      coinList.removeAt(index);
+      selectedCoin1 = coinList[0];
+      selectedCoin2 = coinList[1];
+    }
   }
 }

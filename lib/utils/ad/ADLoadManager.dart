@@ -15,16 +15,16 @@ import 'MaxLoader.dart';
 class ADLoadManager {
 
   var TAG ="ADManager";
-
   // 私有构造函数
-  ADLoadManager._internal();
+  ADLoadManager._();
 
-  // 静态实例（懒加载，推荐）
-  static final ADLoadManager _instance = ADLoadManager._internal();
+  // 全局唯一实例
+  static final ADLoadManager instance = ADLoadManager._();
 
-
-  // 工厂构造函数，返回唯一实例
-  factory ADLoadManager() => _instance;
+  // 公共访问点
+  factory ADLoadManager() {
+    return instance;
+  }
 
   // 对外暴露的变量
   ADData? adRootData;
@@ -39,7 +39,9 @@ class ADLoadManager {
   );
   Timer? timeoutTimer;
 
-  void initConfig() {}
+  void init() {
+
+  }
 
   void preloadAD(ADEnum adType, String tag) {
     TimeUtils.dataReset();

@@ -6,7 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class BubbleWidget extends StatefulWidget {
   // 0 金币 1 食物 2 珍珠
   var type;
-  BubbleWidget({super.key,required this.type});
+  double? coin;
+  BubbleWidget({super.key,required this.type,this.coin});
 
   @override
   State<BubbleWidget> createState() => _BubbleWidgetState();
@@ -39,7 +40,6 @@ class _BubbleWidgetState extends State<BubbleWidget>
 
   @override
   Widget build(BuildContext context) {
-
     return AnimatedBuilder(
       animation: _offsetAnim,
       builder: (context, child) {
@@ -63,7 +63,7 @@ class _BubbleWidgetState extends State<BubbleWidget>
             Align(
               alignment: Alignment.bottomCenter,
               child: Text(
-                "\$${RewardManager.instance.findReward(RewardManager.instance.rewardData?.cashBubble?.prize, LocalCacheUtils.getGameData().coin)}",
+                "\$${widget.coin}",
                 style: TextStyle(
                   fontSize: 15.sp,
                   color: const Color(0xFFF4FF72),

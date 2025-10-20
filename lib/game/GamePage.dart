@@ -16,7 +16,7 @@ import 'package:fish_earn/utils/NetWorkManager.dart';
 import 'package:fish_earn/view/DropFadeImage.dart';
 import 'package:fish_earn/view/GameProcess.dart';
 import 'package:fish_earn/view/SharkWidget.dart';
-import 'package:fish_earn/view/bubbleWidget.dart';
+import 'package:fish_earn/view/BubbleWidget.dart';
 import 'package:fish_earn/view/pop/CashProcessPop.dart';
 import 'package:fish_earn/view/pop/CoinAnimalPop.dart';
 import 'package:fish_earn/view/pop/GameAward.dart';
@@ -39,6 +39,7 @@ import '../data/GameData.dart';
 import '../data/UserData.dart';
 import '../event/NotifyEvent.dart';
 import '../model/GameViewModel.dart';
+import '../task/RewardManager.dart';
 import '../utils/ArrowOverlay.dart';
 import '../utils/ClickManager.dart';
 import '../utils/LogUtils.dart';
@@ -85,6 +86,11 @@ class _GamePageState extends State<GamePage>
   var showFoodBubbles = true;
   var showPearlBubbles1 = true;
   var showPearlBubbles2 = false;
+  var timeCoinBubbles = 0;
+  var timeFoodBubbles = 0;
+  var timePearBubbles = 0;
+  //金币泡泡给的具体金额
+  var addCoin = 0.0;
 
   late UserData userData;
 
@@ -439,14 +445,8 @@ class _GamePageState extends State<GamePage>
                   );
                   if (!ClickManager.canClick(context: context)) return;
                   if (progress == 1 || userData.new5) {
-                    var result = await PopManager().show(
-                      context: context,
-                      child: PropsAwardPop(),
-                    );
-                    if (result != null) {
-                      gameData.coin += result;
-                      GameManager.instance.updateCoinToGame(gameData.coin);
-                      LocalCacheUtils.putGameData(gameData);
+                    var result = await toPropsAwardPop();
+                    if (result == 1) {
                       setState(() {
                         propsTime = 0;
                       });
@@ -475,26 +475,7 @@ class _GamePageState extends State<GamePage>
               ),
             ),
             //现金气泡
-            showCoinBubbles
-                ? Positioned(
-              left: 38.w,
-              bottom: 241.h,
-              child: CupertinoButton(
-                padding: EdgeInsets.zero,
-                pressedOpacity: 0.7,
-                child: BubbleWidget(key: globalGuideNew2, type: 0),
-                onPressed: () {
-                  if (!ClickManager.canClick(context: context)) return;
-                  setState(() {
-                    showCoinBubbles = false;
-                    gameData.coin += 1;
-                    LocalCacheUtils.putGameData(gameData);
-                    TaskManager.instance.addTask("bubbles");
-                  });
-                },
-              ),
-            )
-                : SizedBox.shrink(),
+            buildCoinBubbles(),
             showFoodBubbles
                 ? Positioned(
               left: 18.w,
@@ -622,6 +603,9 @@ class _GamePageState extends State<GamePage>
         }
         propsTime++;
         aliveTime++;
+        timeCoinBubbles++;
+        timeFoodBubbles++;
+        timePearBubbles++;
         if (gameData.level > 1) {
           cutTime++;
           GameManager.instance.addCoin(gameData);
@@ -641,6 +625,7 @@ class _GamePageState extends State<GamePage>
         } else {
           gameData.protectTime = 0;
         }
+
         LocalCacheUtils.putGameData(gameData);
         if (aliveTime == GameConfig.gameDangerTime1 ||
             aliveTime == GameConfig.gameDangerTime2 ||
@@ -656,6 +641,27 @@ class _GamePageState extends State<GamePage>
           );
           GameManager.instance.updateCoinToGame(gameData.coin);
           GameManager.instance.updateProtectTime(gameData.protectTime);
+          var needRefresh = false;
+          if(timeCoinBubbles>= RewardManager.instance.findCoinBubbleTime() && !showCoinBubbles){
+            timeCoinBubbles = 0;
+            needRefresh = true;
+            showCoinBubbles = true;
+          }
+          if(timeFoodBubbles>=RewardManager.instance.findFoodBubbleTime()&& !showFoodBubbles){
+            timeFoodBubbles = 0;
+            needRefresh = true;
+            showFoodBubbles = true;
+          }
+          if(timePearBubbles>=RewardManager.instance.findPearBubbleTime()&& !showPearlBubbles1){
+            timePearBubbles = 0;
+            needRefresh = true;
+            showPearlBubbles1 = true;
+          }
+          if(needRefresh){
+            setState(() {
+              //更新泡泡
+            });
+          }
         });
       },
     );
@@ -1003,8 +1009,7 @@ class _GamePageState extends State<GamePage>
       colorShadow: Colors.black.withOpacity(0.8),
       textSkip: "",
       paddingFocus: 0,
-      onFinish: () {},
-      onClickTarget: (target) {
+      onFinish: () {
         if (!ClickManager.canClick(context: context)) return;
         GameManager.instance.pauseMovement();
         setState(() {
@@ -1016,12 +1021,15 @@ class _GamePageState extends State<GamePage>
             needAlpha: 0,
             child: CoinAnimalPop(),
           );
-          gameData.coin += 1;
+          gameData.coin += addCoin;
           LocalCacheUtils.putGameData(gameData);
           GameManager.instance.updateCoinToGame(gameData.coin);
           GameManager.instance.resumeMovement();
           eventBus.fire(NotifyEvent(EventConfig.new3));
         });
+      },
+      onClickTarget: (target) {
+
       },
     );
     tutorialCoachMark?.show(context: context);
@@ -1117,15 +1125,7 @@ class _GamePageState extends State<GamePage>
       onFinish: () async {
         if (!ClickManager.canClick(context: context)) return;
         tutorialCoachMark?.skip();
-        var result = await PopManager().show(
-          context: context,
-          child: PropsAwardPop(),
-        );
-        if (result != null) {
-          gameData.coin += result;
-          GameManager.instance.updateCoinToGame(gameData.coin);
-          LocalCacheUtils.putGameData(gameData);
-        }
+        await toPropsAwardPop();
         GameManager.instance.resumeMovement();
         userData.new5 = false;
         LocalCacheUtils.putUserData(userData);
@@ -1136,6 +1136,26 @@ class _GamePageState extends State<GamePage>
       },
     );
     tutorialCoachMark?.show(context: context);
+  }
+
+  Future<int> toPropsAwardPop() async {
+     var result = await PopManager().show(
+      context: context,
+      child: PropsAwardPop(),
+    );
+    if (result != null) {
+      await PopManager().show(
+        context: context,
+        needAlpha: 0,
+        child: CoinAnimalPop(),
+      );
+      gameData.coin += result;
+      GameManager.instance.updateCoinToGame(gameData.coin);
+      LocalCacheUtils.putGameData(gameData);
+      return 1;
+    }else{
+      return 0;
+    }
   }
 
   void clickFood() {
@@ -1168,5 +1188,29 @@ class _GamePageState extends State<GamePage>
       });
       TaskManager.instance.addTask("feed");
     }
+  }
+
+  Widget buildCoinBubbles() {
+    addCoin = RewardManager.instance.findReward(RewardManager.instance.rewardData?.cashBubble?.prize, LocalCacheUtils.getGameData().coin);
+    return showCoinBubbles
+        ? Positioned(
+      left: 38.w,
+      bottom: 241.h,
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        pressedOpacity: 0.7,
+        child: BubbleWidget(key: globalGuideNew2, type: 0,coin:addCoin),
+        onPressed: () {
+          if (!ClickManager.canClick(context: context)) return;
+          setState(() {
+            showCoinBubbles = false;
+            gameData.coin += addCoin;
+            LocalCacheUtils.putGameData(gameData);
+            TaskManager.instance.addTask("bubbles");
+          });
+        },
+      ),
+    )
+        : SizedBox.shrink();
   }
 }
