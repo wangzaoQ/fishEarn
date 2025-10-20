@@ -239,7 +239,7 @@ class _GamePageState extends State<GamePage>
             ),
             //progress
             Padding(
-              padding: EdgeInsetsGeometry.only(top: 94.h),
+              padding: EdgeInsetsGeometry.only(top: gameData.level==3?94.h:94.h),
               child: Align(
                 alignment: Alignment.topCenter,
                 child: RepaintBoundary(
@@ -250,7 +250,11 @@ class _GamePageState extends State<GamePage>
                         gameData: gameData,
                         progress: value,
                         onConfirm: (result) {
-                          setState(() {});
+                          if(result == 10){
+                            toCashMain(context);
+                          }else{
+                            setState(() {});
+                          }
                         },
                       ); // 只重建这一小块
                     },

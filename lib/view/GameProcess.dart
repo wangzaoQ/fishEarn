@@ -83,11 +83,18 @@ class _GameProgressState extends State<GameProgress>
     super.dispose();
   }
 
+  var cacheShowMoney = true;
+
   @override
   Widget build(BuildContext context) {
     final double progressHeight = 25.h; // 进度条高度
     final BorderRadius borderRadius = BorderRadius.circular(progressHeight / 2);
-
+    if (widget.gameData.level == 3) {
+      cacheShowMoney = LocalCacheUtils.getBool(
+        LocalCacheConfig.cacheShowMoney,
+        defaultValue: true,
+      );
+    }
     return PopScope(
       canPop: false, // 禁止默认返回
       onPopInvokedWithResult: (didPop, result) {
@@ -103,309 +110,406 @@ class _GameProgressState extends State<GameProgress>
           Positioned(
             left: 5.w,
             right: 5.w,
-            child: SizedBox(
-              key: globalKeyNew3,
-              width: double.infinity,
-              height: 100.h,
-              child: Stack(
-                children: [
-                  // 背景图
-                  Image.asset(
-                    "assets/images/bg_game_process2.webp",
+            child: widget.gameData.level == 3
+                ? SizedBox(
                     width: double.infinity,
-                    height: 100.h,
-                    fit: BoxFit.fill,
-                  ),
-                  // 进度条容器
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 33.h),
-                      child: TweenAnimationBuilder<double>(
-                        tween: Tween(begin: _oldProgress, end: widget.progress),
-                        duration: const Duration(milliseconds: 500),
-                        builder: (_, v, __) {
-                          return Stack(
-                            clipBehavior: Clip.none,
-                            children: [
-                              GlossyCapsuleProgressBar(
-                                progress: v,
-                                height: 25.h,
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  //level 1
-                  Positioned(
-                    left: 50.w,
-                    top: 33.h,
-                    child: Image.asset(
-                      "assets/images/ic_game1.webp",
-                      width: 38.w,
-                      height: 21.h,
-                    ),
-                  ),
-                  Positioned(
-                    left: 50.w,
-                    top: 55.h,
-                    child: GameText(
-                      showText: "LV 1",
-                      fontSize: 16.sp,
-                      strokeColor: Color(0xFF9B4801),
-                    ),
-                  ),
-                  //level 2
-                  Positioned(
-                    left: 150.w,
-                    top: 10.h,
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.7,
-                      child: SizedBox(
-                        width: 68.w,
-                        height: 68.h,
-                        child: Stack(
-                          children: [
-                            (widget.progress == 0.5 &&
-                                    widget.gameData.level == 1)
-                                ? RotationTransition(
-                                    turns: _controller,
-                                    child: Image.asset(
-                                      "assets/images/bg_game_progress.webp",
-                                    ),
-                                  )
-                                : SizedBox.shrink(),
-                            Align(
-                              alignment: Alignment.center,
-                              child: Image.asset(
-                                "assets/images/ic_game2.webp",
-                                width: 43.w,
-                                height: 30.h,
-                              ),
-                            ),
-                          ],
+                    height: 117.h,
+                    child: Stack(
+                      children: [
+                        Image.asset(
+                          "assets/images/bg_home_cash_paypal.webp",
+                          width: double.infinity,
+                          height: 117.h,
+                          fit: BoxFit.fill,
                         ),
-                      ),
-                      onPressed: () async {
-                        if (!ClickManager.canClick(context: context)) return;
-                        if (widget.gameData.level == 1 &&
-                            widget.progress == 0.5) {
-                          var userData = LocalCacheUtils.getUserData();
-                          if (!userData.new3) {
-                            var result = await PopManager().show(
-                              context: context,
-                              child: LevelUp1_2(),
-                            );
-                            if (result == 1) {
-                              toLevel2(context);
-                            }
-                          }
-                        }
-                      },
-                    ),
-                  ),
-                  widget.gameData.level == 1
-                      ? Positioned(
-                          left: 180.w,
-                          top: 6.h,
+                        Positioned(
+                          left: 22.w,
+                          top: 18.h,
                           child: SizedBox(
-                            width: 58.w,
+                            width: 115.w,
                             height: 27.h,
-                            child: Stack(
-                              children: [
-                                Image.asset(
-                                  "assets/images/bg_tips_level.webp",
-                                  width: 58.w,
-                                  height: 27.h,
-                                  fit: BoxFit.fill,
-                                ),
-                                Positioned(
-                                  left: 2.w,
-                                  top: 1.h,
-                                  child: Image.asset(
-                                    "assets/images/ic_coin2.webp",
-                                    width: 20.w,
-                                    height: 20.h,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Color(0xFF2F5FC5),
+                                // #012169 的十六进制写法
+                                borderRadius: BorderRadius.circular(
+                                  14,
+                                ), // 圆角 5dp
+                              ),
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    width: 70.w,
+                                    height: 17.h,
+                                    "assets/images/ic_cash_paypal.webp",
                                   ),
-                                ),
-                                Positioned(
-                                  left: 22.w,
-                                  top: 2.h,
-                                  child: Text(
-                                    "+\$${GameConfig.coin_1_2}",
-                                    style: TextStyle(
-                                      color: Color(0xFF561C3E),
-                                      fontSize: 13.sp,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      : SizedBox.shrink(),
-                  Positioned(
-                    left: 160.w,
-                    top: 55.h,
-                    child: GameText(
-                      showText: "LV 2",
-                      fontSize: 16.sp,
-                      fillColor: Color(0xFFFFEF50),
-                      strokeColor: Color(0xFF9B4801),
-                    ),
-                  ),
-                  //level 3
-                  Positioned(
-                    right: 50.w,
-                    top: 10.h,
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.7,
-                      child: SizedBox(
-                        width: 68.w,
-                        height: 68.h,
-                        child: Stack(
-                          children: [
-                            (widget.progress == 1 && widget.gameData.level == 2)
-                                ? RotationTransition(
-                                    turns: _controller,
-                                    child: Image.asset(
-                                      "assets/images/bg_game_progress.webp",
-                                    ),
-                                  )
-                                : SizedBox.shrink(),
-                            Align(
-                              alignment: Alignment.center,
-                              child: Image.asset(
-                                "assets/images/ic_game3.webp",
-                                width: 55.w,
-                                height: 36.h,
+                                ],
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                      onPressed: () async {
-                        if (!ClickManager.canClick(context: context)) return;
-                        GameManager.instance.pauseMovement();
-                        if (widget.gameData.level == 2 &&
-                            widget.progress == 1) {
-                          var result = await PopManager().show(
-                            context: context,
-                            child: LevelUp2_3(),
-                          );
-                          if (result == 1) {
-                            widget.gameData.level = 3;
-                            LocalCacheUtils.putGameData(widget.gameData);
-                            widget.onConfirm(3);
-                            await PopManager().show(
-                              context: context,
-                              child: LevelPop2_3(),
-                            );
-                          }
-                        }
-                        GameManager.instance.resumeMovement();
-                      },
-                    ),
-                  ),
-                  widget.gameData.level == 2
-                      ? Positioned(
-                    right: 30.w,
-                    top: 6.h,
-                    child: SizedBox(
-                      width: 60.w,
-                      height: 27.h,
-                      child: Stack(
-                        children: [
-                          Image.asset(
-                            "assets/images/bg_tips_level.webp",
-                            width: 60.w,
-                            height: 27.h,
-                            fit: BoxFit.fill,
-                          ),
-                          Positioned(
-                            left: 2.w,
-                            top: 1.h,
-                            child: Image.asset(
-                              "assets/images/ic_coin2.webp",
-                              width: 20.w,
-                              height: 20.h,
+                        Positioned(
+                          child: SizedBox(
+                            width: 17.w,
+                            height: 11.h,
+                            child: CupertinoButton(
+                              padding: EdgeInsets.zero,
+                              pressedOpacity: 0.7,
+                              child: Image.asset("assets/images/ic_eye.webp"),
+                              onPressed: () {
+                                setState(() {
+                                  cacheShowMoney = !cacheShowMoney;
+                                  LocalCacheUtils.putBool(
+                                    LocalCacheConfig.cacheShowMoney,
+                                    !cacheShowMoney,
+                                  );
+                                });
+                              },
                             ),
                           ),
-                          Positioned(
-                            left: 22.w,
-                            top: 2.h,
-                            child: Text(
-                              "+\$${GameConfig.coin_2_3}",
-                              style: TextStyle(
-                                color: Color(0xFF561C3E),
-                                fontSize: 13.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                        ),
+                        Positioned(
+                          top: 18.h,
+                          left: 262.w,
+                          child: GameText(
+                            showText: cacheShowMoney
+                                ? "${GameManager.instance.getCoinShow(widget.gameData.coin)}"
+                                : "****",
+                            fontSize: 28.sp,
+                            fillColor: Colors.white,
+                            strokeColor: Colors.black,
+                            strokeWidth: 1.w,
                           ),
-                        ],
-                      ),
+                        ),
+                        Positioned(child: SizedBox(width: 102.w,height: 29.h,child:CupertinoButton(
+                          padding: EdgeInsets.zero,
+                          pressedOpacity: 0.7,
+                          child: Stack(children: [
+                            Image.asset(
+                              width: 102.w,height: 29.h,
+                              "assets/images/bg_confirm.webp",
+                              fit: BoxFit.fill,
+                            ),
+                            Center(child: Text("app_withdraw".tr(),style: TextStyle(fontSize:16.sp,color: Color(0xFF185F11),fontWeight: FontWeight.bold),),)
+                          ],),
+                          onPressed: () {
+                            setState(() {
+                              widget.onConfirm(10);
+                            });
+                          },
+                        ) ,))
+                      ],
                     ),
                   )
-                      : SizedBox.shrink(),
-                  Positioned(
-                    right: 60.w,
-                    top: 55.h,
-                    child: GameText(
-                      showText: "LV 3",
-                      fillColor: Color(0xFFFFEF50),
-                      fontSize: 16.sp,
-                      strokeColor: Color(0xFF9B4801),
-                    ),
-                  ),
-                  // widget.gameData.level == 2 && widget.progress == 1?SizedBox.shrink():
-                  Positioned(
-                    left: 110.w,
-                    top: 55.h, // 在进度条下方一点
-                    child: CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      pressedOpacity: 0.7,
-                      onPressed: null,
-                      child: SizedBox(
-                        width: 46.w,
-                        height: 25.h,
-                        child: Stack(
-                          children: [
-                            Image.asset(
-                              "assets/images/ic_up_arrow.webp",
-                              width: 23.w,
-                              height: 23.h,
-                            ),
-                            Positioned(
-                              left: 15.w,
-                              bottom: 0.h,
-                              child: GameText(
-                                showText: "app_up".tr(),
-                                fontSize: 12.sp,
-                                strokeColor: Color(0xFF000000),
-                              ),
-                            ),
-                            Positioned(
-                              left: 13.w,
-                              child: Image.asset(
-                                "assets/images/ic_ad_tips.webp",
-                                width: 15.w,
-                                height: 15.h,
-                              ),
-                            ),
-                          ],
+                : SizedBox(
+                    key: globalKeyNew3,
+                    width: double.infinity,
+                    height: 100.h,
+                    child: Stack(
+                      children: [
+                        // 背景图
+                        Image.asset(
+                          "assets/images/bg_game_process2.webp",
+                          width: double.infinity,
+                          height: 100.h,
+                          fit: BoxFit.fill,
                         ),
-                      ),
+                        // 进度条容器
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 33.h),
+                            child: TweenAnimationBuilder<double>(
+                              tween: Tween(
+                                begin: _oldProgress,
+                                end: widget.progress,
+                              ),
+                              duration: const Duration(milliseconds: 500),
+                              builder: (_, v, __) {
+                                return Stack(
+                                  clipBehavior: Clip.none,
+                                  children: [
+                                    GlossyCapsuleProgressBar(
+                                      progress: v,
+                                      height: 25.h,
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        //level 1
+                        Positioned(
+                          left: 50.w,
+                          top: 33.h,
+                          child: Image.asset(
+                            "assets/images/ic_game1.webp",
+                            width: 38.w,
+                            height: 21.h,
+                          ),
+                        ),
+                        Positioned(
+                          left: 50.w,
+                          top: 55.h,
+                          child: GameText(
+                            showText: "LV 1",
+                            fontSize: 16.sp,
+                            strokeColor: Color(0xFF9B4801),
+                          ),
+                        ),
+                        //level 2
+                        Positioned(
+                          left: 150.w,
+                          top: 10.h,
+                          child: CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            pressedOpacity: 0.7,
+                            child: SizedBox(
+                              width: 68.w,
+                              height: 68.h,
+                              child: Stack(
+                                children: [
+                                  (widget.progress == 0.5 &&
+                                          widget.gameData.level == 1)
+                                      ? RotationTransition(
+                                          turns: _controller,
+                                          child: Image.asset(
+                                            "assets/images/bg_game_progress.webp",
+                                          ),
+                                        )
+                                      : SizedBox.shrink(),
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Image.asset(
+                                      "assets/images/ic_game2.webp",
+                                      width: 43.w,
+                                      height: 30.h,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            onPressed: () async {
+                              if (!ClickManager.canClick(context: context))
+                                return;
+                              if (widget.gameData.level == 1 &&
+                                  widget.progress == 0.5) {
+                                var userData = LocalCacheUtils.getUserData();
+                                if (!userData.new3) {
+                                  var result = await PopManager().show(
+                                    context: context,
+                                    child: LevelUp1_2(),
+                                  );
+                                  if (result == 1) {
+                                    toLevel2(context);
+                                  }
+                                }
+                              }
+                            },
+                          ),
+                        ),
+                        widget.gameData.level == 1
+                            ? Positioned(
+                                left: 180.w,
+                                top: 6.h,
+                                child: SizedBox(
+                                  width: 58.w,
+                                  height: 27.h,
+                                  child: Stack(
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/bg_tips_level.webp",
+                                        width: 58.w,
+                                        height: 27.h,
+                                        fit: BoxFit.fill,
+                                      ),
+                                      Positioned(
+                                        left: 2.w,
+                                        top: 1.h,
+                                        child: Image.asset(
+                                          "assets/images/ic_coin2.webp",
+                                          width: 20.w,
+                                          height: 20.h,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        left: 22.w,
+                                        top: 2.h,
+                                        child: Text(
+                                          "+\$${GameConfig.coin_1_2}",
+                                          style: TextStyle(
+                                            color: Color(0xFF561C3E),
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : SizedBox.shrink(),
+                        Positioned(
+                          left: 160.w,
+                          top: 55.h,
+                          child: GameText(
+                            showText: "LV 2",
+                            fontSize: 16.sp,
+                            fillColor: Color(0xFFFFEF50),
+                            strokeColor: Color(0xFF9B4801),
+                          ),
+                        ),
+                        //level 3
+                        Positioned(
+                          right: 50.w,
+                          top: 10.h,
+                          child: CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            pressedOpacity: 0.7,
+                            child: SizedBox(
+                              width: 68.w,
+                              height: 68.h,
+                              child: Stack(
+                                children: [
+                                  (widget.progress == 1 &&
+                                          widget.gameData.level == 2)
+                                      ? RotationTransition(
+                                          turns: _controller,
+                                          child: Image.asset(
+                                            "assets/images/bg_game_progress.webp",
+                                          ),
+                                        )
+                                      : SizedBox.shrink(),
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Image.asset(
+                                      "assets/images/ic_game3.webp",
+                                      width: 55.w,
+                                      height: 36.h,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            onPressed: () async {
+                              if (!ClickManager.canClick(context: context))
+                                return;
+                              GameManager.instance.pauseMovement();
+                              if (widget.gameData.level == 2 &&
+                                  widget.progress == 1) {
+                                var result = await PopManager().show(
+                                  context: context,
+                                  child: LevelUp2_3(),
+                                );
+                                if (result == 1) {
+                                  widget.gameData.level = 3;
+                                  LocalCacheUtils.putGameData(widget.gameData);
+                                  widget.onConfirm(3);
+                                  await PopManager().show(
+                                    context: context,
+                                    child: LevelPop2_3(),
+                                  );
+                                }
+                              }
+                              GameManager.instance.resumeMovement();
+                            },
+                          ),
+                        ),
+                        widget.gameData.level == 2
+                            ? Positioned(
+                                right: 30.w,
+                                top: 6.h,
+                                child: SizedBox(
+                                  width: 60.w,
+                                  height: 27.h,
+                                  child: Stack(
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/bg_tips_level.webp",
+                                        width: 60.w,
+                                        height: 27.h,
+                                        fit: BoxFit.fill,
+                                      ),
+                                      Positioned(
+                                        left: 2.w,
+                                        top: 1.h,
+                                        child: Image.asset(
+                                          "assets/images/ic_coin2.webp",
+                                          width: 20.w,
+                                          height: 20.h,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        left: 22.w,
+                                        top: 2.h,
+                                        child: Text(
+                                          "+\$${GameConfig.coin_2_3}",
+                                          style: TextStyle(
+                                            color: Color(0xFF561C3E),
+                                            fontSize: 13.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : SizedBox.shrink(),
+                        Positioned(
+                          right: 60.w,
+                          top: 55.h,
+                          child: GameText(
+                            showText: "LV 3",
+                            fillColor: Color(0xFFFFEF50),
+                            fontSize: 16.sp,
+                            strokeColor: Color(0xFF9B4801),
+                          ),
+                        ),
+                        // widget.gameData.level == 2 && widget.progress == 1?SizedBox.shrink():
+                        Positioned(
+                          left: 110.w,
+                          top: 55.h, // 在进度条下方一点
+                          child: CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            pressedOpacity: 0.7,
+                            onPressed: null,
+                            child: SizedBox(
+                              width: 46.w,
+                              height: 25.h,
+                              child: Stack(
+                                children: [
+                                  Image.asset(
+                                    "assets/images/ic_up_arrow.webp",
+                                    width: 23.w,
+                                    height: 23.h,
+                                  ),
+                                  Positioned(
+                                    left: 15.w,
+                                    bottom: 0.h,
+                                    child: GameText(
+                                      showText: "app_up".tr(),
+                                      fontSize: 12.sp,
+                                      strokeColor: Color(0xFF000000),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: 13.w,
+                                    child: Image.asset(
+                                      "assets/images/ic_ad_tips.webp",
+                                      width: 15.w,
+                                      height: 15.h,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-            ),
           ),
         ],
       ),
@@ -446,8 +550,6 @@ class _GameProgressState extends State<GameProgress>
         radius: 12.0,
         // 圆角半径，自行调整
         contents: [
-
-
           TargetContent(
             align: ContentAlign.bottom, // 内容在高亮 widget 下方
             child: Stack(
