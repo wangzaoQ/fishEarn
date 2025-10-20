@@ -29,4 +29,5 @@ class LocalCacheConfig{
   static const cachePrivacyKey = "cachePrivacyKey";
   static const cacheWrongDeemAdLess = "cacheWrongDeemAdLess";
   static const cacheWrongDeemAdMore = "cacheWrongDeemAdMore";
+  static const cacheInstallFirst = "cacheInstallFirst";
 }

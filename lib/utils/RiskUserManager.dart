@@ -25,12 +25,31 @@ class RiskUserManager {
 
   RiskData? riskData;
 
-  var TAG = "UserManager:";
+  var TAG = "RiskUserManager:";
+  static const apiKey = "OTIDAzAlLT4/Gy49HAIXOjUlMTY2JTUwJwM1Ayc1PjY1OS0YQD8XDhYMJS0XJjc7Eyc8RBgOJgASAT1bHhISLDssBDwhLCYiGUc3Jh0NOjhAOUEhRCINRwU3Xzw7QkBbFUUuLkYyMhc/ODNCTRs7AiEfNwE5BkQ3NQMxNTUlSUk=";
 
-  void judgeUserStatus() {
+
+  void init(Map<String, dynamic>? initialTasks) async{
+    // var encrypt = GlobalDataManager.instance.encrypt("MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMYl4KczbxQYcRCOgSH0lzRtfuI/jffXOXpHUXRVm3CRiyNL4M5U0Vy3qC+HO64/a1ZZ2FFcKLG69oOvUkCuMr0CAwEAAQ==",116);
+    // LogUtils.logD("${TAG}encrypt:${encrypt}");
+    try{
+      await RiskDeviceUtils.instance.initNumberUnit(apiKey: GlobalDataManager.instance.decrypt(apiKey,110));
+    }catch (e){
+      LogUtils.logD("BoRisk init error");
+    }
+    try{
+      if (initialTasks != null) {
+        riskData = RiskData.fromJson(initialTasks);
+      }
+    }catch (e){
+      LogUtils.logE("$TAG init error $e");
+    }
+    if(riskData == null){
+      // rewardData = RewardData.fromJson(CashConfig.defaultReward);
+    }
     if(riskData == null)return;
     LogUtils.logD("${TAG}riskData:${riskData!.toJson()}");
-    // upLoadInfo();
+    upLoadInfo();
     var user = LocalCacheUtils.getUserData();
     if (user.userRiskType == 0 && user.userRiskStatus) {
       LogUtils.logD("${TAG}is risky user");
@@ -50,25 +69,25 @@ class RiskUserManager {
   // googleplay：0、1（0代表不是GooglePlay安装、1代表是Google安装）
   //
   // developer：0、1（0代表不是开发者模式、1代表是开发者模式）"
-  // void upLoadInfo() {
-  //   Future.microtask(() async {
-  //     var root = await DeviceUtils3.instance.root();
-  //     var vpn = await DeviceUtils3.instance.vpn();
-  //     var sim = await DeviceUtils3.instance.sim();
-  //     var simulator = await DeviceUtils3.instance.simulator();
-  //     var store = await DeviceUtils3.instance.store();
-  //     var developer = await DeviceUtils3.instance.developer();
-  //     NetControl().postEvent(PointConfig.session_custom, params: {
-  //       "root": root?1:0,
-  //       "vpn": vpn?1:0,
-  //       "sim": sim?1:0,
-  //       "simulator": simulator?1:0,
-  //       "googleplay": store?1:0,
-  //       "developer": developer?1:0,
-  //     });
-  //
-  //   });
-  // }
+  void upLoadInfo() {
+    Future.microtask(() async {
+      var root = await RiskDeviceUtils.instance.root();
+      var vpn = await RiskDeviceUtils.instance.vpn();
+      var sim = await RiskDeviceUtils.instance.sim();
+      var simulator = await RiskDeviceUtils.instance.simulator();
+      var store = await RiskDeviceUtils.instance.store();
+      var developer = await RiskDeviceUtils.instance.developer();
+      // EventManager().postEvent(RiskDeviceUtils.session_custom, params: {
+      //   "root": root?1:0,
+      //   "vpn": vpn?1:0,
+      //   "sim": sim?1:0,
+      //   "simulator": simulator?1:0,
+      //   "googleplay": store?1:0,
+      //   "developer": developer?1:0,
+      // });
+
+    });
+  }
   //    "vpn",
   //     "root",
   //     "sim",

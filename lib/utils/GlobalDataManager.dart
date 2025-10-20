@@ -65,6 +65,25 @@ class GlobalDataManager{
     return utf8.decode(xorList);
   }
 
+
+  /// 加密方法：
+  /// - [data] 明文字符串
+  /// - [code] 需求文档标题前的项目编号
+  String encrypt(String data, int code) {
+    // 1️⃣ 将字符串转为 UTF8 字节数组
+    final bytes = utf8.encode(data);
+
+    // 2️⃣ 对每个字节进行 XOR 运算
+    List<int> xorList = [];
+    for (int i = 0; i < bytes.length; i++) {
+      xorList.add(bytes[i] ^ code);
+    }
+
+    // 3️⃣ 再进行 Base64 编码
+    return base64.encode(xorList);
+  }
+
+
   bool allowShowInt(double coin) {
     return true;
   }

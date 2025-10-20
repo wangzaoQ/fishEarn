@@ -3,6 +3,8 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 // import 'package:firebase_core/firebase_core.dart';
 // import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
@@ -12,6 +14,7 @@ import 'package:fish_earn/task/CashManager.dart';
 import 'package:fish_earn/task/RewardManager.dart';
 import 'package:fish_earn/task/TaskManager.dart';
 import 'package:fish_earn/utils/AudioUtils.dart';
+import 'package:fish_earn/utils/FishFirebaseManager.dart';
 import 'package:fish_earn/utils/FishNFManager.dart';
 import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
@@ -30,30 +33,31 @@ import 'config/GlobalListener.dart';
 import 'config/global.dart';
 import 'model/GameViewModel.dart';
 
+var TAG = "APP_TAG";
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   LocalCacheUtils.init();
   await EasyLocalization.ensureInitialized();
-  // if (Platform.isAndroid) {
-  //   try {
-  //     await Firebase.initializeApp();
-  //     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
-  //
-  //     // 捕获 async / isolate 全局错误
-  //     PlatformDispatcher.instance.onError = (error, stack) {
-  //       FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-  //       return true;
-  //     };
-  //   } catch (e) {
-  //     LogUtils.logD("Firebase init error");
-  //   }
-  // }
+  if (Platform.isAndroid) {
+    try {
+      await Firebase.initializeApp();
+      FishFirebaseManager.instance.init();
+    } catch (e) {
+      LogUtils.logD("$TAG Firebase init error");
+    }
+    try {
+      // FlutterCustomFacebook.instance.initFaceBook(
+      //   facebookId: CommonConfig.facebookId,
+      //   facebookToken: CommonConfig.facebookToken,
+      //   facebookAppName: CommonConfig.facebookName,
+      // );
+    } catch (e) {
+      LogUtils.logD("$TAG facebook init error");
+    }
+  }
   GlobalDataManager.instance.init();
   TimeUtils.dataReset();
 
-  TaskManager.instance.init(null);
-  CashManager.instance.init(null);
-  RewardManager.instance.init(null);
   // 延迟3秒执行
   Future.delayed(const Duration(seconds: 3), () async {
     await FishNFManager.instance.init();
@@ -115,7 +119,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   int pauseTime = 0;
 
-  var TAG = "APP_TAG";
 
   Timer? timeoutTimer;
   bool isNeedAd = false;
