@@ -39,8 +39,18 @@ class ADLoadManager {
   );
   Timer? timeoutTimer;
 
-  void init() {
-
+  void init(Map<String, dynamic>? initialTasks) async{
+    try{
+      if (initialTasks != null) {
+        adRootData = ADData.fromJson(initialTasks);
+      }
+    }catch (e){
+      LogUtils.logE("$TAG init error $e");
+    }
+    if(adRootData == null){
+      // rewardData = RewardData.fromJson(CashConfig.defaultReward);
+    }
+    preloadAll("init");
   }
 
   void preloadAD(ADEnum adType, String tag) {
@@ -72,7 +82,7 @@ class ADLoadManager {
 
     final data = list.removeAt(0);
 
-    LogUtils.logD("$TAG: $adEnum :-id:${data.zgsbckua}");
+    LogUtils.logD("$TAG: $adEnum :-id:${data.igteaams}");
 
     adEnum.adLoadStatus = ADEnum.LOAD_STATUS_LOADING;
 
@@ -89,7 +99,7 @@ class ADLoadManager {
     timeoutTimer?.cancel();
     timeoutTimer = Timer(Duration(seconds: timeoutSeconds), () {
       // 超时处理：把这次请求当作失败（并上报），释放锁或继续下一个候选
-      LogUtils.logD(" LoadFail:$adEnum -enum:${adEnum.toString()} TIMEOUT after ${timeoutSeconds}s for adUnit=${data.zgsbckua}");
+      LogUtils.logD(" LoadFail:$adEnum -enum:${adEnum.toString()} TIMEOUT after ${timeoutSeconds}s for adUnit=${data.igteaams}");
       adEnum.adLoadStatus = ADEnum.AD_LOAD_FAIL;
       // 上报一个超时事件（可选）
       // NetControl().postEvent(PointConfig.ad_request, params: {

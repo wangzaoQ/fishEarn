@@ -36,7 +36,7 @@ class TaskManager {
       LogUtils.logE("$TAG init error $e");
     }
     if(tasks == null){
-      tasks = Map<String, dynamic>.from(CashConfig.defaultTask);
+      // tasks = Map<String, dynamic>.from(CashConfig.defaultTask);
     }
   }
 

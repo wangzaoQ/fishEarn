@@ -34,8 +34,25 @@ class RewardManager {
       LogUtils.logE("$TAG init error $e");
     }
     if(rewardData == null){
-      rewardData = RewardData.fromJson(CashConfig.defaultReward);
+      // rewardData = RewardData.fromJson(CashConfig.defaultReward);
     }
+  }
+
+  int findCoinBubbleTime(){
+    var list = rewardData?.cashBubbleT?.prize;
+    if(list == null || list.isEmpty){
+      return 30;
+    }else{
+      return list[0] as int;
+    }
+  }
+
+  int findFoodBubbleTime(){
+    return 10;
+  }
+
+  int findPearBubbleTime(){
+    return 10;
   }
 
   double findReward(List<RewardRange>? rewardList, double value) {

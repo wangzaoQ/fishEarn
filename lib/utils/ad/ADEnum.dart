@@ -30,8 +30,8 @@ class ADEnum {
       'ADEnum($adName, status=$adLoadStatus, requests=${adRequestList.length})';
 
   // 模拟枚举值
-  static final ADEnum intAD = ADEnum._internal("oxrsl_int");
-  static final ADEnum rewardedAD = ADEnum._internal("oxrsl_rv");
+  static final ADEnum intAD = ADEnum._internal("fixrn_int");
+  static final ADEnum rewardedAD = ADEnum._internal("fixrn_rv");
 
   // 所有值（可遍历）
   static List<ADEnum> get values => [intAD, rewardedAD];

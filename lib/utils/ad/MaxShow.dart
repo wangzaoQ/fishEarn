@@ -14,7 +14,7 @@ class MaxShow extends BaseShow {
 
   @override
   Future<void> showScreenAd(ADResultData adResultData, String pointTag) async {
-    var from = adResultData.adRequestData?.rnucwtgt ?? "";
+    var from = adResultData.adRequestData?.uwkcopbx ?? "";
     switch (from) {
       case LocalConfig.int:
          InterstitialListenerDispatcher.instance.showListener = InterstitialListener(
@@ -44,11 +44,11 @@ class MaxShow extends BaseShow {
         );
         AppLovinMAX.setInterstitialListener(InterstitialListenerDispatcher.instance.listener);
         bool isReady = (await AppLovinMAX.isInterstitialReady(
-          adResultData.adRequestData?.zgsbckua ?? "",
+          adResultData.adRequestData?.igteaams ?? "",
         ))!;
         if (isReady) {
           AppLovinMAX.showInterstitial(
-            adResultData.adRequestData?.zgsbckua ?? "",
+            adResultData.adRequestData?.igteaams ?? "",
           );
         }else{
           // NetControl().postEvent(PointConfig.oxrsl_ad_impression_fail,params: {
@@ -93,9 +93,9 @@ class MaxShow extends BaseShow {
             });
         AppLovinMAX.setRewardedAdListener(RewardedListenerDispatcher.instance.listener);
 
-        bool isReady = (await AppLovinMAX.isRewardedAdReady(adResultData.adRequestData?.zgsbckua ?? ""))!;
+        bool isReady = (await AppLovinMAX.isRewardedAdReady(adResultData.adRequestData?.igteaams ?? ""))!;
         if (isReady) {
-          AppLovinMAX.showRewardedAd(adResultData.adRequestData?.zgsbckua ?? "");
+          AppLovinMAX.showRewardedAd(adResultData.adRequestData?.igteaams ?? "");
         }else{
           // NetControl().postEvent(PointConfig.oxrsl_ad_impression_fail,params: {
           //   "ad_pos_id":pointTag,

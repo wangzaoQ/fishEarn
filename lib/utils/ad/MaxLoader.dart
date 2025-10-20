@@ -23,7 +23,7 @@ class MaxLoader extends BaseLoader {
         successCallBack(
           ADResultData()
             ..adRequestData = requestBean
-            ..adType = requestBean.rnucwtgt
+            ..adType = requestBean.uwkcopbx
             ..adRequestTime = ((DateTime
                 .now()
                 .millisecondsSinceEpoch - startTime) ~/ 1000),
@@ -38,7 +38,7 @@ class MaxLoader extends BaseLoader {
       onAdHiddenCallback: (ad) {},
     );
     // Load the first interstitial.
-    AppLovinMAX.loadInterstitial(requestBean.zgsbckua);
+    AppLovinMAX.loadInterstitial(requestBean.igteaams);
   }
 
   @override
@@ -50,7 +50,7 @@ class MaxLoader extends BaseLoader {
       successCallBack(
         ADResultData()
           ..adRequestData = requestBean
-          ..adType = requestBean.rnucwtgt
+          ..adType = requestBean.uwkcopbx
           ..adRequestTime = ((DateTime
               .now()
               .millisecondsSinceEpoch - startTime) ~/ 1000),
@@ -71,7 +71,7 @@ class MaxLoader extends BaseLoader {
         onAdReceivedRewardCallback: (ad, reward) {
 
         });
-    AppLovinMAX.loadRewardedAd(requestBean.zgsbckua);
+    AppLovinMAX.loadRewardedAd(requestBean.igteaams);
 
   }
 

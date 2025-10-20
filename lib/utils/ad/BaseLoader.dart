@@ -28,7 +28,7 @@ abstract class BaseLoader {
   }
 
   void startLoadAD() {
-    switch (requestBean.rnucwtgt) {
+    switch (requestBean.wdlwgunk) {
       case LocalConfig.reward:
         rewarded();
         break;

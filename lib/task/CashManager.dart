@@ -32,7 +32,7 @@ class CashManager {
       LogUtils.logE("$TAG init error $e");
     }
     if(ranks == null){
-      ranks = Map<String, dynamic>.from(CashConfig.defaultRank);
+      // ranks = Map<String, dynamic>.from(CashConfig.defaultRank);
     }
   }
 

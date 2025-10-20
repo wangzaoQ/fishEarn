@@ -45,7 +45,7 @@ class ADShowManager{
     var adLoadManager = ADLoadManager();
     var adSwitch = false;
     if(tag.contains("reward")){
-      adSwitch = ADLoadManager().adRootData?.oxrslSwitch??false;
+      adSwitch = ADLoadManager().adRootData?.fixrn_switch??false;
     }else if(tag.contains("int")){
       var gameData = LocalCacheUtils.getGameData();
       var allow = GlobalDataManager.instance.allowShowInt(gameData.coin);
