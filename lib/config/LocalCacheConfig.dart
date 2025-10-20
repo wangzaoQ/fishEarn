@@ -25,4 +25,6 @@ class LocalCacheConfig{
   static const cacheADTargetIndex = "cacheADTargetIndex";
   static const cacheADShowCount = "cacheADShowCount";
   static const cacheADClickCount = "cacheADClickCount";
+  static const firstLogin = "firstLogin";
+  static const cachePrivacyKey = "cachePrivacyKey";
 }

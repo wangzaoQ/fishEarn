@@ -21,10 +21,11 @@ import 'package:fish_earn/utils/TimeUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import 'StartPage.dart';
+import 'FishStartPage.dart';
 import 'config/GlobalListener.dart';
 import 'config/global.dart';
 import 'model/GameViewModel.dart';
@@ -148,7 +149,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             adIsPlay = false;
             Navigator.push(
               globalContext!,
-              MaterialPageRoute(builder: (_) => StartPage(type: 1),settings: const RouteSettings(name: "StartPage"),),
+              MaterialPageRoute(builder: (_) => FishStartPage(type: 1),settings: const RouteSettings(name: "StartPage"),),
             );
           });
         }
@@ -157,25 +158,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       isForeground = false;
       LogUtils.logD("$TAG App isForeground:${isForeground}");
       AudioUtils().pauseBGM();
-      timeoutTimer?.cancel();
-      timeoutTimer = Timer(Duration(seconds: 3), () {
-        isNeedAd = true;
-        LogUtils.logD("$TAG App AppLifecycleState.paused isNeedAd:${isNeedAd} ");
-      });
-    }
-
-    if (state == AppLifecycleState.resumed) {
-      var allowBgm = CacheManager.getBool(
-        CacheConfig.cacheBGMKey,
-        defaultValue: true,
-      );
-      if (allowBgm) {
-        AudioManager().playBGM("audio/bgm.mp3");
-      }
-
-    } else if (state == AppLifecycleState.paused) {
-      LogUtils.logD("$TAG App state == AppLifecycleState.paused");
-      AudioManager().pauseBGM();
       timeoutTimer?.cancel();
       timeoutTimer = Timer(Duration(seconds: 3), () {
         isNeedAd = true;
@@ -202,7 +184,11 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               localizationsDelegates: context.localizationDelegates,
               navigatorKey: LocalConfig.navigatorKey,
               // home: StartPage(type: 0),
-              home: GamePage(),
+              builder: EasyLoading.init(), // 👈 在这里
+              initialRoute: 'StartPage',
+              routes: {
+                'StartPage': (context) => const FishStartPage(type: 0),
+              },
             ),
           ),
         );
