@@ -2,7 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flutter/material.dart';
 
-class FloatingText extends TextComponent {
+class GameFloatingText extends TextComponent {
   static const double defaultLife = 0.7;
   static const double defaultOffsetY = -40.0;
 
@@ -12,14 +12,14 @@ class FloatingText extends TextComponent {
   double _lifeRemaining = 0.0;
   bool isInUse = false;
 
-  FloatingText._empty(this._basePaint)
+  GameFloatingText._empty(this._basePaint)
       : _baseStyle = _basePaint.style,
         super(text: '', textRenderer: _basePaint) {
     anchor = Anchor.center;
     priority = 100;
   }
 
-  FloatingText(String text, Vector2 pos, {required TextPaint textPaint})
+  GameFloatingText(String text, Vector2 pos, {required TextPaint textPaint})
       : _basePaint = textPaint,
         _baseStyle = textPaint.style,
         super(text: text, textRenderer: textPaint) {
@@ -29,7 +29,7 @@ class FloatingText extends TextComponent {
     _start(defaultLife, defaultOffsetY);
   }
 
-  static FloatingText createEmpty(TextPaint paint) => FloatingText._empty(paint);
+  static GameFloatingText createEmpty(TextPaint paint) => GameFloatingText._empty(paint);
 
   /// 重置并开始播放（用于池化）
   void reset(

@@ -17,6 +17,9 @@ class HomeText extends StatefulWidget {
 }
 
 class _HomeTextState extends State<HomeText> {
+
+  bool isChecked = false;
+
   @override
   Widget build(BuildContext context) {
     double fontSize = 16.sp;
@@ -32,30 +35,20 @@ class _HomeTextState extends State<HomeText> {
       runSpacing: 8.h,
       // 控制换行时垂直间距
       children: [
-        CupertinoButton(
-          padding: EdgeInsets.zero, // 去掉默认内边距
-          pressedOpacity: 0.7,
-          onPressed: () {
+        Checkbox(
+          value: isChecked,
+          side: BorderSide(color: Colors.green, width: 2), // 边框样式
+          activeColor: Colors.green,      // 勾选时颜色
+          checkColor: Colors.white,       // 勾选图标颜色
+          onChanged: (bool? value) {
             setState(() {
               LocalCacheUtils.putBool(
                 LocalCacheConfig.cachePrivacyKey,
                 !cachePrivacyKey,
               );
+              isChecked = value ?? false;
             });
           },
-          child: SizedBox(
-            width: 24.w,
-            height: 24.h,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Image.asset("assets/images/bg_start_selected.webp"),
-                cachePrivacyKey
-                    ? Image.asset("assets/images/ic_arrow.webp")
-                    : SizedBox(),
-              ],
-            ),
-          ),
         ),
         SizedBox(width: 7.w),
         CupertinoButton(
@@ -65,7 +58,7 @@ class _HomeTextState extends State<HomeText> {
             widget.onPrivacy!();
           },
           child: GameText(
-            showText: "app_privacy".tr(),
+            showText: "app_privacy_policy".tr(),
             fontSize: fontSize,
             strokeWidth: strokeWidth,
             strokeColor: Color(0xFF033B5F),
@@ -86,7 +79,7 @@ class _HomeTextState extends State<HomeText> {
             widget.onTerms!();
           },
           child: GameText(
-            showText: "app_terms".tr(),
+            showText: "app_contact_us".tr(),
             fontSize: fontSize,
             strokeWidth: strokeWidth,
             strokeColor: Color(0xFF033B5F),

@@ -11,7 +11,7 @@ import '../utils/GameManager.dart';
 import '../utils/GlobalTimerManager.dart';
 import 'FishComponent.dart';
 
-class SimpleAnimGame extends FlameGame {
+class FishAnimGame extends FlameGame {
   FishComponent? fishComment;
   late SpriteComponent coinBg;
   late SpriteComponent coinIcon;
@@ -22,7 +22,7 @@ class SimpleAnimGame extends FlameGame {
   @override
   Color backgroundColor() => Colors.transparent;
   final int level;
-  SimpleAnimGame(this.level);
+  FishAnimGame(this.level);
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -115,7 +115,7 @@ class SimpleAnimGame extends FlameGame {
   /// 外部调用以更新 coin 文本（只修改 TextComponent，不触发 Flutter rebuild）
   void updateCoin(double coin) {
     if(coinText == null)return;
-    final formatted = 1000.590.toStringAsFixed(2);
+    final formatted = coin.toStringAsFixed(2);
     if (coinText!.text != formatted) {
       coinText!.text = formatted;
     }

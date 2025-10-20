@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
+import 'package:fish_earn/utils/RiskUserManager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,10 @@ class _CashPage2State extends State<CashPage> {
     setState(() {
       // 更新 UI
     });
+    var userData = LocalCacheUtils.getUserData();
+    if((!userData.userRiskStatus || (userData.userRiskStatus && userData.userRiskType == 1))){
+      await RiskUserManager.instance.judgeWrongDeemAdLess(userData);
+    }
   }
 
   var eventParamsList = <String>[];

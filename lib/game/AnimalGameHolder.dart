@@ -19,7 +19,7 @@ class AnimalGameHolder extends StatefulWidget {
 }
 
 class _AnimalGameHolderState extends State<AnimalGameHolder> {
-  SimpleAnimGame? _game; // 允许替换
+  FishAnimGame? _game; // 允许替换
 
   @override
   void initState() {
@@ -41,7 +41,7 @@ class _AnimalGameHolderState extends State<AnimalGameHolder> {
   }
 
   void _createGame(int level) {
-    _game = SimpleAnimGame(level); // 传入关卡参数
+    _game = FishAnimGame(level); // 传入关卡参数
     GameManager.instance.game = _game!;
   }
 

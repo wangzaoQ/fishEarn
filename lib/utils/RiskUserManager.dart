@@ -209,7 +209,7 @@ class RiskUserManager {
         url,
         data: {
           'protocol': 2,
-          'pkg': "com.oceanreward.solitaire",
+          'pkg': "com.fishearn.rewards",
           'did': did,
         },
       );
@@ -233,7 +233,7 @@ class RiskUserManager {
     var last = LocalCacheUtils.getInt(
         LocalCacheConfig.cacheLastRvShowTime, defaultValue: 0);
     LocalCacheUtils.putInt(LocalCacheConfig.cacheLastRvShowTime, current);
-    LogUtils.logD("${TAG}judgeRewardShow time:${(current - last) / 1000}");
+    LogUtils.logD("${TAG}riskRewardShow time:${(current - last) / 1000}");
     if ((current - last) / 1000 <
         riskData!.behavior.adShortShow.duration) {
       LogUtils.logD("${TAG}adShortShow + 1");
@@ -244,7 +244,7 @@ class RiskUserManager {
     }
   }
 
-  judgeRewardDismiss() {
+  riskRewardDismiss() {
     if(riskData == null)return;
     var user = LocalCacheUtils.getUserData();
     if(user.userRiskStatus)return;
@@ -253,7 +253,7 @@ class RiskUserManager {
         .millisecondsSinceEpoch;
     var last = LocalCacheUtils.getInt(
         LocalCacheConfig.cacheLastRvShowTime, defaultValue: 0);
-    LogUtils.logD("${TAG}judgeRewardDismiss time:${(current - last) / 1000}");
+    LogUtils.logD("${TAG}riskRewardDismiss time:${(current - last) / 1000}");
     if ((current - last) / 1000 <
         riskData!.behavior.adShortClose.duration) {
       LogUtils.logD("${TAG}adShortClose + 1");
@@ -270,8 +270,13 @@ class RiskUserManager {
     LogUtils.logD("${TAG}judgeWrongDeemAdMore");
     if(user.userRiskStatus)return;
     if(riskData!.ui.behavior != 1 )return;
-    var cacheWithdraw = LocalCacheUtils.getBool(LocalCacheConfig.cacheWithdraw,defaultValue: false);
-    if(cacheRewardCount > riskData!.behavior.wrongDeemAdMore && !cacheWithdraw){
+    var cacheWrongDeemAdMore = LocalCacheUtils.getBool(LocalCacheConfig.cacheWrongDeemAdMore,defaultValue: true);
+    if(!cacheWrongDeemAdMore){
+      return;
+    }
+    var currentTask = LocalCacheUtils.getString(LocalCacheConfig.taskCurrentKey, defaultValue: "");
+    if(cacheRewardCount > riskData!.behavior.wrongDeemAdMore && currentTask == ""){
+      LocalCacheUtils.putBool(LocalCacheConfig.cacheWrongDeemAdMore, false);
       updateUser(user, "wrong_deem_ad_more");
     }
   }
@@ -280,7 +285,12 @@ class RiskUserManager {
     if(riskData == null)return false;
     if(user.userRiskStatus)return;
     if(riskData!.ui.behavior != 1 )return;
+    var cacheWrongDeemAdLess = LocalCacheUtils.getBool(LocalCacheConfig.cacheWrongDeemAdLess,defaultValue: true);
+    if(!cacheWrongDeemAdLess){
+      return;
+    }
     if (LocalCacheUtils.getInt(LocalCacheConfig.cacheRewardCount) < riskData!.behavior.wrongDeemAdLess){
+      LocalCacheUtils.putBool(LocalCacheConfig.cacheWrongDeemAdLess, false);
       updateUser(user, "wrong_deem_ad_less");
     }
   }

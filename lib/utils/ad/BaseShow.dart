@@ -38,7 +38,7 @@ abstract class BaseShow {
     loadComplete(ADEnum.AD_SHOW_TYPE_SUCCESS, tag);
     setADDismissTime();
     if(showTag.contains("reward")){
-      RiskUserManager.instance.judgeRewardDismiss();
+      RiskUserManager.instance.riskRewardDismiss();
     }
     // NetControl().postEvent(PointConfig.oxrsl_ad_imp_close,params: {
     //   "ad_pos_id":showTag,

@@ -63,7 +63,7 @@ class _BubbleWidgetState extends State<BubbleWidget>
             Align(
               alignment: Alignment.bottomCenter,
               child: Text(
-                "${RewardManager.instance.findReward(RewardManager.instance.rewardData?.cashBubble?.prize, LocalCacheUtils.getGameData().coin)}",
+                "\$${RewardManager.instance.findReward(RewardManager.instance.rewardData?.cashBubble?.prize, LocalCacheUtils.getGameData().coin)}",
                 style: TextStyle(
                   fontSize: 15.sp,
                   color: const Color(0xFFF4FF72),

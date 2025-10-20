@@ -13,7 +13,7 @@ import '../game/FishAnimGame.dart';
 class GameManager{
   // 私有构造函数
   GameManager._();
-  SimpleAnimGame? game;
+  FishAnimGame? game;
 
   // 全局唯一实例
   static final GameManager instance = GameManager._();

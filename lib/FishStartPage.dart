@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/game/GamePage.dart';
+import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/LogUtils.dart';
 import 'package:fish_earn/utils/ad/ADEnum.dart';
@@ -28,32 +29,27 @@ class _FishStartPageState extends State<FishStartPage>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _animation;
-
-  var isFirst = LocalCacheUtils.getBool(
-    LocalCacheConfig.firstLogin,
-    defaultValue: true,
-  );
-
   // var isFirst = true;
 
   var allowTips = false;
 
   var animalFirst = true;
 
+  var cacheFirstKey = false;
 
   @override
   void initState() {
     super.initState();
     allowShowStart = false;
     // ADLoadManager().preloadAll("startPage");
-    LogUtils.logD("App startPage :${isFirst} isFirst");
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: isFirst? 2 : 12),
-    );
-    var cacheFirstKey = LocalCacheUtils.getBool(
+    cacheFirstKey = LocalCacheUtils.getBool(
       LocalCacheConfig.firstLogin,
       defaultValue: true,
+    );
+    LogUtils.logD("App startPage :${cacheFirstKey} isFirst");
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: cacheFirstKey? 2 : 12),
     );
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -66,9 +62,12 @@ class _FishStartPageState extends State<FishStartPage>
             ),
           );
         } else {
-          MaterialPageRoute(
-            builder: (context) => GamePage(),
-            settings: RouteSettings(name: '/GamePage'),
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => GamePage(),
+              settings: RouteSettings(name: '/GamePage'),
+            ),
           );
           // ADShowManager(adEnum: ADEnum.intAD, tag: "open",
           //   result: (type, hasValue) {
@@ -107,7 +106,7 @@ class _FishStartPageState extends State<FishStartPage>
       curve: Curves.easeOutCubic,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!isFirst) {
+      if (!cacheFirstKey) {
         // 启动动画
         _controller.forward();
       }
@@ -151,7 +150,7 @@ class _FishStartPageState extends State<FishStartPage>
                     ),
                   ],
                 ),
-                isFirst
+                cacheFirstKey
                     ? Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -160,15 +159,23 @@ class _FishStartPageState extends State<FishStartPage>
                       clipBehavior: Clip.none, // 如果有子内容溢出不会被裁掉
                       children: [
                         Positioned(
-                          left: 72.w,
-                          right: 72.w,
-                          bottom: 48.h,
+                          left: 101.w,
+                          right: 101.w,
+                          bottom: 50.h,
                           child: CupertinoButton(
                             padding: EdgeInsets.zero, // 去掉默认内边距
                             pressedOpacity: 0.7,
                             onPressed: () {
+                              var cachePrivacyKey = LocalCacheUtils.getBool(
+                                LocalCacheConfig.cachePrivacyKey,
+                                defaultValue: true,
+                              );
+                              if (!cachePrivacyKey) {
+                                GameManager.instance.showTips("app_login_tips".tr());
+                                return;
+                              }
                               setState(() {
-                                isFirst = false;
+                                cacheFirstKey = false;
                                 _controller.forward();
                               });
                             },
@@ -176,7 +183,7 @@ class _FishStartPageState extends State<FishStartPage>
                               alignment: Alignment.center,
                               children: [
                                 Image.asset(
-                                  'assets/images/bg_start_first.webp',
+                                  'assets/images/bg_confirm.webp',
                                   width: double.infinity,
                                   height: 62.h,
                                 ),
@@ -236,7 +243,7 @@ class _FishStartPageState extends State<FishStartPage>
                             children: [
                               // 背景图（完整进度条底图）
                               Image.asset(
-                                "assets/images/bg_start_progress1.webp",
+                                "assets/images/bg_launch_bg.webp",
                                 width: double.infinity,
                                 height: 22.h,
                                 fit: BoxFit.fill,
@@ -252,7 +259,7 @@ class _FishStartPageState extends State<FishStartPage>
                                       alignment: Alignment.centerLeft,
                                       widthFactor: _animation.value,
                                       child: Image.asset(
-                                        "assets/images/bg_start_progress2.webp",
+                                        "assets/images/bg_launch_progress.webp",
                                         width: double.infinity,
                                         height: 18.h,
                                         fit: BoxFit.fill,

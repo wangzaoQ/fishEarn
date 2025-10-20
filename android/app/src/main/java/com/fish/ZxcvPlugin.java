@@ -1,4 +1,5 @@
 package com.fish;
+import com.fish.FishRiskManager;
 
 import android.content.Context;
 
@@ -37,25 +38,25 @@ public class ZxcvPlugin implements FlutterPlugin, MethodCallHandler {
     //TODO:修改下面所有的方法名
     switch (method) {
       case "root":
-        result.success(SolitaireBoRiskManager.isAbnormalEnv() || SolitaireBoRiskManager.isXposed());
+        result.success(FishRiskManager.isAbnormalEnv() || FishRiskManager.isXposed());
         break;
       case "vpn":
-        result.success(SolitaireBoRiskManager.isVpn());
+        result.success(FishRiskManager.isVpn());
         break;
       case "sim":
-        result.success(SolitaireBoRiskManager.isSim(context));
+        result.success(FishRiskManager.isSim(context));
         break;
       case "simulator":
-        result.success(SolitaireBoRiskManager.isEmulator() || SolitaireBoRiskManager.isEmulator2());
+        result.success(FishRiskManager.isEmulator() || FishRiskManager.isEmulator2());
         break;
       case "store":
-        result.success("com.android.vending".contentEquals(SolitaireBoRiskManager.getInstaller(context)));
+        result.success("com.android.vending".contentEquals(FishRiskManager.getInstaller(context)));
         break;
       case "developer":
-        result.success(SolitaireBoRiskManager.isDevModel(context) || SolitaireBoRiskManager.isDebug(context));
+        result.success(FishRiskManager.isDevModel(context) || FishRiskManager.isDebug(context));
         break;
       case "installer":
-        result.success(SolitaireBoRiskManager.getInstaller(context));
+        result.success(FishRiskManager.getInstaller(context));
         break;
       case "initNumberUnit":
         Main.init(context, (String)call.arguments, false);

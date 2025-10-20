@@ -6,7 +6,7 @@ import '../config/global.dart';
 import 'FishAnimGame.dart';
 import 'GameFloatText.dart'; // 你的 SimpleAnimGame
 
-class FishComponent extends SpriteAnimationComponent with HasGameRef<SimpleAnimGame> {
+class FishComponent extends SpriteAnimationComponent with HasGameRef<FishAnimGame> {
   final Random _random = Random();
 
   int level;
@@ -289,7 +289,7 @@ class FishComponent extends SpriteAnimationComponent with HasGameRef<SimpleAnimG
     _floatingTimer += dt;
     if (_floatingTimer >= 1.0 && level>1) {
       _floatingTimer = 0.0;
-      showFloatingText(level == 2? "+0.02": "+0.05", color: Color(0xFFFFEF50));
+      showFloatingText(level == 2? "+\$0.02": "+\$0.05", color: Color(0xFFFFEF50));
     }
   }
 
@@ -338,7 +338,7 @@ class FishComponent extends SpriteAnimationComponent with HasGameRef<SimpleAnimG
     );
 
     final pos = position.clone()..y -= size.y / 2; // 鱼上方
-    final ft = FloatingText(text, pos, textPaint: paint);
+    final ft = GameFloatingText(text, pos, textPaint: paint);
     gameRef.add(ft);
   }
 

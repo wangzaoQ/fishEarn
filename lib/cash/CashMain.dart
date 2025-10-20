@@ -481,16 +481,7 @@ class _CashMainState extends State<CashMain> {
       onFinish: () {},
       onClickTarget: (target) {
         if (!ClickManager.canClick(context: context)) return;
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => CashPage(
-              payType: 0,
-              payStatus:1,
-              isGuide: true,
-            ),
-          ),
-        );
+        Navigator.pop(context);
       },
     );
     tutorialCoachMark?.show(context: context);

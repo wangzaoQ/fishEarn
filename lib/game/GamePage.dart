@@ -116,6 +116,10 @@ class _GamePageState extends State<GamePage>
       defaultValue: true,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      LocalCacheUtils.putBool(
+        LocalCacheConfig.firstLogin,
+        false
+      );
       registerTimer();
       if (userData.new1 ||
           userData.new2 ||
