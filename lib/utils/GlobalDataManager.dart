@@ -38,7 +38,7 @@ class GlobalDataManager{
     return level == 2?"+0.02/s":"+0.05/s";
   }
 
-  static Future<String> getDeviceId() async {
+  Future<String> getDeviceId() async {
     var deviceId = LocalCacheUtils.getString(LocalCacheConfig.deviceIdKey,defaultValue: "");
     if(deviceId.isNotEmpty)return deviceId;
     String udid = await FlutterUdid.udid;
@@ -50,12 +50,12 @@ class GlobalDataManager{
   }
 
 // 复制文本到剪贴板
-  static void copyText(String text) {
+  void copyText(String text) {
     Clipboard.setData(ClipboardData(text: text));
   }
 
   //解密：“data”：加密字符串；“code”：需求文档标题前的项目编号
-  static String decrypt(String data, int code) {
+  String decrypt(String data, int code) {
     final decode = base64.decode(data);
     final decode2 = decode.toList();
     List<int> xorList = [];
@@ -65,7 +65,9 @@ class GlobalDataManager{
     return utf8.decode(xorList);
   }
 
-  static bool allowShowInt(double coin) {
+  bool allowShowInt(double coin) {
     return true;
   }
+
+
 }

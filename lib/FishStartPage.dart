@@ -112,9 +112,9 @@ class _FishStartPageState extends State<FishStartPage>
       }
     });
     // 异步预加载，不阻塞当前页面布局
-    Future.microtask(() {
-      precacheImage(const AssetImage("assets/images/bg_home.webp"), context);
-    });
+    // Future.microtask(() {
+    //   precacheImage(const AssetImage("assets/images/bg_home.webp"), context);
+    // });
     // Future.microtask(() async {
     //   await NFManager.instance.init();
     //   var allowNF = await NFManager.instance.requestNF();

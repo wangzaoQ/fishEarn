@@ -127,11 +127,11 @@ class RiskUserManager {
           final response = await dio.post(
             url,
             data: {
-              'amouse': await GlobalDataManager.getDeviceId(),
+              'amouse': await GlobalDataManager.instance.getDeviceId(),
             },
           );
           Map<String, dynamic> dataJson = jsonDecode(
-              GlobalDataManager.decrypt(response.data, 10));
+              GlobalDataManager.instance.decrypt(response.data, 10));
           var deviceType = dataJson["data"]["bmonkey"];
           LogUtils.logD("ipAllow :${deviceType}");
           if (deviceType) {

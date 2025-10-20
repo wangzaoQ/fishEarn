@@ -28,7 +28,7 @@ class NetParamsManager{
 
   Future<Map<String, dynamic>> getCommonJson() async {
     final Map<String, dynamic> parentJson = {};
-    parentJson["c"] = await GlobalDataManager.getDeviceId();
+    parentJson["c"] = await GlobalDataManager.instance.getDeviceId();
     parentJson["triode"] = await getOsVersion();
     parentJson["sliver"] = await Uuid().v4();
     parentJson["criteria"] = await getDeviceModel();

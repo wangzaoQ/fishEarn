@@ -1,4 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:fish_earn/config/LocalCacheConfig.dart';
+import 'package:fish_earn/utils/GlobalDataManager.dart';
+import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter/foundation.dart'; // 用于判断是否为 release 模式
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
@@ -27,29 +30,20 @@ class HttpManager {
       ),
     InterceptorsWrapper(
         onRequest: (options, handler) async {
-          // 可选：添加 token
-          // String? token = await getToken();
-          // if (token != null) {
-          //   options.headers['Authorization'] = 'Bearer $token';
-          // }
-          options.headers['randall'] = NetParamsManager.instance.getDeviceModel();
-          options.headers['leila'] = DateTime.now().timeZoneOffset.inHours;
-          options.queryParameters.addAll({
-            'deer': 'mcn',
-            'booby': 'com.oceanearn.solitaire',
+          options.headers.addAll({
+            'criteria': await NetParamsManager.instance.getDeviceModel(),
+            'tracery': 'widgeon',
           });
-          // 打印请求日志（可选）
-          LogUtils.logI("net request: [${options.method}] ${options.uri}");
+          options.queryParameters.addAll({
+            'hostage': NetParamsManager.instance.getLocaleCode(),
+            'booby': await NetParamsManager.instance.getDeviceManufacturer(),
+          });
           return handler.next(options);
         },
         onResponse: (response, handler) {
-          // 打印响应日志（可选）
-          LogUtils.logI("net response: [${response.statusCode}] ${response.data}");
-
           return handler.next(response);
         },
         onError: (DioException e, handler){
-          LogUtils.logI("net error: ${e.type} - ${e.message}");
           return handler.next(e);
         }
     ),

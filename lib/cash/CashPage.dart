@@ -39,7 +39,7 @@ class _CashPage2State extends State<CashPage> {
   var deviceId = "";
 
   Future<void> _initAsync() async {
-    deviceId = await GlobalDataManager.getDeviceId();
+    deviceId = await GlobalDataManager.instance.getDeviceId();
     setState(() {
       // 更新 UI
     });

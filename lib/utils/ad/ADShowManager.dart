@@ -48,7 +48,7 @@ class ADShowManager{
       adSwitch = ADLoadManager().adRootData?.oxrslSwitch??false;
     }else if(tag.contains("int")){
       var gameData = LocalCacheUtils.getGameData();
-      var allow = GlobalDataManager.allowShowInt(gameData.coin);
+      var allow = GlobalDataManager.instance.allowShowInt(gameData.coin);
       if(!allow){
         adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, tag = "int is not allowed");
         return;
