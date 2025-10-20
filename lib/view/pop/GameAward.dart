@@ -12,12 +12,12 @@ class GameAwardPop extends StatefulWidget {
 
   // 0 金钱 1 食物
   final int type;
-  final int money;
+  final double money;
 
   const GameAwardPop({
     super.key,
     required this.type,
-    this.money = 0,
+    this.money = 0.0,
   });
   @override
   State<GameAwardPop> createState() => _GameAwardPopState();

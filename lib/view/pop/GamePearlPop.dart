@@ -5,7 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../task/RewardManager.dart';
 import '../../task/TaskManager.dart';
+import '../../utils/LocalCacheUtils.dart';
 import '../GameText.dart';
 import 'BasePopView.dart';
 
@@ -71,11 +73,14 @@ class _GamePearlPopState extends State<GamePearlPop>
 
   // 记录 pre 的 listener，便于移除
   VoidCallback? _preListener;
+  List<double> coinList = [];
+  Map<int, double> map = {};
+
 
   @override
   void initState() {
     super.initState();
-    foodIndex = random.nextInt(4);
+    foodIndex = random.nextInt(5);
     _mainController = AnimationController(vsync: this);
     _settleController = AnimationController(vsync: this);
     _preController = AnimationController(vsync: this);
@@ -84,6 +89,26 @@ class _GamePearlPopState extends State<GamePearlPop>
       _settleController,
       _preController,
     ]);
+    var gameData = LocalCacheUtils.getGameData();
+    coin1 = RewardManager.instance.findReward(RewardManager.instance.rewardData?.pearlWheel?.prize, gameData.coin);
+    coin2 = RewardManager.instance.findReward(RewardManager.instance.rewardData?.pearlWheel?.prize, gameData.coin);
+    coin3 = RewardManager.instance.findReward(RewardManager.instance.rewardData?.pearlWheel?.prize, gameData.coin);
+    coin4 = RewardManager.instance.findReward(RewardManager.instance.rewardData?.pearlWheel?.prize, gameData.coin);
+    coinList.add(coin1);
+    coinList.add(coin2);
+    coinList.add(coin3);
+    coinList.add(coin4);
+  }
+
+  double? getCoin(int currentIndex){
+    if(coinList.length == 0){
+      return map[currentIndex];
+    }
+    var index = random.nextInt(coinList.length);
+    var coin = coinList[index];
+    map[currentIndex] = coin;
+    coinList.removeAt(index);
+    return coin;
   }
 
   @override
@@ -316,13 +341,17 @@ class _GamePearlPopState extends State<GamePearlPop>
         _settleController.reset();
         isRunning = false; // ✅ 解锁可再次点击
       });
-      Navigator.pop(context,foodIndex == targetIndex? -1:20);
+      Navigator.pop(context,foodIndex == targetIndex? -1:map[targetIndex]);
     });
   }
 
   var isRunning = false;
   var targetIndex = 2;
   var foodIndex = 0;
+  var coin1 = 0.0;
+  var coin2 = 0.0;
+  var coin3 = 0.0;
+  var coin4 = 0.0;
   var random = Random();
   /// 点击触发：接受可选 targetIndex 并传给 _setupMainAnim
   void _onSpinPressed() {
@@ -377,7 +406,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: GameText(
-                            showText: foodIndex == 0?"+30":"+\$20",
+                            showText: foodIndex == 0?"+30":"+\$${getCoin(0)}",
                             fontSize: 20.sp,
                             fillColor: Color(0xFFFDFF59),
                             strokeColor: Colors.black,
@@ -406,7 +435,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: GameText(
-                            showText: foodIndex == 1?"+30":"+\$20",
+                            showText: foodIndex == 1?"+30":"+\$${getCoin(1)}",
                             fontSize: 20.sp,
                             fillColor: Color(0xFFFDFF59),
                             strokeColor: Colors.black,
@@ -436,7 +465,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                           Align(
                             alignment: Alignment.bottomCenter,
                             child: GameText(
-                              showText: foodIndex == 2?"+30":"+\$20",
+                              showText: foodIndex == 2?"+30":"+\$${getCoin(2)}",
                               fontSize: 20.sp,
                               fillColor: Color(0xFFFDFF59),
                               strokeColor: Colors.black,
@@ -466,7 +495,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: GameText(
-                            showText: foodIndex == 3?"+30":"+\$20",
+                            showText: foodIndex == 3?"+30":"+\$${getCoin(3)}",
                             fontSize: 20.sp,
                             fillColor: Color(0xFFFDFF59),
                             strokeColor: Colors.black,
@@ -495,7 +524,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: GameText(
-                            showText: "+\$20",
+                            showText: foodIndex == 4?"+30":"+\$${getCoin(4)}",
                             fontSize: 20.sp,
                             fillColor: Color(0xFFFDFF59),
                             strokeColor: Colors.black,
