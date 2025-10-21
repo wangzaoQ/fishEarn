@@ -133,9 +133,7 @@ class _GameProgressState extends State<GameProgress>
                     child: Stack(
                       children: [
                         Image.asset(
-                          cacheType == 0
-                              ? "assets/images/bg_home_cash_paypal.webp"
-                              : "assets/images/bg_home_cash.webp",
+                          cacheType == 0 ? "assets/images/bg_home_cash_paypal.webp" : "assets/images/bg_home_cash.webp",
                           width: double.infinity,
                           height: 127.h,
                           fit: BoxFit.fill,
@@ -151,7 +149,7 @@ class _GameProgressState extends State<GameProgress>
                               height: 27.h,
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Color(0xFF2F5FC5),
+                                  color: Color(cacheType == 0?0xFF2F5FC5:0xFF44B04C),
                                   // #012169 的十六进制写法
                                   borderRadius: BorderRadius.circular(
                                     14,
@@ -161,10 +159,15 @@ class _GameProgressState extends State<GameProgress>
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
+                                    cacheType == 0 ?
                                     Image.asset(
                                       width: 70.w,
                                       height: 17.h,
                                       "assets/images/ic_cash_paypal.webp",
+                                    ):Image.asset(
+                                      width: 77.w,
+                                      height: 20.h,
+                                      "assets/images/ic_cash_cash.webp",
                                     ),
                                     Image.asset(
                                       width: 15.w,

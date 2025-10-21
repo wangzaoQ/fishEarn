@@ -123,10 +123,10 @@ class _GamePageState extends State<GamePage>
       curve: Curves.easeOutCubic,
     );
 
-    firstShowProtectKey = LocalCacheUtils.getBool(
-      LocalCacheConfig.firstShowProtectKey,
-      defaultValue: true,
-    );
+    // firstShowProtectKey = LocalCacheUtils.getBool(
+    //   LocalCacheConfig.firstShowProtectKey,
+    //   defaultValue: true,
+    // );
     WidgetsBinding.instance.addPostFrameCallback((_) {
       LocalCacheUtils.putBool(LocalCacheConfig.firstLogin, false);
       registerTimer();
@@ -154,9 +154,9 @@ class _GamePageState extends State<GamePage>
     });
     eventBus.on<NotifyEvent>().listen((event) {
       if (event.message == EventConfig.new4) {
-        setState(() {
-          globalShowDanger2 = true;
-        });
+        // setState(() {
+        //   globalShowDanger2 = true;
+        // });
         showMarkNew4();
       }
     });
@@ -468,6 +468,16 @@ class _GamePageState extends State<GamePage>
                 },
               ),
             ),
+            ValueListenableBuilder<double>(
+              valueListenable: propsNotifier,
+              builder: (_, value, __) {
+                return Positioned(
+                  top: 350.h,
+                  right: 45.w,
+                  child: ArrowWidget(progress: value,),
+                ); // 只重建这一小块
+              },
+            ),
             buildDanger(),
             //防护
             Positioned(
@@ -631,6 +641,8 @@ class _GamePageState extends State<GamePage>
     );
   }
 
+  var guideProps = false;
+
   Future<void> registerTimer() async {
     bool result = await isGameOver();
     if (result) {
@@ -683,11 +695,18 @@ class _GamePageState extends State<GamePage>
           }
           globalTimeListener.value = progress;
           lifeNotifier.value = gameData.life;
-          propsNotifier.value = GameManager.instance.getPropsProgress(
+          var getPropsProgress = GameManager.instance.getPropsProgress(
             propsTime,
           );
+
+          propsNotifier.value = getPropsProgress;
           GameManager.instance.updateCoinToGame(gameData.coin);
           GameManager.instance.updateProtectTime(gameData.protectTime);
+          // if(getPropsProgress >= 1){
+          //   guideProps = true;
+          // }else{
+          //   guideProps = false;
+          // }
           var needRefresh = false;
           if (timeCoinBubbles >= RewardManager.instance.findCoinBubbleTime() &&
               !showCoinBubbles) {
@@ -776,14 +795,14 @@ class _GamePageState extends State<GamePage>
   }
 
   buildDanger() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (globalShowDanger2) {
-        // ArrowOverlay.hide();
-        // ArrowOverlay.show(context, ArrowWidget());
-        firstShowProtectKey = false;
-        LocalCacheUtils.putBool(LocalCacheConfig.firstShowProtectKey, false);
-      }
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   if (globalShowDanger2) {
+    //     // ArrowOverlay.hide();
+    //     // ArrowOverlay.show(context, ArrowWidget());
+    //     firstShowProtectKey = false;
+    //     LocalCacheUtils.putBool(LocalCacheConfig.firstShowProtectKey, false);
+    //   }
+    // });
 
     return Positioned.fill(
       child: globalShowDanger2
@@ -828,19 +847,9 @@ class _GamePageState extends State<GamePage>
                   ),
                 ),
                 Positioned(
-                  top: 230.h,
-                  right: 43.w,
-                  child: Transform.translate(
-                    offset: Offset(180.w, 0), // 🔹 上移 20 像素，让内容更贴近高亮圈
-                    child: Transform.rotate(
-                      angle: math.pi / 4,
-                      child: Image.asset(
-                        "assets/images/ic_arrow.webp",
-                        width: 100.w,
-                        height: 100.h,
-                      ),
-                    ),
-                  ),
+                  top: 280.h,
+                  right: 50.w,
+                  child: ArrowWidget(progress:1),
                 ),
               ],
             )
