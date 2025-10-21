@@ -91,6 +91,7 @@ class _GamePageState extends State<GamePage>
   var timePearBubbles = 0;
   //金币泡泡给的具体金额
   var addCoin = 0.0;
+  var oldCoin = 0;
 
   late UserData userData;
 
@@ -168,6 +169,9 @@ class _GamePageState extends State<GamePage>
   @override
   Widget build(BuildContext context) {
     gameData = LocalCacheUtils.getGameData();
+    if(oldCoin == 0){
+      oldCoin = GameManager.instance.getCoinShow2(LocalCacheUtils.getGameData().coin);
+    }
     return PopScope(
       canPop: false, // 禁止默认返回
       onPopInvokedWithResult: (didPop, result) {
@@ -350,36 +354,39 @@ class _GamePageState extends State<GamePage>
                           );
                           //2 双倍 1单倍
                           var awardResult = 1;
-                          if (result == -2) {
-                            await PopManager().show(
-                              context: context,
-                              child: NoPearlPop(),
-                            );
-                          } else if (result == -1) {
-                            //食物
-                            awardResult = await BasePopView().showScaleDialog(
-                              context: context,
-                              child: GameAwardPop(type: 1, money: 30),
-                            );
-                          } else {
-                            awardResult = await BasePopView().showScaleDialog(
-                              context: context,
-                              child: GameAwardPop(type: 0, money: result),
-                            );
+                          if(result!=null){
+                            if (result == -2) {
+                              await PopManager().show(
+                                context: context,
+                                child: NoPearlPop(),
+                              );
+                            } else if (result == -1) {
+                              //食物
+                              awardResult = await BasePopView().showScaleDialog(
+                                context: context,
+                                child: GameAwardPop(type: 1, money: 30),
+                              );
+                            } else {
+                              awardResult = await BasePopView().showScaleDialog(
+                                context: context,
+                                child: GameAwardPop(type: 0, money: result),
+                              );
+                            }
+                            if (result == -1) {
+                              setState(() {
+                                gameData.foodCount += 30;
+                              });
+                            } else {
+                              await PopManager().show(
+                                context: context,
+                                needAlpha: 0,
+                                child: CoinAnimalPop(),
+                              );
+                              gameData.coin += result * awardResult;
+                            }
+                            LocalCacheUtils.putGameData(gameData);
                           }
-                          if (result == -2) {} else if (result == -1) {
-                            setState(() {
-                              gameData.foodCount += 30;
-                            });
-                          } else {
-                            await PopManager().show(
-                              context: context,
-                              needAlpha: 0,
-                              child: CoinAnimalPop(),
-                            );
-                            gameData.coin += result * awardResult;
-                          }
-                          LocalCacheUtils.putGameData(gameData);
+
                           GameManager.instance.resumeMovement();
                         },
                       ),
@@ -607,9 +614,9 @@ class _GamePageState extends State<GamePage>
         }
         propsTime++;
         aliveTime++;
-        timeCoinBubbles++;
-        timeFoodBubbles++;
-        timePearBubbles++;
+        if(!showCoinBubbles)timeCoinBubbles++;
+        if(!showFoodBubbles) timeFoodBubbles++;
+        if(!showPearlBubbles1)timePearBubbles++;
         if (gameData.level > 1) {
           cutTime++;
           GameManager.instance.addCoin(gameData);
@@ -638,6 +645,10 @@ class _GamePageState extends State<GamePage>
         }
         progress = GameManager.instance.getCurrentProgress(gameData);
         SchedulerBinding.instance.addPostFrameCallback((_) {
+          if((gameData.coin-oldCoin)>1 && gameData.level == 3){
+            oldCoin = GameManager.instance.getCoinShow2(gameData.coin);
+            moneyListener.value = gameData.coin;
+          }
           globalTimeListener.value = progress;
           lifeNotifier.value = gameData.life;
           propsNotifier.value = GameManager.instance.getPropsProgress(
@@ -649,6 +660,7 @@ class _GamePageState extends State<GamePage>
           if(timeCoinBubbles>= RewardManager.instance.findCoinBubbleTime() && !showCoinBubbles){
             timeCoinBubbles = 0;
             needRefresh = true;
+            addCoin = 0;
             showCoinBubbles = true;
           }
           if(timeFoodBubbles>=RewardManager.instance.findFoodBubbleTime()&& !showFoodBubbles){
@@ -1014,12 +1026,16 @@ class _GamePageState extends State<GamePage>
       textSkip: "",
       paddingFocus: 0,
       onFinish: () {
+
+      },
+      onClickTarget: (target) {
         if (!ClickManager.canClick(context: context)) return;
         GameManager.instance.pauseMovement();
         setState(() {
           showCoinBubbles = false;
         });
         Future.delayed(Duration(milliseconds: 500), () async {
+          if(!mounted)return;
           await PopManager().show(
             context: context,
             needAlpha: 0,
@@ -1031,9 +1047,6 @@ class _GamePageState extends State<GamePage>
           GameManager.instance.resumeMovement();
           eventBus.fire(NotifyEvent(EventConfig.new3));
         });
-      },
-      onClickTarget: (target) {
-
       },
     );
     tutorialCoachMark?.show(context: context);
@@ -1127,16 +1140,15 @@ class _GamePageState extends State<GamePage>
       textSkip: "",
       paddingFocus: 0,
       onFinish: () async {
-        if (!ClickManager.canClick(context: context)) return;
         tutorialCoachMark?.skip();
         await toPropsAwardPop();
         GameManager.instance.resumeMovement();
         userData.new5 = false;
         LocalCacheUtils.putUserData(userData);
-        await toCashMain(context);
+        toCashMain(context);
       },
-      onClickTarget: (target) {
-
+      onClickTarget: (target) async {
+        if (!ClickManager.canClick(context: context)) return;
       },
     );
     tutorialCoachMark?.show(context: context);
@@ -1195,7 +1207,9 @@ class _GamePageState extends State<GamePage>
   }
 
   Widget buildCoinBubbles() {
-    addCoin = RewardManager.instance.findReward(RewardManager.instance.rewardData?.cashBubble?.prize, LocalCacheUtils.getGameData().coin);
+    if(addCoin == 0){
+      addCoin = RewardManager.instance.findReward(RewardManager.instance.rewardData?.cashBubble?.prize, LocalCacheUtils.getGameData().coin);
+    }
     return showCoinBubbles
         ? Positioned(
       left: 38.w,

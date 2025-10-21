@@ -84,6 +84,7 @@ class _GameProgressState extends State<GameProgress>
   }
 
   var cacheShowMoney = true;
+  var cacheType = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +94,10 @@ class _GameProgressState extends State<GameProgress>
       cacheShowMoney = LocalCacheUtils.getBool(
         LocalCacheConfig.cacheShowMoney,
         defaultValue: true,
+      );
+      cacheType = LocalCacheUtils.getInt(
+        LocalCacheConfig.cacheType,
+        defaultValue: 0,
       );
     }
     return PopScope(
@@ -113,91 +118,254 @@ class _GameProgressState extends State<GameProgress>
             child: widget.gameData.level == 3
                 ? SizedBox(
                     width: double.infinity,
-                    height: 117.h,
+                    height: 127.h,
                     child: Stack(
                       children: [
                         Image.asset(
-                          "assets/images/bg_home_cash_paypal.webp",
+                          cacheType == 0
+                              ? "assets/images/bg_home_cash_paypal.webp"
+                              : "assets/images/bg_home_cash.webp",
                           width: double.infinity,
-                          height: 117.h,
+                          height: 127.h,
                           fit: BoxFit.fill,
                         ),
                         Positioned(
                           left: 22.w,
-                          top: 18.h,
-                          child: SizedBox(
-                            width: 115.w,
-                            height: 27.h,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Color(0xFF2F5FC5),
-                                // #012169 的十六进制写法
-                                borderRadius: BorderRadius.circular(
-                                  14,
-                                ), // 圆角 5dp
-                              ),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    width: 70.w,
-                                    height: 17.h,
-                                    "assets/images/ic_cash_paypal.webp",
-                                  ),
-                                ],
+                          top: 10.h,
+                          child: CupertinoButton(
+                            padding: EdgeInsets.zero, // 去掉默认内边距
+                            pressedOpacity: 0.7,
+                            child: SizedBox(
+                              width: 115.w,
+                              height: 27.h,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Color(0xFF2F5FC5),
+                                  // #012169 的十六进制写法
+                                  borderRadius: BorderRadius.circular(
+                                    14,
+                                  ), // 圆角 5dp
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Image.asset(
+                                      width: 70.w,
+                                      height: 17.h,
+                                      "assets/images/ic_cash_paypal.webp",
+                                    ),
+                                    Image.asset(
+                                      width: 15.w,
+                                      height: 10.h,
+                                      "assets/images/ic_home_cash_change.webp",
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
+                            onPressed: () {
+                              setState(() {
+                                if (cacheType == 0) {
+                                  cacheType = 1;
+                                } else {
+                                  cacheType = 0;
+                                }
+                                LocalCacheUtils.putInt(
+                                  LocalCacheConfig.cacheType,
+                                  cacheType,
+                                );
+                              });
+                            },
+                          ),
+                        ),
+                        // Positioned(
+                        //   top: 27.h,
+                        //   right: 128.w,
+                        //   child: SizedBox(
+                        //     width: 17.w,
+                        //     height: 11.h,
+                        //     child: CupertinoButton(
+                        //       padding: EdgeInsets.zero,
+                        //       pressedOpacity: 0.7,
+                        //       child: Image.asset("assets/images/ic_eye.webp"),
+                        //       onPressed: () {
+                        //         setState(() {
+                        //           cacheShowMoney = !cacheShowMoney;
+                        //           LocalCacheUtils.putBool(
+                        //             LocalCacheConfig.cacheShowMoney,
+                        //             !cacheShowMoney,
+                        //           );
+                        //         });
+                        //       },
+                        //     ),
+                        //   ),
+                        // ),
+                        Positioned(
+                          top: 10.h,
+                          left: 262.w,
+                          child: ValueListenableBuilder<double>(
+                            valueListenable: moneyListener,
+                            builder: (_, value, __) {
+                              return GameText(
+                                showText: cacheShowMoney
+                                    ? "\$${GameManager.instance.getCoinShow2(widget.gameData.coin)}"
+                                    : "****",
+                                fontSize: 28.sp,
+                                fillColor: Colors.white,
+                                strokeColor: Colors.black,
+                                strokeWidth: 1.w,
+                              ); // 只重建这一小块
+                            },
                           ),
                         ),
                         Positioned(
+                          right: 21.w,
+                          top: 50.h,
                           child: SizedBox(
-                            width: 17.w,
-                            height: 11.h,
+                            width: 102.w,
+                            height: 30.h,
                             child: CupertinoButton(
                               padding: EdgeInsets.zero,
                               pressedOpacity: 0.7,
-                              child: Image.asset("assets/images/ic_eye.webp"),
+                              child: Stack(
+                                children: [
+                                  Image.asset(
+                                    width: 102.w,
+                                    height: 30.h,
+                                    "assets/images/bg_confirm.webp",
+                                    fit: BoxFit.fill,
+                                  ),
+                                  Center(
+                                    child: Text(
+                                      "app_withdraw".tr(),
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        color: Color(0xFF185F11),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                               onPressed: () {
                                 setState(() {
-                                  cacheShowMoney = !cacheShowMoney;
-                                  LocalCacheUtils.putBool(
-                                    LocalCacheConfig.cacheShowMoney,
-                                    !cacheShowMoney,
-                                  );
+                                  widget.onConfirm(10);
                                 });
                               },
                             ),
                           ),
                         ),
                         Positioned(
-                          top: 18.h,
-                          left: 262.w,
-                          child: GameText(
-                            showText: cacheShowMoney
-                                ? "${GameManager.instance.getCoinShow(widget.gameData.coin)}"
-                                : "****",
-                            fontSize: 28.sp,
-                            fillColor: Colors.white,
-                            strokeColor: Colors.black,
-                            strokeWidth: 1.w,
+                          left: 20.w,
+                          top: 47.h,
+                          right: 166.w,
+                          child: Wrap(
+                            alignment: WrapAlignment.center, // 居中对齐
+                            runSpacing: -4, // 换行后两行之间的垂直间距
+                            children: [
+                              GameText(
+                                showText: 'Your First ',
+                                fontSize: 16.sp,
+                                fillColor: Colors.white,
+                                strokeWidth: 1.w,
+                                strokeColor: Colors.black,
+                              ),
+                              GameText(
+                                showText: '\$500',
+                                fontSize: 16.sp,
+                                fillColor: Color(0xFF5CFF40),
+                                strokeWidth: 1.w,
+                                strokeColor: Colors.black,
+                              ),
+                              GameText(
+                                showText: ' Today! I\'ll Guide You!',
+                                fontSize: 16.sp,
+                                fillColor: Colors.white,
+                                strokeWidth: 1.w,
+                                strokeColor: Colors.black,
+                              ),
+                            ],
                           ),
                         ),
-                        Positioned(child: SizedBox(width: 102.w,height: 29.h,child:CupertinoButton(
-                          padding: EdgeInsets.zero,
-                          pressedOpacity: 0.7,
-                          child: Stack(children: [
-                            Image.asset(
-                              width: 102.w,height: 29.h,
-                              "assets/images/bg_confirm.webp",
-                              fit: BoxFit.fill,
+                        Positioned(
+                          top: 90.h,
+                          left: 22.w,
+                          right: 22.w,
+                          child: SizedBox(
+                            height: 25.h,
+                            child: ValueListenableBuilder<double>(
+                              valueListenable: moneyListener,
+                              builder: (_, value, __) {
+                                var current = GameManager.instance.getCoinShow2(
+                                  widget.gameData.coin,
+                                );
+                                var All = 500;
+                                return LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    final progress = current / All; // 举例：60%
+                                    return Stack(
+                                      fit: StackFit.expand,
+                                      children: [
+                                        Image.asset(
+                                          "assets/images/bg_home_cash_progress.webp",
+                                          fit: BoxFit.fill,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.all(2),
+                                          child: ClipRect(
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              widthFactor: progress,
+                                              child: Image.asset(
+                                                "assets/images/bg_home_cash_progress2.webp",
+                                                fit: BoxFit.fill,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ); // 只重建这一小块
+                              },
                             ),
-                            Center(child: Text("app_withdraw".tr(),style: TextStyle(fontSize:16.sp,color: Color(0xFF185F11),fontWeight: FontWeight.bold),),)
-                          ],),
-                          onPressed: () {
-                            setState(() {
-                              widget.onConfirm(10);
-                            });
-                          },
-                        ) ,))
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Padding(
+                            padding: EdgeInsetsGeometry.only(top: 85.h),
+                            child: SizedBox(
+                              width: 100.w,
+                              height: 25.h,
+                              child: ValueListenableBuilder<double>(
+                                valueListenable: moneyListener,
+                                builder: (_, value, __) {
+                                  var current = GameManager.instance
+                                      .getCoinShow2(widget.gameData.coin);
+                                  var All = 500;
+                                  return Row(
+                                    children: [
+                                      GameText(
+                                        showText: "\$${current}",
+                                        fillColor: Colors.white,
+                                        strokeColor: Colors.black,
+                                        strokeWidth: 1.w,
+                                      ),
+                                      GameText(
+                                        showText: "/${All}",
+                                        fillColor: Color(0xFF5CFF40),
+                                        strokeColor: Colors.black,
+                                        strokeWidth: 1.w,
+                                      ),
+                                    ],
+                                  ); // 只重建这一小块
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   )

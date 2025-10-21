@@ -2,6 +2,7 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/cupertino.dart';
 
 final ValueNotifier<double> globalTimeListener = ValueNotifier(0);
+final ValueNotifier<double> moneyListener = ValueNotifier(0);
 final ValueNotifier<int> lifeNotifier = ValueNotifier(0);
 final ValueNotifier<int> protectNotifier = ValueNotifier(0);
 final ValueNotifier<double> propsNotifier = ValueNotifier(0);

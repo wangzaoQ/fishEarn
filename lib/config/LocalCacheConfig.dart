@@ -31,4 +31,5 @@ class LocalCacheConfig{
   static const cacheWrongDeemAdMore = "cacheWrongDeemAdMore";
   static const cacheInstallFirst = "cacheInstallFirst";
   static const cacheShowMoney = "cacheShowMoney";
+  static const cacheType = "cacheType";
 }

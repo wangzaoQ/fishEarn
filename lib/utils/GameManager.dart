@@ -145,5 +145,7 @@ class GameManager{
   String getCoinShow(double coin) {
     return coin.toStringAsFixed(2);
   }
-
+  int getCoinShow2(double coin) {
+    return coin.toInt();
+  }
 }
