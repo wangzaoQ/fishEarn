@@ -168,7 +168,7 @@ class _FishStartPageState extends State<FishStartPage>
                             onPressed: () {
                               var cachePrivacyKey = LocalCacheUtils.getBool(
                                 LocalCacheConfig.cachePrivacyKey,
-                                defaultValue: true,
+                                defaultValue: false,
                               );
                               if (!cachePrivacyKey) {
                                 GameManager.instance.showTips("app_login_tips".tr());
@@ -228,8 +228,8 @@ class _FishStartPageState extends State<FishStartPage>
                   ),
                 )
                     : Positioned(
-                  left: 20.w,
-                  right: 20.w,
+                  left: 40.w,
+                  right: 40.w,
                   bottom: 135.h,
                   child: Column(
                     children: [
@@ -250,7 +250,7 @@ class _FishStartPageState extends State<FishStartPage>
                               ),
                               // 进度图（会被裁剪宽度）
                               Padding(
-                                padding: EdgeInsetsGeometry.all(2),
+                                padding: EdgeInsets.all(2.h),
                                 child: AnimatedAlign(
                                   duration: Duration(milliseconds: 300),
                                   alignment: Alignment.centerLeft,
@@ -261,8 +261,7 @@ class _FishStartPageState extends State<FishStartPage>
                                       child: Image.asset(
                                         "assets/images/bg_launch_progress.webp",
                                         width: double.infinity,
-                                        height: 18.h,
-                                        fit: BoxFit.fill,
+                                        height: 22.h,
                                       ),
                                     ),
                                   ),

@@ -30,9 +30,6 @@ class _CashPage2State extends State<CashPage> {
   @override
   void initState() {
     super.initState();
-    var userData = LocalCacheUtils.getUserData();
-    userData.new7 = false;
-    LocalCacheUtils.putUserData(userData);
     _initAsync();
   }
 

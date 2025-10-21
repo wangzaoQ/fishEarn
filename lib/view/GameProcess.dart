@@ -27,15 +27,14 @@ import '../utils/AudioUtils.dart';
 import '../utils/ClickManager.dart';
 import '../utils/NetWorkManager.dart';
 import 'GradientProgressBar.dart';
+import 'ProgressClipper.dart';
 
 class GameProgress extends StatefulWidget {
   final double progress; // 0~1
-  final GameData gameData; // 0~1
   final void Function(int result) onConfirm; // 👈 改成支持参数的函数
 
   const GameProgress({
     Key? key,
-    required this.gameData,
     required this.progress,
     required this.onConfirm,
   }) : super(key: key);
@@ -64,10 +63,14 @@ class _GameProgressState extends State<GameProgress>
         showMarkNew3();
       }
     });
+    gameData = LocalCacheUtils.getGameData();
   }
 
   var first1_2 = true;
   var first2_3 = true;
+
+  late GameData gameData;
+
 
   @override
   void didUpdateWidget(covariant GameProgress oldWidget) {
@@ -75,6 +78,7 @@ class _GameProgressState extends State<GameProgress>
     if (oldWidget.progress != widget.progress) {
       _oldProgress = widget.progress;
     }
+    gameData = LocalCacheUtils.getGameData();
   }
 
   @override
@@ -90,7 +94,7 @@ class _GameProgressState extends State<GameProgress>
   Widget build(BuildContext context) {
     final double progressHeight = 25.h; // 进度条高度
     final BorderRadius borderRadius = BorderRadius.circular(progressHeight / 2);
-    if (widget.gameData.level == 3) {
+    if (gameData.level == 3) {
       cacheShowMoney = LocalCacheUtils.getBool(
         LocalCacheConfig.cacheShowMoney,
         defaultValue: true,
@@ -115,7 +119,7 @@ class _GameProgressState extends State<GameProgress>
           Positioned(
             left: 5.w,
             right: 5.w,
-            child: widget.gameData.level == 3
+            child: gameData.level == 3
                 ? SizedBox(
                     width: double.infinity,
                     height: 127.h,
@@ -207,9 +211,11 @@ class _GameProgressState extends State<GameProgress>
                           child: ValueListenableBuilder<double>(
                             valueListenable: moneyListener,
                             builder: (_, value, __) {
+                              gameData = LocalCacheUtils.getGameData();
+
                               return GameText(
                                 showText: cacheShowMoney
-                                    ? "\$${GameManager.instance.getCoinShow2(widget.gameData.coin)}"
+                                    ? "\$${GameManager.instance.getCoinShow2(gameData.coin)}"
                                     : "****",
                                 fontSize: 28.sp,
                                 fillColor: Colors.white,
@@ -297,29 +303,40 @@ class _GameProgressState extends State<GameProgress>
                             child: ValueListenableBuilder<double>(
                               valueListenable: moneyListener,
                               builder: (_, value, __) {
+                                gameData = LocalCacheUtils.getGameData();
                                 var current = GameManager.instance.getCoinShow2(
-                                  widget.gameData.coin,
+                                  gameData.coin,
                                 );
                                 var All = 500;
                                 return LayoutBuilder(
                                   builder: (context, constraints) {
-                                    final progress = current / All; // 举例：60%
+                                    final progress = (current / All).clamp(0.0, 1.0); // 限制范围 0~1
+                                    final clipWidth = (constraints.maxWidth - 4) * progress;
+
                                     return Stack(
                                       fit: StackFit.expand,
                                       children: [
+                                        // 背景条
                                         Image.asset(
                                           "assets/images/bg_home_cash_progress.webp",
+                                          height: 25.h,
                                           fit: BoxFit.fill,
                                         ),
+
+                                        // 前景进度条
                                         Padding(
-                                          padding: EdgeInsets.all(2),
-                                          child: ClipRect(
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              widthFactor: progress,
-                                              child: Image.asset(
-                                                "assets/images/bg_home_cash_progress2.webp",
-                                                fit: BoxFit.fill,
+                                          padding: EdgeInsets.all(4.h),
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: ClipRect(
+                                              clipper: ProgressClipper(width: clipWidth),
+                                              child: FittedBox(
+                                                fit: BoxFit.none, // 不缩放图片
+                                                alignment: Alignment.centerLeft, // 从左对齐
+                                                child: Image.asset(
+                                                  "assets/images/bg_home_cash_progress2.webp",
+                                                  height: 25.h,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -327,7 +344,8 @@ class _GameProgressState extends State<GameProgress>
                                       ],
                                     );
                                   },
-                                ); // 只重建这一小块
+                                )
+                                ; // 只重建这一小块
                               },
                             ),
                           ),
@@ -342,8 +360,10 @@ class _GameProgressState extends State<GameProgress>
                               child: ValueListenableBuilder<double>(
                                 valueListenable: moneyListener,
                                 builder: (_, value, __) {
+                                  gameData = LocalCacheUtils.getGameData();
+
                                   var current = GameManager.instance
-                                      .getCoinShow2(widget.gameData.coin);
+                                      .getCoinShow2(gameData.coin);
                                   var All = 500;
                                   return Row(
                                     children: [
@@ -439,7 +459,7 @@ class _GameProgressState extends State<GameProgress>
                               child: Stack(
                                 children: [
                                   (widget.progress == 0.5 &&
-                                          widget.gameData.level == 1)
+                                          gameData.level == 1)
                                       ? RotationTransition(
                                           turns: _controller,
                                           child: Image.asset(
@@ -461,7 +481,7 @@ class _GameProgressState extends State<GameProgress>
                             onPressed: () async {
                               if (!ClickManager.canClick(context: context))
                                 return;
-                              if (widget.gameData.level == 1 &&
+                              if (gameData.level == 1 &&
                                   widget.progress == 0.5) {
                                 var userData = LocalCacheUtils.getUserData();
                                 if (!userData.new3) {
@@ -477,7 +497,7 @@ class _GameProgressState extends State<GameProgress>
                             },
                           ),
                         ),
-                        widget.gameData.level == 1
+                        gameData.level == 1
                             ? Positioned(
                                 left: 180.w,
                                 top: 6.h,
@@ -541,7 +561,7 @@ class _GameProgressState extends State<GameProgress>
                               child: Stack(
                                 children: [
                                   (widget.progress == 1 &&
-                                          widget.gameData.level == 2)
+                                          gameData.level == 2)
                                       ? RotationTransition(
                                           turns: _controller,
                                           child: Image.asset(
@@ -564,15 +584,15 @@ class _GameProgressState extends State<GameProgress>
                               if (!ClickManager.canClick(context: context))
                                 return;
                               GameManager.instance.pauseMovement();
-                              if (widget.gameData.level == 2 &&
+                              if (gameData.level == 2 &&
                                   widget.progress == 1) {
                                 var result = await PopManager().show(
                                   context: context,
                                   child: LevelUp2_3(),
                                 );
                                 if (result == 1) {
-                                  widget.gameData.level = 3;
-                                  LocalCacheUtils.putGameData(widget.gameData);
+                                  gameData.level = 3;
+                                  LocalCacheUtils.putGameData(gameData);
                                   widget.onConfirm(3);
                                   await PopManager().show(
                                     context: context,
@@ -584,7 +604,7 @@ class _GameProgressState extends State<GameProgress>
                             },
                           ),
                         ),
-                        widget.gameData.level == 2
+                        gameData.level == 2
                             ? Positioned(
                                 right: 30.w,
                                 top: 6.h,
@@ -688,14 +708,14 @@ class _GameProgressState extends State<GameProgress>
     var userData = LocalCacheUtils.getUserData();
     userData.new3 = false;
     LocalCacheUtils.putUserData(userData);
-    widget.gameData.level = 2;
-    widget.gameData.levelTime = GameConfig.time_2_3;
-    LocalCacheUtils.putGameData(widget.gameData);
+    gameData.level = 2;
+    gameData.levelTime = GameConfig.time_2_3;
+    LocalCacheUtils.putGameData(gameData);
     widget.onConfirm(2);
     await PopManager().show(context: context, child: LevelPop1_2());
-    widget.gameData.coin += GameConfig.coin_1_2;
-    LocalCacheUtils.putGameData(widget.gameData);
-    GameManager.instance.updateCoinToGame(widget.gameData.coin);
+    gameData.coin += GameConfig.coin_1_2;
+    LocalCacheUtils.putGameData(gameData);
+    GameManager.instance.updateCoinToGame(gameData.coin);
     GameManager.instance.resumeMovement();
     eventBus.fire(NotifyEvent(EventConfig.new4));
   }

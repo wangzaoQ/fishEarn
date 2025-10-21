@@ -13,6 +13,8 @@ import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import '../data/GameData.dart';
 import '../utils/ClickManager.dart';
 import '../utils/LocalCacheUtils.dart';
+import '../view/pop/CashProcessPop.dart';
+import '../view/pop/PopManger.dart';
 import 'CashPage.dart';
 
 class CashMain extends StatefulWidget {
@@ -26,7 +28,6 @@ class _CashMainState extends State<CashMain> {
   late GameData gameData;
   late UserData userData;
 
-
   @override
   void initState() {
     super.initState();
@@ -38,7 +39,7 @@ class _CashMainState extends State<CashMain> {
         Future.delayed(Duration(milliseconds: 500), () {
           showMarkNew6();
         });
-      }else if(userData.new7){
+      } else if (userData.new7) {
         Future.delayed(Duration(milliseconds: 500), () {
           showMarkNew7();
         });
@@ -189,6 +190,24 @@ class _CashMainState extends State<CashMain> {
                       fillColor: Color(0xFF33FFDB),
                     ),
                   ),
+                  Positioned(
+                    right: 3.h,
+                    bottom: 8.h,
+                    child: SizedBox(
+                      width: 55.w,
+                      height: 55.h,
+                      child: CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        pressedOpacity: 0.7,
+                        child: Image.asset("assets/images/ic_toRank.webp",width: 55.w,
+                          height: 55.h,fit: BoxFit.fill,),
+                        onPressed: () {
+                          PopManager().show(context: context,
+                              child: CashProcessPop(money: 800,));
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -240,6 +259,8 @@ class _CashMainState extends State<CashMain> {
                           left: 20.w,
                           top: 0,
                           child: CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            pressedOpacity: 0.7,
                             child: Image.asset(
                               "assets/images/ic_paypal.webp",
                               width: 78.w,
@@ -256,6 +277,8 @@ class _CashMainState extends State<CashMain> {
                           right: 20.w,
                           top: 2.h,
                           child: CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            pressedOpacity: 0.7,
                             child: Image.asset(
                               "assets/images/ic_cash.webp",
                               width: 96.w,
@@ -481,6 +504,9 @@ class _CashMainState extends State<CashMain> {
       onFinish: () {},
       onClickTarget: (target) {
         if (!ClickManager.canClick(context: context)) return;
+        var userData = LocalCacheUtils.getUserData();
+        userData.new7 = false;
+        LocalCacheUtils.putUserData(userData);
         Navigator.pop(context);
       },
     );

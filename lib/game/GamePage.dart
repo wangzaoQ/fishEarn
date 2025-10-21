@@ -106,6 +106,8 @@ class _GamePageState extends State<GamePage>
   @override
   void initState() {
     super.initState();
+    gameData = LocalCacheUtils.getGameData();
+    userData = LocalCacheUtils.getUserData();
     WidgetsBinding.instance.addObserver(this); // ✅ 注册
 
     AudioUtils().initTempQueue();
@@ -221,7 +223,7 @@ class _GamePageState extends State<GamePage>
                           height: 45.h,
                         ),
                         onPressed: () async {
-                          AudioUtils().playClickAudio();
+                          if (!ClickManager.canClick(context: context)) return;
                           var result = await PopManager().show(
                             context: context,
                             child: SettingPop(),
@@ -231,9 +233,6 @@ class _GamePageState extends State<GamePage>
                           } else if (result == 0) {
                             //隐私
                           }
-                          if (!ClickManager.canClick(context: context)) return;
-                          PopManager().show(context: context,
-                              child: CashProcessPop(money: 800,));
                         },
                       ),
                     ),
@@ -251,7 +250,6 @@ class _GamePageState extends State<GamePage>
                     valueListenable: globalTimeListener,
                     builder: (_, value, __) {
                       return GameProgress(
-                        gameData: gameData,
                         progress: value,
                         onConfirm: (result) {
                           if(result == 10){
@@ -599,8 +597,7 @@ class _GamePageState extends State<GamePage>
   }
 
   Future<void> registerTimer() async {
-    gameData = LocalCacheUtils.getGameData();
-    userData = LocalCacheUtils.getUserData();
+
     bool result = await isGameOver();
     if (result) {
       return;
@@ -609,6 +606,7 @@ class _GamePageState extends State<GamePage>
       onTick: () async {
         if (!allowTime) return;
         gameData = LocalCacheUtils.getGameData();
+        userData = LocalCacheUtils.getUserData();
         if (gameData.level > 0 && gameData.levelTime >= 1) {
           gameData.levelTime -= 1;
         }

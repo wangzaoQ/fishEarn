@@ -50,6 +50,10 @@ class ADLoadManager {
     if(adRootData == null){
       // rewardData = RewardData.fromJson(CashConfig.defaultReward);
     }
+    // ADEnum.intAD.adRequestList.clear();
+    // ADEnum.rewardedAD.adRequestList.clear();
+    // ADEnum.intAD.adRequestList.addAll(adRootData?.fixrn_int??[]);
+    // ADEnum.rewardedAD.adRequestList.addAll(adRootData?.fixrn_rv??[]);
     preloadAll("init");
   }
 
