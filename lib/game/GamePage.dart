@@ -555,6 +555,8 @@ class _GamePageState extends State<GamePage>
     );
   }
 
+  var allowClickProtect = true;
+
   void clickProtect() {
     if (!ClickManager.canClick(context: context)) return;
     if (userData.new4) {
@@ -566,10 +568,13 @@ class _GamePageState extends State<GamePage>
       });
     } else {
       pausTemp();
+      if(!allowClickProtect)return;
+      allowClickProtect = false;
       ADShowManager(
         adEnum: ADEnum.rewardedAD,
         tag: "reward",
         result: (type, hasValue) {
+          allowClickProtect = true;
           if (hasValue) {
             toProtect();
           }
@@ -1277,6 +1282,8 @@ class _GamePageState extends State<GamePage>
     }
   }
 
+  var allowCoinPopAD = true;
+
   Widget buildCoinBubbles() {
     if (addCoin == 0) {
       addCoin = RewardManager.instance.findReward(
@@ -1294,12 +1301,23 @@ class _GamePageState extends State<GamePage>
               child: BubbleWidget(key: globalGuideNew2, type: 0, coin: addCoin),
               onPressed: () {
                 if (!ClickManager.canClick(context: context)) return;
-                setState(() {
-                  showCoinBubbles = false;
-                  gameData.coin += addCoin;
-                  LocalCacheUtils.putGameData(gameData);
-                  TaskManager.instance.addTask("bubbles");
-                });
+                if(!allowCoinPopAD)return;
+                allowCoinPopAD = false;
+                ADShowManager(
+                  adEnum: ADEnum.rewardedAD,
+                  tag: "reward",
+                  result: (type, hasValue) {
+                    allowCoinPopAD = true;
+                    if (hasValue) {
+                      setState(() {
+                        showCoinBubbles = false;
+                        gameData.coin += addCoin;
+                        LocalCacheUtils.putGameData(gameData);
+                        TaskManager.instance.addTask("bubbles");
+                      });
+                    }
+                  },
+                ).showScreenAD(EventConfig.fixrn_pop_rv, awaitLoading: true);
               },
             ),
           )

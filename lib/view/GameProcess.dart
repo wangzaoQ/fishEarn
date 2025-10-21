@@ -52,6 +52,8 @@ class _GameProgressState extends State<GameProgress>
   late AnimationController _controller;
   double _oldProgress = 0;
 
+  var allowClickAd = true;
+
   @override
   void initState() {
     super.initState();
@@ -499,7 +501,10 @@ class _GameProgressState extends State<GameProgress>
                                   }
                                 }else{
                                   if (result == 1) {
+                                    if(!allowClickAd)return;
+                                    allowClickAd = false;
                                     ADShowManager(adEnum:ADEnum.rewardedAD,tag:"reward",result: (type,hasValue){
+                                      allowClickAd = true;
                                       if(hasValue){
                                         toLevel2(context);
                                       }

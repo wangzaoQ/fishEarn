@@ -27,7 +27,7 @@ class _GameFailPopState extends State<GameFailPop> {
     super.initState();
     AudioUtils().playTempAudio("audio/fail.mp3");
   }
-
+  var allowClickAd = true;
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -86,6 +86,8 @@ class _GameFailPopState extends State<GameFailPop> {
                   GameManager.instance.showTips("app_resurrection_tips".tr());
                   return;
                 }
+                if(!allowClickAd)return;
+                allowClickAd = false;
                 ADShowManager(
                   adEnum: ADEnum.rewardedAD,
                   tag: "reward",
@@ -93,6 +95,7 @@ class _GameFailPopState extends State<GameFailPop> {
                     if (hasValue) {
                       Navigator.pop(context, 1);
                     }
+                    allowClickAd = true;
                   },
                 ).showScreenAD(widget.tag, awaitLoading: true);
               },

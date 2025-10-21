@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/config/GameConfig.dart';
 import 'package:fish_earn/utils/AudioUtils.dart';
 import 'package:fish_earn/utils/GameManager.dart';
@@ -7,6 +8,10 @@ import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../utils/ClickManager.dart';
+import '../../utils/ad/ADEnum.dart';
+import '../../utils/ad/ADShowManager.dart';
 
 class GameAwardPop extends StatefulWidget {
 
@@ -42,12 +47,15 @@ class _GameAwardPopState extends State<GameAwardPop>
     _controller.dispose();
     super.dispose();
   }
+  var allowClickAd = true;
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false, // 禁止默认返回
-      onPopInvokedWithResult: (didPop, result) {},
+      onPopInvokedWithResult: (didPop, result) {
+        toBack();
+      },
       child: Stack(
         children: [
           Positioned(
@@ -133,11 +141,23 @@ class _GameAwardPopState extends State<GameAwardPop>
                 ),
               ),
               onPressed: () {
-                AudioUtils().playClickAudio();
+                if (!ClickManager.canClick(context: context)) return;
                 if(widget.type == 1){
-                  Navigator.pop(context, 1);
+                  toBack();
                 }else{
-                  Navigator.pop(context, 2);
+                  if(!allowClickAd)return;
+                  allowClickAd = false;
+                  ADShowManager(
+                    adEnum: ADEnum.rewardedAD,
+                    tag: "reward",
+                    result: (type, hasValue) {
+                      if (hasValue) {
+                        Navigator.pop(context, 2);
+                      }
+                      allowClickAd = true;
+                    },
+                  ).showScreenAD(EventConfig.fixrn_wheel_rv, awaitLoading: true);
+
                 }
               },
             ),
@@ -148,7 +168,8 @@ class _GameAwardPopState extends State<GameAwardPop>
               padding: EdgeInsetsGeometry.only(bottom: 100.h),
               child: CupertinoButton(
                 onPressed: () {
-                  Navigator.pop(context, 1);
+                  if (!ClickManager.canClick(context: context)) return;
+                  toBack();
                 },
                 child: Text(
                   "${"app_only".tr()} +\$${widget.money}",
@@ -191,13 +212,24 @@ class _GameAwardPopState extends State<GameAwardPop>
                 height: 32.h,
               ),
               onPressed: () {
-                AudioUtils().playClickAudio();
-                Navigator.pop(context, 1);
+                if (!ClickManager.canClick(context: context)) return;
+                toBack();
               },
             ),
           ),
         ],
       ),
     );
+  }
+
+  void toBack() {
+    ADShowManager(
+      adEnum: ADEnum.intAD,
+      tag: "int",
+      result: (type, hasValue) {
+        if(!mounted)return;
+        Navigator.pop(context, 1);
+      },
+    ).showScreenAD(EventConfig.fixrn_wheel_int);
   }
 }

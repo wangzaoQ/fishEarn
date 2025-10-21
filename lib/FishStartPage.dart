@@ -66,8 +66,7 @@ class _FishStartPageState extends State<FishStartPage>
             ),
           );
         } else {
-          ADShowManager(adEnum: ADEnum.intAD, tag: "open",
-            result: (type, hasValue) {
+          ADShowManager(adEnum: ADEnum.intAD, tag: "open", result: (type, hasValue) {
               if(!mounted)return;
               if(widget.type == 1){
                 Navigator.pop(context, null);

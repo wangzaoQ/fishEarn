@@ -14,5 +14,15 @@ class EventConfig{
   static const fixrn_attack_rv = "fixrn_attack_rv";
   //点击防御看激励广告增加1分钟防御保护
   static const fixrn_shield_rv = "fixrn_shield_rv";
+  //转盘奖励弹窗点击claimx2观看激励广告
+  static const fixrn_wheel_rv = "fixrn_wheel_rv";
+  //转盘奖励弹窗点击claim弹出插屏广告
+  static const fixrn_wheel_int = "fixrn_wheel_int";
+  //点击现金气泡看激励广告
+  static const fixrn_pop_rv = "fixrn_pop_rv";
+  //漂流瓶奖励弹窗点击「claim all」观看激励广告
+  static const fixrn_bottle_rv = "fixrn_bottle_rv";
+  //漂流瓶奖励弹窗点击Only xxx弹出插屏广告
+  static const fixrn_bottle_int = "fixrn_bottle_int";
 
 }

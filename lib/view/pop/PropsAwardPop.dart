@@ -8,10 +8,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../config/EventConfig.dart';
 import '../../data/UserData.dart';
 import '../../task/RewardManager.dart';
 import '../../utils/AudioUtils.dart';
 import '../../utils/ClickManager.dart';
+import '../../utils/ad/ADEnum.dart';
+import '../../utils/ad/ADShowManager.dart';
 import '../GameText.dart';
 
 class PropsAwardPop extends StatefulWidget {
@@ -61,6 +64,8 @@ class _PropsAwardPopState extends State<PropsAwardPop>
     _controller.dispose();
     super.dispose();
   }
+
+  var allowShowRVAD = true;
 
   @override
   Widget build(BuildContext context) {
@@ -469,16 +474,26 @@ class _PropsAwardPopState extends State<PropsAwardPop>
               ),
               onPressed: () {
                 if (!ClickManager.canClick(context: context)) return;
-                selectedCoin+=selectedCoin1;
-                selectedCoin+=selectedCoin2;
-                selectedCoin+=selectedCoin3;
-                setState(() {
-                  selected = 3;
-                });
-                Future.delayed(const Duration(milliseconds: 1000), () async {
-                  if (!mounted) return;
-                  Navigator.pop(context,selectedCoin);
-                });
+                if(!allowShowRVAD)return;
+                allowShowRVAD = false;
+                ADShowManager(
+                  adEnum: ADEnum.rewardedAD,
+                  tag: "reward",
+                  result: (type, hasValue) {
+                    if (hasValue) {
+                      selectedCoin+=selectedCoin1;
+                      selectedCoin+=selectedCoin2;
+                      selectedCoin+=selectedCoin3;
+                      setState(() {
+                        selected = 3;
+                      });
+                      Future.delayed(const Duration(milliseconds: 1000), () async {
+                        if (!mounted) return;
+                        Navigator.pop(context,selectedCoin);
+                      });
+                    }
+                  },
+                ).showScreenAD(EventConfig.fixrn_bottle_rv, awaitLoading: true);
               },
             ),
           ),
@@ -503,7 +518,10 @@ class _PropsAwardPopState extends State<PropsAwardPop>
               visible: selected != -1 && !userData.new5,
               child: CupertinoButton(
                 onPressed: () {
-                  Navigator.pop(context, selectedCoin);
+                  if (!ClickManager.canClick(context: context)) return;
+                  if(!allowShowRVAD)return;
+                  allowShowRVAD = false;
+                  toBack();
                 },
                 child: Text(
                   "${"app_only".tr()} +\$${selectedCoin}",
@@ -576,6 +594,18 @@ class _PropsAwardPopState extends State<PropsAwardPop>
         ),
       ],
     );
+  }
+
+  void toBack() {
+    ADShowManager(
+      adEnum: ADEnum.intAD,
+      tag: "int",
+      result: (type, hasValue) {
+        if(!mounted)return;
+
+        Navigator.pop(context, selectedCoin);
+      },
+    ).showScreenAD(EventConfig.fixrn_bottle_int);
   }
 
   void startTimer() {
