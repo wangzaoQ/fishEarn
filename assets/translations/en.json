@@ -72,6 +72,7 @@
   "app_nf_guide_content": "Turn on notifications to claim your $5 reward!",
   "app_nf_guide_ok": "Allow & Get $5",
   "app_nf_guide_cancel": "Not Now",
+  "app_only": "only",
 
   "nf_t1_1": "\uD83D\uDC20 Your Fish Earned $50!",
   "nf_t1_2": "\uD83D\uDCB0 Offline Rewards Maxed Out!",
@@ -89,5 +90,6 @@
   "nf_c3_2": "Your $100 Fast ticket is ready!",
 
   "app_play_game": "Play Game",
-  "app_login_tips": "Please first check the privacy policy and terms of service."
+  "app_login_tips": "Please first check the privacy policy and terms of service.",
+  "app_ad_no_cache": "Ad failed, earnings stopped"
 }

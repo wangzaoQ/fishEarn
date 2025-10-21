@@ -6,6 +6,7 @@ import 'package:fish_earn/data/GameData.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameText.dart';
+import 'package:fish_earn/view/pop/BasePopView.dart';
 import 'package:fish_earn/view/pop/CoinAnimalPop.dart';
 import 'package:fish_earn/view/pop/LevelPop1_2.dart';
 import 'package:fish_earn/view/pop/LevelPop2_3.dart';
@@ -25,7 +26,10 @@ import '../config/global.dart';
 import '../event/NotifyEvent.dart';
 import '../utils/AudioUtils.dart';
 import '../utils/ClickManager.dart';
+import '../utils/GlobalTimerManager.dart';
 import '../utils/NetWorkManager.dart';
+import '../utils/ad/ADEnum.dart';
+import '../utils/ad/ADShowManager.dart';
 import 'GradientProgressBar.dart';
 import 'ProgressClipper.dart';
 
@@ -59,6 +63,7 @@ class _GameProgressState extends State<GameProgress>
 
     eventBus.on<NotifyEvent>().listen((event) {
       if (event.message == EventConfig.new3) {
+        GlobalTimerManager().cancelTimer();
         GameManager.instance.pauseMovement();
         showMarkNew3();
       }
@@ -484,13 +489,21 @@ class _GameProgressState extends State<GameProgress>
                               if (gameData.level == 1 &&
                                   widget.progress == 0.5) {
                                 var userData = LocalCacheUtils.getUserData();
+                                var result = await PopManager().show(
+                                  context: context,
+                                  child: LevelUp1_2(),
+                                );
                                 if (!userData.new3) {
-                                  var result = await PopManager().show(
-                                    context: context,
-                                    child: LevelUp1_2(),
-                                  );
                                   if (result == 1) {
                                     toLevel2(context);
+                                  }
+                                }else{
+                                  if (result == 1) {
+                                    ADShowManager(adEnum:ADEnum.rewardedAD,tag:"reward",result: (type,hasValue){
+                                      if(hasValue){
+                                        toLevel2(context);
+                                      }
+                                    }).showScreenAD(EventConfig.fixrn_grow_rv,awaitLoading: true);
                                   }
                                 }
                               }
@@ -716,7 +729,6 @@ class _GameProgressState extends State<GameProgress>
     gameData.coin += GameConfig.coin_1_2;
     LocalCacheUtils.putGameData(gameData);
     GameManager.instance.updateCoinToGame(gameData.coin);
-    GameManager.instance.resumeMovement();
     eventBus.fire(NotifyEvent(EventConfig.new4));
   }
 
@@ -818,10 +830,11 @@ class _GameProgressState extends State<GameProgress>
       colorShadow: Colors.black.withOpacity(0.8),
       textSkip: "",
       paddingFocus: 0,
-      onFinish: () {},
+      onFinish: () {
+        toLevel2(context);
+      },
       onClickTarget: (target) {
         if (!ClickManager.canClick(context: context)) return;
-        toLevel2(context);
       },
     );
     tutorialCoachMark?.show(context: context);

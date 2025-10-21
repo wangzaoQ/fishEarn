@@ -77,6 +77,19 @@ class _PropsAwardPopState extends State<PropsAwardPop>
             fit: BoxFit.fill,
           ),
         ),
+        userData.new5?
+        Positioned(
+            left: 0,
+            right: 0,
+            top: 490.h,
+            child: Transform.rotate(
+              angle: math.pi / 4,
+              child: Image.asset(
+                "assets/images/ic_arrow.webp",
+                width: 100.w,
+                height: 100.h,
+              ),
+            )):SizedBox.shrink(),
         Positioned(
           right: 20.w,
           top: 155.h,
@@ -427,19 +440,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
             ],
           ),
         ),
-        userData.new5?
-        Positioned(
-            left: 0,
-            right: 0,
-            top: 490.h,
-            child: Transform.rotate(
-          angle: math.pi / 4,
-          child: Image.asset(
-            "assets/images/ic_arrow.webp",
-            width: 100.w,
-            height: 100.h,
-          ),
-        )):SizedBox.shrink(),
+
         Positioned(
           left: 101.w,
           right: 101.w,
@@ -505,7 +506,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                   Navigator.pop(context, selectedCoin);
                 },
                 child: Text(
-                  "+\$${selectedCoin}",
+                  "${"app_only".tr()} +\$${selectedCoin}",
                   style: TextStyle(
                     fontSize: 15.sp,
                     color: Color(0xBFFFFFFF),

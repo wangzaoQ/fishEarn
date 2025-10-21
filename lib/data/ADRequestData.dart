@@ -64,6 +64,11 @@ class ADRequestData {
     required this.qiyjwfor,
   });
 
+  @override
+  String toString() {
+    return 'ADRequestData(id: $igteaams, plantform: $wdlwgunk, adType: $uwkcopbx)';
+  }
+
   factory ADRequestData.fromJson(Map<String, dynamic> json) {
     return ADRequestData(
       igteaams: json['igteaams'] ?? '',

@@ -18,7 +18,7 @@ class HomeText extends StatefulWidget {
 
 class _HomeTextState extends State<HomeText> {
 
-  bool isChecked = false;
+  bool isChecked = true;
 
   @override
   Widget build(BuildContext context) {

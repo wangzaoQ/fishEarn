@@ -407,7 +407,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                           alignment: Alignment.bottomCenter,
                           child: GameText(
                             showText: foodIndex == 0?"+30":"+\$${getCoin(0)}",
-                            fontSize: 20.sp,
+                            fontSize: 15.sp,
                             fillColor: Color(0xFFFDFF59),
                             strokeColor: Colors.black,
                             strokeWidth: 1.w,
@@ -436,7 +436,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                           alignment: Alignment.bottomCenter,
                           child: GameText(
                             showText: foodIndex == 1?"+30":"+\$${getCoin(1)}",
-                            fontSize: 20.sp,
+                            fontSize: 15.sp,
                             fillColor: Color(0xFFFDFF59),
                             strokeColor: Colors.black,
                             strokeWidth: 1.w,
@@ -466,7 +466,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                             alignment: Alignment.bottomCenter,
                             child: GameText(
                               showText: foodIndex == 2?"+30":"+\$${getCoin(2)}",
-                              fontSize: 20.sp,
+                              fontSize: 15.sp,
                               fillColor: Color(0xFFFDFF59),
                               strokeColor: Colors.black,
                               strokeWidth: 1.w,
@@ -496,7 +496,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                           alignment: Alignment.bottomCenter,
                           child: GameText(
                             showText: foodIndex == 3?"+30":"+\$${getCoin(3)}",
-                            fontSize: 20.sp,
+                            fontSize: 15.sp,
                             fillColor: Color(0xFFFDFF59),
                             strokeColor: Colors.black,
                             strokeWidth: 1.w,
@@ -525,7 +525,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                           alignment: Alignment.bottomCenter,
                           child: GameText(
                             showText: foodIndex == 4?"+30":"+\$${getCoin(4)}",
-                            fontSize: 20.sp,
+                            fontSize: 15.sp,
                             fillColor: Color(0xFFFDFF59),
                             strokeColor: Colors.black,
                             strokeWidth: 1.w,

@@ -8,16 +8,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../utils/AudioUtils.dart';
+import '../../utils/ClickManager.dart';
+import '../../utils/ad/ADEnum.dart';
+import '../../utils/ad/ADShowManager.dart';
 
 class GameFailPop extends StatefulWidget {
-  const GameFailPop({super.key});
+  String tag;
+
+  GameFailPop({super.key, required this.tag});
 
   @override
   State<GameFailPop> createState() => _GameFailPopState();
 }
 
 class _GameFailPopState extends State<GameFailPop> {
-
   @override
   void initState() {
     super.initState();
@@ -28,99 +32,107 @@ class _GameFailPopState extends State<GameFailPop> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false, // 禁止默认返回
-      onPopInvokedWithResult: (didPop, result) {
-      },
+      onPopInvokedWithResult: (didPop, result) {},
       child: Stack(
-      children: [
-        Align(
-          alignment: Alignment.topCenter,
-          child: Padding(
-            padding: EdgeInsetsGeometry.only(top: 252.h),
-            child: GameText(showText: "app_fail_title".tr()),
-          ),
-        ),
-        Positioned(
-          left: 105.w,
-          right: 105.w,
-          top: 322.h,
-          child: Image.asset(
-            "assets/images/ic_game_fail.webp",
-            width: double.infinity,
-            height: 92.h,
-          ),
-        ),
-        Positioned(
-          left: 40.w,
-          top: 537.h,
-          child: CupertinoButton(
-            padding: EdgeInsets.zero,
-            pressedOpacity: 0.7,
-            child: SizedBox(
-              width: 139.w,
-              height: 45.h,
-              child: Stack(
-                alignment: Alignment.center, // 让子元素默认居中
-                children: [
-                  Image.asset("assets/images/bg_confirm.webp"),
-                  Center(
-                    child: AutoSizeText(
-                      "app_resurrection".tr(),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF185F11),
-                      ),
-                      maxLines: 1,
-                    )
-                  ),
-                ],
-              ),
+        children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsetsGeometry.only(top: 252.h),
+              child: GameText(showText: "app_fail_title".tr()),
             ),
-            onPressed: () {
-              AudioUtils().playClickAudio();
-              var gameData = LocalCacheUtils.getGameData();
-              if(gameData.coin<=GameConfig.reviveCostCoin){
-                GameManager.instance.showTips("app_resurrection_tips".tr());
-                return;
-              }
-              Navigator.pop(context, 1);
-            },
           ),
-        ),
-        Positioned(
-          right: 40.w,
-          top: 537.h,
-          child: CupertinoButton(
-            padding: EdgeInsets.zero,
-            pressedOpacity: 0.7,
-            child: SizedBox(
-              width: 139.w,
-              height: 45.h,
-              child: Stack(
-                alignment: Alignment.center, // 让子元素默认居中
-                children: [
-                  Image.asset("assets/images/bg_cancel.webp"),
-                  Center(
-                    child: AutoSizeText(
-                      "app_starting_over".tr(),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFB84418),
-                      ),
-                      maxLines: 1,
-                    )
-                  ),
-                ],
-              ),
+          Positioned(
+            left: 105.w,
+            right: 105.w,
+            top: 322.h,
+            child: Image.asset(
+              "assets/images/ic_game_fail.webp",
+              width: double.infinity,
+              height: 92.h,
             ),
-            onPressed: () {
-              AudioUtils().playClickAudio();
-              Navigator.pop(context, 0);
-            },
           ),
-        ),
-      ],
-    ),);
+          Positioned(
+            left: 40.w,
+            top: 537.h,
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              pressedOpacity: 0.7,
+              child: SizedBox(
+                width: 139.w,
+                height: 45.h,
+                child: Stack(
+                  alignment: Alignment.center, // 让子元素默认居中
+                  children: [
+                    Image.asset("assets/images/bg_confirm.webp"),
+                    Center(
+                      child: AutoSizeText(
+                        "app_resurrection".tr(),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF185F11),
+                        ),
+                        maxLines: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              onPressed: () {
+                if (!ClickManager.canClick(context: context)) return;
+                var gameData = LocalCacheUtils.getGameData();
+                if (gameData.coin <= GameConfig.reviveCostCoin) {
+                  GameManager.instance.showTips("app_resurrection_tips".tr());
+                  return;
+                }
+                ADShowManager(
+                  adEnum: ADEnum.rewardedAD,
+                  tag: "reward",
+                  result: (type, hasValue) {
+                    if (hasValue) {
+                      Navigator.pop(context, 1);
+                    }
+                  },
+                ).showScreenAD(widget.tag, awaitLoading: true);
+              },
+            ),
+          ),
+          Positioned(
+            right: 40.w,
+            top: 537.h,
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              pressedOpacity: 0.7,
+              child: SizedBox(
+                width: 139.w,
+                height: 45.h,
+                child: Stack(
+                  alignment: Alignment.center, // 让子元素默认居中
+                  children: [
+                    Image.asset("assets/images/bg_cancel.webp"),
+                    Center(
+                      child: AutoSizeText(
+                        "app_starting_over".tr(),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFB84418),
+                        ),
+                        maxLines: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              onPressed: () {
+                AudioUtils().playClickAudio();
+                Navigator.pop(context, 0);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

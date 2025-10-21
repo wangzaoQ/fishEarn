@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:applovin_max/applovin_max.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -21,6 +22,8 @@ import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/LogUtils.dart';
 import 'package:fish_earn/utils/NetWorkManager.dart';
 import 'package:fish_earn/utils/TimeUtils.dart';
+import 'package:fish_earn/utils/ad/maxListener/InterstitialListenerDispatcher.dart';
+import 'package:fish_earn/utils/ad/maxListener/RewardedListenerDispatcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -54,6 +57,12 @@ Future<void> main() async {
     } catch (e) {
       LogUtils.logD("$TAG facebook init error");
     }
+    // AppLovinMAX.setTestDeviceAdvertisingIds(["fb6469a3-b062-43dc-a53a-24d7cd4d08ce"]);
+    MaxConfiguration? sdkConfiguration = await AppLovinMAX.initialize("MWJzhnEPtKqxLKRLAlVrTyQfO2VxWZWtVx_SzTWC_MgoZL7kTKNt9t3M_OgIZ24nBXRXxVd9ogQEp7616TWf3C");
+    AppLovinMAX.setInterstitialListener(InterstitialListenerDispatcher.instance.listener);
+    AppLovinMAX.setRewardedAdListener(RewardedListenerDispatcher.instance.listener);
+    // AppLovinMAX.showMediationDebugger();
+    // AppLovinMAX.setVerboseLogging(true);
   }
   GlobalDataManager.instance.init();
   TimeUtils.dataReset();

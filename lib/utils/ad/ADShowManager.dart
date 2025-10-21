@@ -4,6 +4,7 @@ import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../data/ADResultData.dart';
+import '../GameManager.dart';
 import 'ADEnum.dart';
 import 'ADLoadManager.dart';
 import 'BaseShow.dart';
@@ -79,6 +80,7 @@ class ADShowManager{
         //       "msg":"ad_nocache",
         //       "ad_format":"",
         // });
+        GameManager.instance.showTips("app_ad_no_cache".tr());
       }
       adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, tag = "no cache");
       return;

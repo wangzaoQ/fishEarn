@@ -15,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'config/EventConfig.dart';
 import 'config/global.dart';
 
 class FishStartPage extends StatefulWidget {
@@ -37,6 +38,8 @@ class _FishStartPageState extends State<FishStartPage>
 
   var cacheFirstKey = false;
 
+  var isFirst = false;
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +49,7 @@ class _FishStartPageState extends State<FishStartPage>
       LocalCacheConfig.firstLogin,
       defaultValue: true,
     );
+    isFirst = cacheFirstKey;
     LogUtils.logD("App startPage :${cacheFirstKey} isFirst");
     _controller = AnimationController(
       vsync: this,
@@ -62,29 +66,22 @@ class _FishStartPageState extends State<FishStartPage>
             ),
           );
         } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => GamePage(),
-              settings: RouteSettings(name: '/GamePage'),
-            ),
-          );
-          // ADShowManager(adEnum: ADEnum.intAD, tag: "open",
-          //   result: (type, hasValue) {
-          //     if(!mounted)return;
-          //     if(widget.type == 1){
-          //       Navigator.pop(context, null);
-          //     }else{
-          //       Navigator.pushReplacement(
-          //         context,
-          //         MaterialPageRoute(
-          //           builder: (context) => GamePage(),
-          //           settings: RouteSettings(name: '/GamePage'),
-          //         ),
-          //       );
-          //     }
-          //   },
-          // ).showScreenAD(PointConfig.ad_pos_id_oxrsl_launch);
+          ADShowManager(adEnum: ADEnum.intAD, tag: "open",
+            result: (type, hasValue) {
+              if(!mounted)return;
+              if(widget.type == 1){
+                Navigator.pop(context, null);
+              }else{
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GamePage(),
+                    settings: RouteSettings(name: '/GamePage'),
+                  ),
+                );
+              }
+            },
+          ).showScreenAD(EventConfig.fixrn_launch);
         }
       }
     });
@@ -150,7 +147,7 @@ class _FishStartPageState extends State<FishStartPage>
                     ),
                   ],
                 ),
-                cacheFirstKey
+                isFirst
                     ? Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -168,14 +165,14 @@ class _FishStartPageState extends State<FishStartPage>
                             onPressed: () {
                               var cachePrivacyKey = LocalCacheUtils.getBool(
                                 LocalCacheConfig.cachePrivacyKey,
-                                defaultValue: false,
+                                defaultValue: true,
                               );
                               if (!cachePrivacyKey) {
                                 GameManager.instance.showTips("app_login_tips".tr());
                                 return;
                               }
                               setState(() {
-                                cacheFirstKey = false;
+                                isFirst = false;
                                 _controller.forward();
                               });
                             },

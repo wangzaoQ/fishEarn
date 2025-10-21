@@ -78,8 +78,9 @@ class _BubbleWidgetState extends State<BubbleWidget>
   }
 
   String getImg(type) {
+    var userData = LocalCacheUtils.getUserData();
     if(type == 0){
-      return "assets/images/ic_coin_bubbles.webp";
+      return userData.new2?"assets/images/ic_coin_bubbles2.webp":"assets/images/ic_coin_bubbles.webp";
     }else if(type == 1){
       return "assets/images/ic_food_bubbles.webp";
     }else {

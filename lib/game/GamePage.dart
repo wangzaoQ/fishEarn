@@ -43,6 +43,8 @@ import '../task/RewardManager.dart';
 import '../utils/ArrowOverlay.dart';
 import '../utils/ClickManager.dart';
 import '../utils/LogUtils.dart';
+import '../utils/ad/ADEnum.dart';
+import '../utils/ad/ADShowManager.dart';
 import '../view/GameLifeProgress.dart';
 import '../view/GameText.dart';
 import '../view/PropsProgress.dart';
@@ -89,6 +91,7 @@ class _GamePageState extends State<GamePage>
   var timeCoinBubbles = 0;
   var timeFoodBubbles = 0;
   var timePearBubbles = 0;
+
   //金币泡泡给的具体金额
   var addCoin = 0.0;
   var oldCoin = 0;
@@ -125,10 +128,7 @@ class _GamePageState extends State<GamePage>
       defaultValue: true,
     );
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      LocalCacheUtils.putBool(
-        LocalCacheConfig.firstLogin,
-        false
-      );
+      LocalCacheUtils.putBool(LocalCacheConfig.firstLogin, false);
       registerTimer();
       if (userData.new1 ||
           userData.new2 ||
@@ -149,11 +149,11 @@ class _GamePageState extends State<GamePage>
           toCashMain(context);
         }
       }
+
       // TaskManager.instance.addTask("login");
     });
     eventBus.on<NotifyEvent>().listen((event) {
       if (event.message == EventConfig.new4) {
-        GameManager.instance.pauseMovement();
         setState(() {
           globalShowDanger2 = true;
         });
@@ -171,8 +171,10 @@ class _GamePageState extends State<GamePage>
   @override
   Widget build(BuildContext context) {
     gameData = LocalCacheUtils.getGameData();
-    if(oldCoin == 0){
-      oldCoin = GameManager.instance.getCoinShow2(LocalCacheUtils.getGameData().coin);
+    if (oldCoin == 0) {
+      oldCoin = GameManager.instance.getCoinShow2(
+        LocalCacheUtils.getGameData().coin,
+      );
     }
     return PopScope(
       canPop: false, // 禁止默认返回
@@ -242,7 +244,9 @@ class _GamePageState extends State<GamePage>
             ),
             //progress
             Padding(
-              padding: EdgeInsetsGeometry.only(top: gameData.level==3?94.h:94.h),
+              padding: EdgeInsetsGeometry.only(
+                top: gameData.level == 3 ? 94.h : 94.h,
+              ),
               child: Align(
                 alignment: Alignment.topCenter,
                 child: RepaintBoundary(
@@ -252,9 +256,9 @@ class _GamePageState extends State<GamePage>
                       return GameProgress(
                         progress: value,
                         onConfirm: (result) {
-                          if(result == 10){
+                          if (result == 10) {
                             toCashMain(context);
-                          }else{
+                          } else {
                             setState(() {});
                           }
                         },
@@ -352,7 +356,7 @@ class _GamePageState extends State<GamePage>
                           );
                           //2 双倍 1单倍
                           var awardResult = 1;
-                          if(result!=null){
+                          if (result != null) {
                             if (result == -2) {
                               await PopManager().show(
                                 context: context,
@@ -487,63 +491,63 @@ class _GamePageState extends State<GamePage>
             buildCoinBubbles(),
             showFoodBubbles
                 ? Positioned(
-              left: 18.w,
-              top: 300.h,
-              child: CupertinoButton(
-                padding: EdgeInsets.zero,
-                pressedOpacity: 0.7,
-                child: BubbleWidget(type: 1),
-                onPressed: () {
-                  if (!ClickManager.canClick(context: context)) return;
-                  setState(() {
-                    showFoodBubbles = false;
-                    gameData.foodCount += 10;
-                    LocalCacheUtils.putGameData(gameData);
-                    TaskManager.instance.addTask("bubbles");
-                  });
-                },
-              ),
-            )
+                    left: 18.w,
+                    top: 300.h,
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      pressedOpacity: 0.7,
+                      child: BubbleWidget(type: 1),
+                      onPressed: () {
+                        if (!ClickManager.canClick(context: context)) return;
+                        setState(() {
+                          showFoodBubbles = false;
+                          gameData.foodCount += 10;
+                          LocalCacheUtils.putGameData(gameData);
+                          TaskManager.instance.addTask("bubbles");
+                        });
+                      },
+                    ),
+                  )
                 : SizedBox.shrink(),
             showPearlBubbles1
                 ? Positioned(
-              right: 26.w,
-              bottom: 300.h,
-              child: CupertinoButton(
-                padding: EdgeInsets.zero,
-                pressedOpacity: 0.7,
-                child: BubbleWidget(type: 2),
-                onPressed: () {
-                  if (!ClickManager.canClick(context: context)) return;
-                  setState(() {
-                    showPearlBubbles1 = false;
-                    gameData.pearlCount += 1;
-                    LocalCacheUtils.putGameData(gameData);
-                    TaskManager.instance.addTask("bubbles");
-                  });
-                },
-              ),
-            )
+                    right: 26.w,
+                    bottom: 300.h,
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      pressedOpacity: 0.7,
+                      child: BubbleWidget(type: 2),
+                      onPressed: () {
+                        if (!ClickManager.canClick(context: context)) return;
+                        setState(() {
+                          showPearlBubbles1 = false;
+                          gameData.pearlCount += 1;
+                          LocalCacheUtils.putGameData(gameData);
+                          TaskManager.instance.addTask("bubbles");
+                        });
+                      },
+                    ),
+                  )
                 : SizedBox.shrink(),
             showPearlBubbles2
                 ? Positioned(
-              right: 26.w,
-              bottom: 160.h,
-              child: CupertinoButton(
-                padding: EdgeInsets.zero,
-                pressedOpacity: 0.7,
-                child: BubbleWidget(type: 2),
-                onPressed: () {
-                  if (!ClickManager.canClick(context: context)) return;
-                  setState(() {
-                    showPearlBubbles2 = false;
-                    gameData.pearlCount += 1;
-                    LocalCacheUtils.putGameData(gameData);
-                    TaskManager.instance.addTask("bubbles");
-                  });
-                },
-              ),
-            )
+                    right: 26.w,
+                    bottom: 160.h,
+                    child: CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      pressedOpacity: 0.7,
+                      child: BubbleWidget(type: 2),
+                      onPressed: () {
+                        if (!ClickManager.canClick(context: context)) return;
+                        setState(() {
+                          showPearlBubbles2 = false;
+                          gameData.pearlCount += 1;
+                          LocalCacheUtils.putGameData(gameData);
+                          TaskManager.instance.addTask("bubbles");
+                        });
+                      },
+                    ),
+                  )
                 : SizedBox.shrink(),
           ],
         ),
@@ -556,7 +560,25 @@ class _GamePageState extends State<GamePage>
     if (userData.new4) {
       userData.new4 = false;
       LocalCacheUtils.putUserData(userData);
+      Future.delayed(const Duration(milliseconds: 500), () async {
+        if (!mounted) return;
+        toProtect();
+      });
+    } else {
+      pausTemp();
+      ADShowManager(
+        adEnum: ADEnum.rewardedAD,
+        tag: "reward",
+        result: (type, hasValue) {
+          if (hasValue) {
+            toProtect();
+          }
+        },
+      ).showScreenAD(EventConfig.fixrn_shield_rv, awaitLoading: true);
     }
+  }
+
+  void toProtect() {
     gameData = LocalCacheUtils.getGameData();
     gameData.protectTime += getProtectTime();
     LocalCacheUtils.putGameData(gameData);
@@ -569,15 +591,14 @@ class _GamePageState extends State<GamePage>
     });
     GameManager.instance.showProtect();
     GameManager.instance.updateProtectTime(gameData.protectTime);
-    GameManager.instance.resumeMovement();
+    resumeTemp();
     if (userData.new5) {
       showMarkNew5();
     }
   }
 
   Future<void> toCashMain(BuildContext context) async {
-    GameManager.instance.pauseMovement();
-    GlobalTimerManager().cancelTimer();
+    pausTemp();
     await Navigator.push(
       context,
       MaterialPageRoute(
@@ -585,8 +606,17 @@ class _GamePageState extends State<GamePage>
         settings: const RouteSettings(name: '/CashMain'),
       ),
     );
+    resumeTemp();
+  }
+
+  void resumeTemp() {
     registerTimer();
     GameManager.instance.resumeMovement();
+  }
+
+  void pausTemp() {
+    GameManager.instance.pauseMovement();
+    GlobalTimerManager().cancelTimer();
   }
 
   Widget buildAnimal() {
@@ -597,7 +627,6 @@ class _GamePageState extends State<GamePage>
   }
 
   Future<void> registerTimer() async {
-
     bool result = await isGameOver();
     if (result) {
       return;
@@ -612,9 +641,9 @@ class _GamePageState extends State<GamePage>
         }
         propsTime++;
         aliveTime++;
-        if(!showCoinBubbles)timeCoinBubbles++;
-        if(!showFoodBubbles) timeFoodBubbles++;
-        if(!showPearlBubbles1)timePearBubbles++;
+        if (!showCoinBubbles) timeCoinBubbles++;
+        if (!showFoodBubbles) timeFoodBubbles++;
+        if (!showPearlBubbles1) timePearBubbles++;
         if (gameData.level > 1) {
           cutTime++;
           GameManager.instance.addCoin(gameData);
@@ -643,7 +672,7 @@ class _GamePageState extends State<GamePage>
         }
         progress = GameManager.instance.getCurrentProgress(gameData);
         SchedulerBinding.instance.addPostFrameCallback((_) {
-          if((gameData.coin-oldCoin)>1 && gameData.level == 3){
+          if ((gameData.coin - oldCoin) > 1 && gameData.level == 3) {
             oldCoin = GameManager.instance.getCoinShow2(gameData.coin);
             moneyListener.value = gameData.coin;
           }
@@ -655,23 +684,26 @@ class _GamePageState extends State<GamePage>
           GameManager.instance.updateCoinToGame(gameData.coin);
           GameManager.instance.updateProtectTime(gameData.protectTime);
           var needRefresh = false;
-          if(timeCoinBubbles>= RewardManager.instance.findCoinBubbleTime() && !showCoinBubbles){
+          if (timeCoinBubbles >= RewardManager.instance.findCoinBubbleTime() &&
+              !showCoinBubbles) {
             timeCoinBubbles = 0;
             needRefresh = true;
             addCoin = 0;
             showCoinBubbles = true;
           }
-          if(timeFoodBubbles>=RewardManager.instance.findFoodBubbleTime()&& !showFoodBubbles){
+          if (timeFoodBubbles >= RewardManager.instance.findFoodBubbleTime() &&
+              !showFoodBubbles) {
             timeFoodBubbles = 0;
             needRefresh = true;
             showFoodBubbles = true;
           }
-          if(timePearBubbles>=RewardManager.instance.findPearBubbleTime()&& !showPearlBubbles1){
+          if (timePearBubbles >= RewardManager.instance.findPearBubbleTime() &&
+              !showPearlBubbles1) {
             timePearBubbles = 0;
             needRefresh = true;
             showPearlBubbles1 = true;
           }
-          if(needRefresh){
+          if (needRefresh) {
             setState(() {
               //更新泡泡
             });
@@ -687,7 +719,11 @@ class _GamePageState extends State<GamePage>
       //游戏结束
       var result = await PopManager().show(
         context: context,
-        child: GameFailPop(),
+        child: GameFailPop(
+          tag: force
+              ? EventConfig.fixrn_attack_rv
+              : EventConfig.fixrn_starve_rv,
+        ),
       );
       if (result == 0) {
         GameManager.instance.reset(gameData);
@@ -711,13 +747,13 @@ class _GamePageState extends State<GamePage>
       right: 0,
       child: globalShowFood
           ? DropFadeImage(
-        key: GlobalKey(),
-        child: Image.asset(
-          "assets/images/ic_food.webp",
-          width: 46.w,
-          height: 46.h,
-        ),
-      )
+              key: GlobalKey(),
+              child: Image.asset(
+                "assets/images/ic_food.webp",
+                width: 46.w,
+                height: 46.h,
+              ),
+            )
           : SizedBox.shrink(),
     );
   }
@@ -725,12 +761,12 @@ class _GamePageState extends State<GamePage>
   buildShark() {
     return globalShowShark
         ? SharkWidget(
-      key: GlobalKey(),
-      imagePath: "assets/images/ic_shark.webp",
-      top: 420.h,
-      width: 204.w,
-      height: 101.h,
-    )
+            key: GlobalKey(),
+            imagePath: "assets/images/ic_shark.webp",
+            top: 420.h,
+            width: 204.w,
+            height: 101.h,
+          )
         : SizedBox.shrink();
   }
 
@@ -747,108 +783,62 @@ class _GamePageState extends State<GamePage>
     return Positioned.fill(
       child: globalShowDanger2
           ? Stack(
-        children: [
-          Positioned(
-            bottom: 110.h,
-            left: 0,
-            right: 0,
-            child: Container(
-              width: double.infinity, // 宽度，可根据需求修改
-              height: 71.h, // 高度，可根据需求修改
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xBFE5452D), // 上方不透明红色
-                    Color(0x00E5452D), // 下方透明
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 200.h,
-            left: 0,
-            right: 0,
-            child: Container(
-              width: double.infinity, // 宽度，可根据需求修改
-              height: 71.h, // 高度，可根据需求修改
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xBFE5452D), // 上方不透明红色
-                    Color(0x00E5452D), // 下方透明
-                  ],
-                ),
-              ),
-            ),
-          ),
-          firstShowProtectKey
-              ? Stack(
-            children: [
-              // 全屏黑色遮盖
-              Positioned.fill(
-                child: Container(
-                  color: Colors.black.withOpacity(
-                    0.6,
-                  ), // 黑色 + 0.8透明度
-                ),
-              ),
-              Positioned(
-                left: 23.w,
-                top: 130.h,
-                child: Image.asset(
-                  "assets/images/ic_fish_tips.webp",
-                  width: 75.w,
-                  height: 75.h,
-                ),
-              ),
-              Positioned(
-                top: 123.h,
-                left: 86.w,
-                right: 21.w,
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 74.h,
-                  child: Stack(
-                    children: [
-                      Image.asset(
-                        "assets/images/bg_level_up.webp",
-                        width: double.infinity,
-                        height: 74.h,
-                        fit: BoxFit.fill,
+              children: [
+                Positioned(
+                  bottom: 110.h,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    width: double.infinity, // 宽度，可根据需求修改
+                    height: 71.h, // 高度，可根据需求修改
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xBFE5452D), // 上方不透明红色
+                          Color(0x00E5452D), // 下方透明
+                        ],
                       ),
-                      Center(
-                        child: Padding(
-                          padding: EdgeInsetsGeometry.fromLTRB(
-                            32.w,
-                            0.h,
-                            20.w,
-                            0.h,
-                          ),
-                          child: AutoSizeText(
-                            "app_danger_tips".tr(),
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF651922),
-                            ),
-                            maxLines: 2,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          )
-              : SizedBox.shrink(),
-        ],
-      )
+                Positioned(
+                  top: 200.h,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    width: double.infinity, // 宽度，可根据需求修改
+                    height: 71.h, // 高度，可根据需求修改
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xBFE5452D), // 上方不透明红色
+                          Color(0x00E5452D), // 下方透明
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 230.h,
+                  right: 43.w,
+                  child: Transform.translate(
+                    offset: Offset(180.w, 0), // 🔹 上移 20 像素，让内容更贴近高亮圈
+                    child: Transform.rotate(
+                      angle: math.pi / 4,
+                      child: Image.asset(
+                        "assets/images/ic_arrow.webp",
+                        width: 100.w,
+                        height: 100.h,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
           : SizedBox.shrink(),
     );
   }
@@ -914,8 +904,7 @@ class _GamePageState extends State<GamePage>
       registerTimer();
     } else if (state == AppLifecycleState.paused) {
       LogUtils.logD("${TAG} paused");
-      GameManager.instance.pauseMovement();
-      GlobalTimerManager().cancelTimer();
+      pausTemp();
     }
   }
 
@@ -934,6 +923,7 @@ class _GamePageState extends State<GamePage>
       270°	3 * math.pi / 2
    */
   void showMarkNew1() {
+    pausTemp();
     globalGuideNew1Keys = [];
     globalGuideNew1Keys.add(
       TargetFocus(
@@ -961,11 +951,10 @@ class _GamePageState extends State<GamePage>
                       height: 100.h,
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
-
         ],
       ),
     );
@@ -975,6 +964,7 @@ class _GamePageState extends State<GamePage>
       textSkip: "",
       paddingFocus: 0,
       onFinish: () {
+        resumeTemp();
         // eventBus.fire(NotifyEvent("new2"));
         showMarkNew2();
       },
@@ -986,6 +976,7 @@ class _GamePageState extends State<GamePage>
   }
 
   void showMarkNew2() {
+    pausTemp();
     userData.new1 = false;
     LocalCacheUtils.putUserData(userData);
     // 创建控制器
@@ -1010,11 +1001,10 @@ class _GamePageState extends State<GamePage>
                     width: 100.w,
                     height: 100.h,
                   ),
-                )
+                ),
               ],
             ),
           ),
-
         ],
       ),
     );
@@ -1023,17 +1013,14 @@ class _GamePageState extends State<GamePage>
       colorShadow: Colors.black.withOpacity(0.8),
       textSkip: "",
       paddingFocus: 0,
-      onFinish: () {
-
-      },
+      onFinish: () {},
       onClickTarget: (target) {
         if (!ClickManager.canClick(context: context)) return;
-        GameManager.instance.pauseMovement();
         setState(() {
           showCoinBubbles = false;
         });
         Future.delayed(Duration(milliseconds: 500), () async {
-          if(!mounted)return;
+          if (!mounted) return;
           await PopManager().show(
             context: context,
             needAlpha: 0,
@@ -1042,7 +1029,7 @@ class _GamePageState extends State<GamePage>
           gameData.coin += addCoin;
           LocalCacheUtils.putGameData(gameData);
           GameManager.instance.updateCoinToGame(gameData.coin);
-          GameManager.instance.resumeMovement();
+          resumeTemp();
           eventBus.fire(NotifyEvent(EventConfig.new3));
         });
       },
@@ -1051,6 +1038,7 @@ class _GamePageState extends State<GamePage>
   }
 
   void showMarkNew4() {
+    pausTemp();
     // 创建控制器
     globalGuideNew1Keys = [];
     globalGuideNew1Keys.add(
@@ -1066,6 +1054,91 @@ class _GamePageState extends State<GamePage>
             align: ContentAlign.bottom, // 内容在高亮 widget 下方
             child: Stack(
               children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.fromLTRB(0, 253.h, 0, 0),
+                    child: Image.asset(
+                      "assets/images/ic_fish_tips.webp",
+                      width: 75.w,
+                      height: 75.h,
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.fromLTRB(68.w, 264.h, 0, 0),
+                    child: Container(
+                      width: 268.w,
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      height: 74.h, // 让高度自适应文字
+                      child: Stack(
+                        children: [
+                          Image.asset(
+                            "assets/images/bg_level_up.webp",
+                            width: double.infinity,
+                            height: double.infinity,
+                            fit: BoxFit.fill,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(26.w, 0, 16.w, 0),
+                            child: Center(
+                              child: Padding(
+                                padding: EdgeInsetsGeometry.fromLTRB(
+                                  32.w,
+                                  0.h,
+                                  20.w,
+                                  0.h,
+                                ),
+                                child: AutoSizeText(
+                                  "app_danger_tips".tr(),
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF651922),
+                                  ),
+                                  maxLines: 2,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: EdgeInsetsGeometry.fromLTRB(0, 50.h, 0, 0),
+                    child: SizedBox(
+                      width: 197.w,
+                      height: 197.h,
+                      child: Stack(
+                        children: [
+                          Center(
+                            child: Image.asset(
+                              "assets/images/ic_animal1.png",
+                              width: 160.w,
+                              height: 160.h,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                          Center(
+                            child: Image.asset(
+                              "assets/images/ic_guide_danger.webp",
+                              width: 197.w,
+                              height: 197.h,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
                 Transform.translate(
                   offset: Offset(180.w, 0), // 🔹 上移 20 像素，让内容更贴近高亮圈
                   child: Transform.rotate(
@@ -1076,7 +1149,7 @@ class _GamePageState extends State<GamePage>
                       height: 100.h,
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -1089,17 +1162,17 @@ class _GamePageState extends State<GamePage>
       textSkip: "",
       paddingFocus: 0,
       onFinish: () {
-        clickProtect();
+        resumeTemp();
       },
       onClickTarget: (target) {
-
+        clickProtect();
       },
     );
     tutorialCoachMark?.show(context: context);
   }
 
   void showMarkNew5() {
-    GameManager.instance.pauseMovement();
+    pausTemp();
     // 创建控制器
     globalGuideNew1Keys = [];
     globalGuideNew1Keys.add(
@@ -1125,7 +1198,7 @@ class _GamePageState extends State<GamePage>
                       height: 100.h,
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -1140,7 +1213,7 @@ class _GamePageState extends State<GamePage>
       onFinish: () async {
         tutorialCoachMark?.skip();
         await toPropsAwardPop();
-        GameManager.instance.resumeMovement();
+        resumeTemp();
         userData.new5 = false;
         LocalCacheUtils.putUserData(userData);
         toCashMain(context);
@@ -1153,7 +1226,7 @@ class _GamePageState extends State<GamePage>
   }
 
   Future<int> toPropsAwardPop() async {
-     var result = await PopManager().show(
+    var result = await PopManager().show(
       context: context,
       child: PropsAwardPop(),
     );
@@ -1167,7 +1240,7 @@ class _GamePageState extends State<GamePage>
       GameManager.instance.updateCoinToGame(gameData.coin);
       LocalCacheUtils.putGameData(gameData);
       return 1;
-    }else{
+    } else {
       return 0;
     }
   }
@@ -1205,28 +1278,31 @@ class _GamePageState extends State<GamePage>
   }
 
   Widget buildCoinBubbles() {
-    if(addCoin == 0){
-      addCoin = RewardManager.instance.findReward(RewardManager.instance.rewardData?.cashBubble?.prize, LocalCacheUtils.getGameData().coin);
+    if (addCoin == 0) {
+      addCoin = RewardManager.instance.findReward(
+        RewardManager.instance.rewardData?.cashBubble?.prize,
+        LocalCacheUtils.getGameData().coin,
+      );
     }
     return showCoinBubbles
         ? Positioned(
-      left: 38.w,
-      bottom: 241.h,
-      child: CupertinoButton(
-        padding: EdgeInsets.zero,
-        pressedOpacity: 0.7,
-        child: BubbleWidget(key: globalGuideNew2, type: 0,coin:addCoin),
-        onPressed: () {
-          if (!ClickManager.canClick(context: context)) return;
-          setState(() {
-            showCoinBubbles = false;
-            gameData.coin += addCoin;
-            LocalCacheUtils.putGameData(gameData);
-            TaskManager.instance.addTask("bubbles");
-          });
-        },
-      ),
-    )
+            left: 38.w,
+            bottom: 241.h,
+            child: CupertinoButton(
+              padding: EdgeInsets.zero,
+              pressedOpacity: 0.7,
+              child: BubbleWidget(key: globalGuideNew2, type: 0, coin: addCoin),
+              onPressed: () {
+                if (!ClickManager.canClick(context: context)) return;
+                setState(() {
+                  showCoinBubbles = false;
+                  gameData.coin += addCoin;
+                  LocalCacheUtils.putGameData(gameData);
+                  TaskManager.instance.addTask("bubbles");
+                });
+              },
+            ),
+          )
         : SizedBox.shrink();
   }
 }

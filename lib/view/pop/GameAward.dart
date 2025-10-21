@@ -120,7 +120,7 @@ class _GameAwardPopState extends State<GameAwardPop>
                     Image.asset("assets/images/bg_confirm.webp"),
                     Center(
                       child: AutoSizeText(
-                        widget.type == 0?"${"app_claim".tr()} \$${widget.money}":"app_free".tr(),
+                        widget.type == 0?"${"app_claim".tr()} \$${widget.money*2}":"app_free".tr(),
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -140,6 +140,29 @@ class _GameAwardPopState extends State<GameAwardPop>
                   Navigator.pop(context, 2);
                 }
               },
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsetsGeometry.only(bottom: 100.h),
+              child: CupertinoButton(
+                onPressed: () {
+                  Navigator.pop(context, 1);
+                },
+                child: Text(
+                  "${"app_only".tr()} +\$${widget.money}",
+                  style: TextStyle(
+                    fontSize: 15.sp,
+                    color: Color(0xFFBFC3C7),
+                    decoration: TextDecoration.underline,
+                    // ✅ 下划线
+                    decorationColor: Color(0xBFFFFFFF),
+                    // 可选：自定义下划线颜色
+                    decorationThickness: 1.h,
+                  ),
+                ),
+              ),
             ),
           ),
           widget.type == 0?Positioned(

@@ -52,7 +52,17 @@ class _CashMainState extends State<CashMain> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+        canPop: false, // 禁止默认返回
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop) {
+            if (tutorialCoachMark?.isShowing ?? false) {
+              // 自定义逻辑
+              tutorialCoachMark?.skip(); // 关闭当前教程
+            }
+          }
+        },
+        child:Scaffold(
       body: Stack(
         children: [
           //金币
@@ -183,7 +193,7 @@ class _CashMainState extends State<CashMain> {
                   Center(
                     child: GameText(
                       showText:
-                          "\$ ${GameManager.instance.getCoinShow(gameData.coin)}",
+                      "\$ ${GameManager.instance.getCoinShow(gameData.coin)}",
                       strokeWidth: 1.5.h,
                       strokeColor: Colors.black,
                       fontSize: 29.sp,
@@ -339,7 +349,7 @@ class _CashMainState extends State<CashMain> {
           ),
         ],
       ),
-    );
+    ));
   }
 
   TutorialCoachMark? tutorialCoachMark;

@@ -54,7 +54,7 @@ class ADLoadManager {
     // ADEnum.rewardedAD.adRequestList.clear();
     // ADEnum.intAD.adRequestList.addAll(adRootData?.fixrn_int??[]);
     // ADEnum.rewardedAD.adRequestList.addAll(adRootData?.fixrn_rv??[]);
-    preloadAll("init");
+    // preloadAll("init");
   }
 
   void preloadAD(ADEnum adType, String tag) {
@@ -66,7 +66,7 @@ class ADLoadManager {
   }
 
   void loadAD(ADEnum adType,bool addRequestPoint) {
-    LogUtils.logD("$TAG: loadAD start${adType.toString()} addRequestPoint:${addRequestPoint}");
+    // LogUtils.logD("$TAG: loadAD start${adType.toString()} addRequestPoint:${addRequestPoint}");
     if (adType.adLoadStatus == ADEnum.LOAD_STATUS_LOADING) return;
     var user = LocalCacheUtils.getUserData();
     if(user.userRiskStatus){
