@@ -25,4 +25,56 @@ class EventConfig{
   //漂流瓶奖励弹窗点击Only xxx弹出插屏广告
   static const fixrn_bottle_int = "fixrn_bottle_int";
 
+
+  //事件 安装（自定义）
+  static const session_custom = "session_custom";
+  //判断为异常用户
+  static const risk_chance = "risk_chance";
+  //广告展示次数过多明日再来弹窗
+  static const see_you_tommorow = "see_you_tommorow";
+  //启动页展示
+  static const launch_page = "launch_page";
+  //启动页start点击
+  static const launch_start = "launch_start";
+  //首页（主页面）展示
+  static const home_page = "home_page";
+
+  /**
+   * 新用户蒙层引导
+   * "pop_step
+      pop1：喂食
+      pop2：现金泡泡
+      pop3：现金获得弹窗
+      pop4：成长栏
+      pop5：鱼升级
+      pop6：攻击提示
+      pop7：漂流瓶
+      pop8：提现平台
+      pop9：提现金额"
+   */
+  static const new_guide = "new_guide";
+  static const new_guide_c = "new_guide_c";
+  //首页成长点击
+  static const home_growing_c = "home_growing_c";
+  //升级广告弹窗展示
+  static const growing_ad_pop = "growing_ad_pop";
+  //首页提现进度栏展示
+  static const home_withdraw = "home_withdraw";
+  //home_withdraw_c
+  static const home_withdraw_c = "home_withdraw_c";
+  //转盘页展示
+  static const pearl_wheel = "pearl_wheel";
+  static const pearl_wheel_c = "pearl_wheel_c";
+  //转盘现金弹窗展示
+  static const pearl_wheel_pop = "pearl_wheel_pop";
+  //转盘现金弹窗点击claim
+  static const pearl_wheel_2x = "pearl_wheel_2x";
+  //转盘现金弹窗点击1倍和关闭同时上报
+  static const pearl_wheel_1x = "pearl_wheel_1x";
+  //漂流瓶页面展示
+  static const drift_bottle = "drift_bottle";
+  //漂流瓶全选按钮点击
+  static const drift_bottle_all = "drift_bottle_all";
+
+
 }

@@ -5,9 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../config/EventConfig.dart';
 import '../../task/RewardManager.dart';
 import '../../task/TaskManager.dart';
 import '../../utils/LocalCacheUtils.dart';
+import '../../utils/net/EventManager.dart';
 import '../GameText.dart';
 import 'BasePopView.dart';
 
@@ -98,6 +100,7 @@ class _GamePearlPopState extends State<GamePearlPop>
     coinList.add(coin2);
     coinList.add(coin3);
     coinList.add(coin4);
+    EventManager.instance.postEvent(EventConfig.pearl_wheel);
   }
 
   double? getCoin(int currentIndex){
@@ -357,6 +360,7 @@ class _GamePearlPopState extends State<GamePearlPop>
   void _onSpinPressed() {
     if(isRunning)return;
     isRunning = true;
+    EventManager.instance.postEvent(EventConfig.pearl_wheel_c);
     TaskManager.instance.addTask("spins");
     if(widget.pearlCount <=0){
       isRunning = false;

@@ -45,6 +45,7 @@ import '../utils/ClickManager.dart';
 import '../utils/LogUtils.dart';
 import '../utils/ad/ADEnum.dart';
 import '../utils/ad/ADShowManager.dart';
+import '../utils/net/EventManager.dart';
 import '../view/GameLifeProgress.dart';
 import '../view/GameText.dart';
 import '../view/PropsProgress.dart';
@@ -160,6 +161,7 @@ class _GamePageState extends State<GamePage>
         showMarkNew4();
       }
     });
+    EventManager.instance.postEvent(EventConfig.home_page);
   }
 
   @override
@@ -937,6 +939,7 @@ class _GamePageState extends State<GamePage>
       270°	3 * math.pi / 2
    */
   void showMarkNew1() {
+    EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop1"});
     pausTemp();
     globalGuideNew1Keys = [];
     globalGuideNew1Keys.add(
@@ -983,6 +986,7 @@ class _GamePageState extends State<GamePage>
         showMarkNew2();
       },
       onClickTarget: (target) {
+        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop1"});
         clickFood();
       },
     );
@@ -990,6 +994,7 @@ class _GamePageState extends State<GamePage>
   }
 
   void showMarkNew2() {
+    EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop2"});
     pausTemp();
     userData.new1 = false;
     LocalCacheUtils.putUserData(userData);
@@ -1030,6 +1035,7 @@ class _GamePageState extends State<GamePage>
       onFinish: () {},
       onClickTarget: (target) {
         if (!ClickManager.canClick(context: context)) return;
+        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop2"});
         setState(() {
           showCoinBubbles = false;
         });
@@ -1052,6 +1058,8 @@ class _GamePageState extends State<GamePage>
   }
 
   void showMarkNew4() {
+    EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop4"});
+
     pausTemp();
     // 创建控制器
     globalGuideNew1Keys = [];
@@ -1179,6 +1187,7 @@ class _GamePageState extends State<GamePage>
         resumeTemp();
       },
       onClickTarget: (target) {
+        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop4"});
         clickProtect();
       },
     );
@@ -1186,6 +1195,7 @@ class _GamePageState extends State<GamePage>
   }
 
   void showMarkNew5() {
+    EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop5"});
     pausTemp();
     // 创建控制器
     globalGuideNew1Keys = [];
@@ -1225,8 +1235,11 @@ class _GamePageState extends State<GamePage>
       textSkip: "",
       paddingFocus: 0,
       onFinish: () async {
+        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop5"});
         tutorialCoachMark?.skip();
+        EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop6"});
         await toPropsAwardPop();
+        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop6"});
         resumeTemp();
         userData.new5 = false;
         LocalCacheUtils.putUserData(userData);

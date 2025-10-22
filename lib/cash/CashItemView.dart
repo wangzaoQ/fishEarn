@@ -169,7 +169,7 @@ class _CashWidgetState extends State<CashItemView> {
                 child: Padding(
                   padding: EdgeInsets.only(top: 79.h),
                   child: PropsProgress(
-                    progress: 0.5,
+                    progress: (widget.gameData.coin)/(widget.money),
                     // 进度 0~1
                     progressColor: Color(0xFF5ABB33),
                     backgroundColor: Color(0xFF126175),

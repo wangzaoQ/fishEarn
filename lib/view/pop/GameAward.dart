@@ -12,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../utils/ClickManager.dart';
 import '../../utils/ad/ADEnum.dart';
 import '../../utils/ad/ADShowManager.dart';
+import '../../utils/net/EventManager.dart';
 
 class GameAwardPop extends StatefulWidget {
 
@@ -40,6 +41,9 @@ class _GameAwardPopState extends State<GameAwardPop>
       duration: const Duration(seconds: 3), // 一圈时间
     )..repeat(); // 无限旋转
     AudioUtils().playTempAudio("audio/award.mp3");
+    if(widget.type == 0){
+      EventManager.instance.postEvent(EventConfig.pearl_wheel_pop);
+    }
   }
 
   @override
@@ -147,6 +151,7 @@ class _GameAwardPopState extends State<GameAwardPop>
                 }else{
                   if(!allowClickAd)return;
                   allowClickAd = false;
+                  EventManager.instance.postEvent(EventConfig.pearl_wheel_2x);
                   ADShowManager(
                     adEnum: ADEnum.rewardedAD,
                     tag: "reward",
@@ -228,6 +233,7 @@ class _GameAwardPopState extends State<GameAwardPop>
       tag: "int",
       result: (type, hasValue) {
         if(!mounted)return;
+        EventManager.instance.postEvent(EventConfig.pearl_wheel_1x);
         Navigator.pop(context, 1);
       },
     ).showScreenAD(EventConfig.fixrn_wheel_int);

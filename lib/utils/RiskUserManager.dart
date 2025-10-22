@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter/material.dart';
@@ -77,14 +78,14 @@ class RiskUserManager {
       var simulator = await RiskDeviceUtils.instance.simulator();
       var store = await RiskDeviceUtils.instance.store();
       var developer = await RiskDeviceUtils.instance.developer();
-      // EventManager().postEvent(RiskDeviceUtils.session_custom, params: {
-      //   "root": root?1:0,
-      //   "vpn": vpn?1:0,
-      //   "sim": sim?1:0,
-      //   "simulator": simulator?1:0,
-      //   "googleplay": store?1:0,
-      //   "developer": developer?1:0,
-      // });
+      EventManager().postEvent(EventConfig.session_custom, params: {
+        "root": root?1:0,
+        "vpn": vpn?1:0,
+        "sim": sim?1:0,
+        "simulator": simulator?1:0,
+        "googleplay": store?1:0,
+        "developer": developer?1:0,
+      });
 
     });
   }
@@ -175,8 +176,8 @@ class RiskUserManager {
       user.userRiskFrom = from;
       LogUtils.logD("${TAG}is risky user from:${from}");
       LocalCacheUtils.putUserData(user);
-      // EventManager().postEvent(
-      //     PointConfig.risk_chance, params: {"risk_from": from});
+      EventManager().postEvent(
+          EventConfig.risk_chance, params: {"risk_from": from});
     }catch (e){
       LogUtils.logE("${TAG}updateUser error :${e}");
     }
@@ -188,7 +189,7 @@ class RiskUserManager {
       user.userRiskFrom = from;
       LogUtils.logD("${TAG}is risky user from:${from}");
       LocalCacheUtils.putUserData(user);
-      // EventManager().postEvent(PointConfig.risk_chance, params: {"risk_from": from});
+      EventManager().postEvent(EventConfig.risk_chance, params: {"risk_from": from});
     }catch (e){
       LogUtils.logE("${TAG}updateUser2 error :${e}");
     }
@@ -320,7 +321,7 @@ class RiskUserManager {
     if(user.userRiskStatus)return;
     if(cacheADShowCount> riskData!.behavior.adDailyShow-1){
       updateUser2(user, "ad_daily_show");
-      // NetControl().postEvent(PointConfig.see_you_tommorow);
+      EventManager().postEvent(EventConfig.see_you_tommorow);
       // BasePopQueue().show(context: GlobalConfig.globalContext!, child: ADLimitPop());
     }
   }

@@ -119,7 +119,7 @@ class _FishStartPageState extends State<FishStartPage>
     //   }
     // });
     EventManager.instance.session();
-    // NetControl().postEvent(PointConfig.launch_page);
+    EventManager.instance.postEvent(EventConfig.launch_page);
   }
 
   @override
@@ -162,6 +162,7 @@ class _FishStartPageState extends State<FishStartPage>
                             padding: EdgeInsets.zero, // 去掉默认内边距
                             pressedOpacity: 0.7,
                             onPressed: () {
+                              EventManager.instance.postEvent(EventConfig.launch_start);
                               var cachePrivacyKey = LocalCacheUtils.getBool(
                                 LocalCacheConfig.cachePrivacyKey,
                                 defaultValue: true,

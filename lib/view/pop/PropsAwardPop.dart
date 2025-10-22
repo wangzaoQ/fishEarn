@@ -15,6 +15,7 @@ import '../../utils/AudioUtils.dart';
 import '../../utils/ClickManager.dart';
 import '../../utils/ad/ADEnum.dart';
 import '../../utils/ad/ADShowManager.dart';
+import '../../utils/net/EventManager.dart';
 import '../GameText.dart';
 
 class PropsAwardPop extends StatefulWidget {
@@ -49,6 +50,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
     coinList.add(coin1);
     coinList.add(coin2);
     coinList.add(coin3);
+    EventManager.instance.postEvent(EventConfig.drift_bottle);
   }
 
   int selected = -1;
@@ -105,7 +107,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
               height: 32.h,
             ),
             onPressed: () {
-              AudioUtils().playClickAudio();
+              if (!ClickManager.canClick(context: context)) return;
               Navigator.pop(context, null);
             },
           ),
@@ -475,6 +477,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
               onPressed: () {
                 if (!ClickManager.canClick(context: context)) return;
                 if(!allowShowRVAD)return;
+                EventManager.instance.postEvent(EventConfig.drift_bottle_all);
                 allowShowRVAD = false;
                 ADShowManager(
                   adEnum: ADEnum.rewardedAD,

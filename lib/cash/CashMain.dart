@@ -10,9 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
+import '../config/EventConfig.dart';
 import '../data/GameData.dart';
 import '../utils/ClickManager.dart';
 import '../utils/LocalCacheUtils.dart';
+import '../utils/net/EventManager.dart';
 import '../view/pop/CashProcessPop.dart';
 import '../view/pop/PopManger.dart';
 import 'CashPage.dart';
@@ -204,13 +206,13 @@ class _CashMainState extends State<CashMain> {
                     right: 3.h,
                     bottom: 8.h,
                     child: SizedBox(
-                      width: 55.w,
-                      height: 55.h,
+                      width: 80.w,
+                      height: 80.h,
                       child: CupertinoButton(
                         padding: EdgeInsets.zero,
                         pressedOpacity: 0.7,
-                        child: Image.asset("assets/images/ic_toRank.webp",width: 55.w,
-                          height: 55.h,fit: BoxFit.fill,),
+                        child: Image.asset("assets/images/ic_toRank.webp",width: 80.w,
+                          height: 80.h,fit: BoxFit.fill,),
                         onPressed: () {
                           PopManager().show(context: context,
                               child: CashProcessPop(money: 800,));
@@ -358,6 +360,7 @@ class _CashMainState extends State<CashMain> {
   GlobalKey globalKeyNew7 = GlobalKey();
 
   void showMarkNew6() {
+    EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop7"});
     globalKeyNew6Keys = [];
     globalKeyNew6Keys.add(
       TargetFocus(
@@ -429,16 +432,18 @@ class _CashMainState extends State<CashMain> {
       textSkip: "",
       paddingFocus: 0,
       onFinish: () {
-        showMarkNew7();
       },
       onClickTarget: (target) async {
         if (!ClickManager.canClick(context: context)) return;
+        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop7"});
+        showMarkNew7();
       },
     );
     tutorialCoachMark?.show(context: context);
   }
 
   void showMarkNew7() {
+    EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop8"});
     userData.new6 = false;
     LocalCacheUtils.putUserData(userData);
     globalKeyNew6Keys = [];
@@ -511,13 +516,15 @@ class _CashMainState extends State<CashMain> {
       colorShadow: Colors.black.withOpacity(0.8),
       textSkip: "",
       paddingFocus: 0,
-      onFinish: () {},
+      onFinish: () {
+      },
       onClickTarget: (target) {
         if (!ClickManager.canClick(context: context)) return;
         var userData = LocalCacheUtils.getUserData();
         userData.new7 = false;
         LocalCacheUtils.putUserData(userData);
         Navigator.pop(context);
+        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop8"});
       },
     );
     tutorialCoachMark?.show(context: context);

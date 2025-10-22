@@ -30,6 +30,7 @@ import '../utils/GlobalTimerManager.dart';
 import '../utils/NetWorkManager.dart';
 import '../utils/ad/ADEnum.dart';
 import '../utils/ad/ADShowManager.dart';
+import '../utils/net/EventManager.dart';
 import 'GradientProgressBar.dart';
 import 'ProgressClipper.dart';
 
@@ -97,6 +98,8 @@ class _GameProgressState extends State<GameProgress>
   var cacheShowMoney = true;
   var cacheType = 0;
 
+  var firstShowWithdraw = true;
+
   @override
   Widget build(BuildContext context) {
     final double progressHeight = 25.h; // 进度条高度
@@ -110,6 +113,10 @@ class _GameProgressState extends State<GameProgress>
         LocalCacheConfig.cacheType,
         defaultValue: 0,
       );
+      if(firstShowWithdraw){
+        firstShowWithdraw =false;
+        EventManager.instance.postEvent(EventConfig.home_withdraw);
+      }
     }
     return PopScope(
       canPop: false, // 禁止默认返回
@@ -265,6 +272,8 @@ class _GameProgressState extends State<GameProgress>
                                 ],
                               ),
                               onPressed: () {
+                                if (!ClickManager.canClick(context: context)) return;
+                                EventManager.instance.postEvent(EventConfig.home_withdraw_c);
                                 setState(() {
                                   widget.onConfirm(10);
                                 });
@@ -489,8 +498,8 @@ class _GameProgressState extends State<GameProgress>
                               ),
                             ),
                             onPressed: () async {
-                              if (!ClickManager.canClick(context: context))
-                                return;
+                              if (!ClickManager.canClick(context: context)) return;
+                              EventManager.instance.postEvent(EventConfig.home_growing_c,params: {"type": gameData.level});
                               if (gameData.level == 1 &&
                                   widget.progress == 0.5) {
                                 var userData = LocalCacheUtils.getUserData();
@@ -602,8 +611,8 @@ class _GameProgressState extends State<GameProgress>
                               ),
                             ),
                             onPressed: () async {
-                              if (!ClickManager.canClick(context: context))
-                                return;
+                              if (!ClickManager.canClick(context: context)) return;
+                              EventManager.instance.postEvent(EventConfig.home_growing_c,params: {"type": gameData.level});
                               GameManager.instance.pauseMovement();
                               if (gameData.level == 2 &&
                                   widget.progress == 1) {
@@ -745,6 +754,8 @@ class _GameProgressState extends State<GameProgress>
   GlobalKey globalKeyNew3 = GlobalKey();
 
   void showMarkNew3() {
+    EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop3"});
+
     var userData = LocalCacheUtils.getUserData();
     userData.new2 = false;
     LocalCacheUtils.putUserData(userData);
@@ -839,6 +850,7 @@ class _GameProgressState extends State<GameProgress>
       textSkip: "",
       paddingFocus: 0,
       onFinish: () {
+        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop3"});
         toLevel2(context);
       },
       onClickTarget: (target) {

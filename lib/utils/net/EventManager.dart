@@ -70,6 +70,9 @@ class EventManager {
       var map = await NetParamsManager.instance.getCommonJson();
       var json = {};
       json["ak"] = key;
+      params?.forEach((key, value) {
+        map['$key'] = value;
+      });
       json["bater"] = map;
       HttpManager.dio.post("", data: json).catchError((e) {
         LogUtils.logE("error:$e");
