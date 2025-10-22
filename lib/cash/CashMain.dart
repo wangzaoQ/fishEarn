@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/cash/CashItemView.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/data/UserData.dart';
+import 'package:fish_earn/task/TaskManager.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/view/GameText.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,6 +31,8 @@ class _CashMainState extends State<CashMain> {
   late GameData gameData;
   late UserData userData;
 
+  var taskName = "";
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +50,8 @@ class _CashMainState extends State<CashMain> {
         });
       }
     });
+    taskName = TaskManager.instance.getCurrentTaskName();
+    EventManager.instance.postEvent(EventConfig.cash_page);
   }
 
   // 0 paypal 1 cash
@@ -202,7 +207,7 @@ class _CashMainState extends State<CashMain> {
                       fillColor: Color(0xFF33FFDB),
                     ),
                   ),
-                  Positioned(
+                  taskName == ""?SizedBox.shrink():Positioned(
                     right: 3.h,
                     bottom: 8.h,
                     child: SizedBox(
@@ -214,6 +219,8 @@ class _CashMainState extends State<CashMain> {
                         child: Image.asset("assets/images/ic_toRank.webp",width: 80.w,
                           height: 80.h,fit: BoxFit.fill,),
                         onPressed: () {
+                          if (!ClickManager.canClick(context: context)) return;
+                          EventManager.instance.postEvent(EventConfig.cash_queue);
                           PopManager().show(context: context,
                               child: CashProcessPop(money: 800,));
                         },

@@ -3,6 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../config/EventConfig.dart';
+import '../../utils/net/EventManager.dart';
+
 class CashErrorPop extends StatefulWidget {
   final int money;
 
@@ -13,6 +16,13 @@ class CashErrorPop extends StatefulWidget {
 }
 
 class _GameAwardPopState extends State<CashErrorPop> {
+
+  @override
+  void initState() {
+    EventManager.instance.postEvent(EventConfig.cash_not_pop);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     var template = "app_content_cash_error".tr();
@@ -51,6 +61,7 @@ class _GameAwardPopState extends State<CashErrorPop> {
                       ),
                     ),
                     onPressed: () {
+                      EventManager.instance.postEvent(EventConfig.cash_not_pop_c);
                       Navigator.pop(context, -1);
                     },
                   ),
@@ -110,6 +121,7 @@ class _GameAwardPopState extends State<CashErrorPop> {
                   ),
                 ),
                 onPressed: () {
+                  EventManager.instance.postEvent(EventConfig.cash_not_pop_c);
                   Navigator.popUntil(context, (route) => route.isFirst);
                 },
               ),

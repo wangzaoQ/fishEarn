@@ -5,7 +5,9 @@ import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../config/EventConfig.dart';
 import 'LogUtils.dart';
+import 'net/EventManager.dart';
 
 class FishNFManager{
   FishNFManager._();
@@ -30,7 +32,7 @@ class FishNFManager{
       onDidReceiveNotificationResponse: (response) {
         LogUtils.logD("nf click response:${response}");
         final String? payload = response.payload;
-        // NetControl().postEvent(PointConfig.all_push_c,params: {"push_type":payload??""});
+        EventManager.instance.postEvent(EventConfig.all_noti_c,params: {"push_type":payload??""});
         if(payload == null)return;
       },
     );
@@ -41,9 +43,11 @@ class FishNFManager{
     var nfPermission = await allowNF();
     if(nfPermission){
       LogUtils.logD("nf has permission");
+      EventManager.instance.postEvent(EventConfig.noti_req_allow);
       startNF();
       return true;
     }else{
+      EventManager.instance.postEvent(EventConfig.noti_req_refuse);
       LogUtils.logD("nf no permission");
       return false;
     }
@@ -155,7 +159,7 @@ class FishNFManager{
     //通知来源，通知详情中设置的“payload”参数，默认为【local】
     final count = await plugin.extractMessageReceivedNum(channel);
     for (int i = 0; i < count; i++) {
-      // NetControl().postEvent(PointConfig.all_push_t,params: {"push_type":channel});
+      EventManager.instance.postEvent(EventConfig.all_noti_t,params: {"type":channel});
       await Future.delayed(Duration(seconds: 1));
     }
   }

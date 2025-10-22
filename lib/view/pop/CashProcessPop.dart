@@ -5,8 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../config/EventConfig.dart';
 import '../../data/QueueUser.dart';
 import '../../utils/ClickManager.dart';
+import '../../utils/ad/ADEnum.dart';
+import '../../utils/ad/ADShowManager.dart';
+import '../../utils/net/EventManager.dart';
 
 class CashProcessPop extends StatefulWidget {
   int money;
@@ -21,6 +25,7 @@ class _CashProcessPopState extends State<CashProcessPop> {
   @override
   void initState() {
     super.initState();
+    EventManager.instance.postEvent(EventConfig.cash_queue_pop);
     _initAsync();
   }
 
@@ -332,6 +337,16 @@ class _CashProcessPopState extends State<CashProcessPop> {
                   ),
                   onPressed: () {
                     if (!ClickManager.canClick(context: context)) return;
+                    ADShowManager(
+                      adEnum: ADEnum.rewardedAD,
+                      tag: "reward",
+                      result: (type, hasValue) {
+                        if (hasValue) {
+                          EventManager.instance.postEvent(EventConfig.queue_skipwait);
+                          Navigator.pop(context, 1);
+                        }
+                      },
+                    ).showScreenAD(EventConfig.fixrn_skipwait_rv, awaitLoading: true);
                   },
                 ),
               ),

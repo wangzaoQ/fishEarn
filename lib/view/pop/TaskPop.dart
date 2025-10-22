@@ -3,12 +3,26 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../config/EventConfig.dart';
 import '../../task/TaskManager.dart';
 import '../../utils/LocalCacheUtils.dart';
+import '../../utils/net/EventManager.dart';
 
 ///
-class TaskPop extends StatelessWidget {
+class TaskPop extends StatefulWidget {
   const TaskPop({super.key});
+
+  @override
+  State<TaskPop> createState() => _TaskPopState();
+}
+
+class _TaskPopState extends State<TaskPop> {
+
+  @override
+  void initState() {
+    EventManager.instance.postEvent(EventConfig.cash_task_pop);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +95,7 @@ class TaskPop extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(height: 9.h,),
+                SizedBox(height: 9.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 13.w),
                   child: Text(
@@ -280,7 +294,6 @@ class TaskPop extends StatelessWidget {
     }
     return title;
   }
-
 
   String getTaskTips(String taskName) {
     String title = "";

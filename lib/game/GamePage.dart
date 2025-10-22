@@ -495,6 +495,8 @@ class _GamePageState extends State<GamePage>
                   child: Image.asset("assets/images/ic_protect.webp"),
                 ),
                 onPressed: () {
+                  if (!ClickManager.canClick(context: context)) return;
+                  EventManager.instance.postEvent(EventConfig.defense_c);
                   clickProtect();
                 },
               ),
@@ -687,6 +689,7 @@ class _GamePageState extends State<GamePage>
         if (aliveTime == GameConfig.gameDangerTime1 ||
             aliveTime == GameConfig.gameDangerTime2 ||
             aliveTime == GameConfig.gameDangerTime3) {
+          EventManager.instance.postEvent(EventConfig.shark_attack,);
           showDanger();
         }
         progress = GameManager.instance.getCurrentProgress(gameData);
@@ -890,6 +893,7 @@ class _GamePageState extends State<GamePage>
           if (!mounted) return;
           setState(() {
             globalShowShark = true;
+            EventManager.instance.postEvent(EventConfig.shark_attack_c,);
             GameManager.instance.resumeMovement();
           });
         });

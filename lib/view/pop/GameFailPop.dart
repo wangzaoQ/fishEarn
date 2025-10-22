@@ -7,10 +7,12 @@ import 'package:fish_earn/view/GameText.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../config/EventConfig.dart';
 import '../../utils/AudioUtils.dart';
 import '../../utils/ClickManager.dart';
 import '../../utils/ad/ADEnum.dart';
 import '../../utils/ad/ADShowManager.dart';
+import '../../utils/net/EventManager.dart';
 
 class GameFailPop extends StatefulWidget {
   String tag;
@@ -26,6 +28,7 @@ class _GameFailPopState extends State<GameFailPop> {
   void initState() {
     super.initState();
     AudioUtils().playTempAudio("audio/fail.mp3");
+    EventManager.instance.postEvent(EventConfig.fish_die);
   }
   var allowClickAd = true;
   @override
@@ -81,6 +84,7 @@ class _GameFailPopState extends State<GameFailPop> {
               ),
               onPressed: () {
                 if (!ClickManager.canClick(context: context)) return;
+                EventManager.instance.postEvent(EventConfig.fish_die_re);
                 var gameData = LocalCacheUtils.getGameData();
                 if (gameData.coin <= GameConfig.reviveCostCoin) {
                   GameManager.instance.showTips("app_resurrection_tips".tr());
@@ -129,7 +133,8 @@ class _GameFailPopState extends State<GameFailPop> {
                 ),
               ),
               onPressed: () {
-                AudioUtils().playClickAudio();
+                if (!ClickManager.canClick(context: context)) return;
+                EventManager.instance.postEvent(EventConfig.fish_die_rebirth);
                 Navigator.pop(context, 0);
               },
             ),

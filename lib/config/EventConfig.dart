@@ -24,6 +24,8 @@ class EventConfig{
   static const fixrn_bottle_rv = "fixrn_bottle_rv";
   //漂流瓶奖励弹窗点击Only xxx弹出插屏广告
   static const fixrn_bottle_int = "fixrn_bottle_int";
+  //排队
+  static const fixrn_skipwait_rv = "fixrn_skipwait_rv";
 
 
   //事件 安装（自定义）
@@ -75,6 +77,39 @@ class EventConfig{
   static const drift_bottle = "drift_bottle";
   //漂流瓶全选按钮点击
   static const drift_bottle_all = "drift_bottle_all";
-
+  //鲨鱼预警触发
+  static const shark_attack = "shark_attack";
+  //鲨鱼攻击触发
+  static const shark_attack_c = "shark_attack_c";
+  //防御点击
+  static const defense_c = "defense_c";
+  //鱼死亡弹窗
+  static const fish_die = "fish_die";
+  //复活按钮
+  static const fish_die_re = "fish_die_re";
+  //重生按钮
+  static const fish_die_rebirth = "fish_die_rebirth";
+  //通知权限允许
+  static const noti_req_allow = "noti_req_allow";
+  //通知权限拒绝
+  static const noti_req_refuse = "noti_req_refuse";
+  //提现页曝光
+  static const cash_page = "cash_page";
+  //提现任务弹窗
+  static const cash_task_pop = "cash_task_pop";
+  //提现不足弹窗
+  static const cash_not_pop = "cash_not_pop";
+  //提现不足弹窗点击
+  static const cash_not_pop_c = "cash_not_pop_c";
+  //cash_queue
+  static const cash_queue = "cash_queue";
+  //提现排队弹窗展示
+  static const cash_queue_pop = "cash_queue_pop";
+  //排队跳过点击
+  static const queue_skipwait = "queue_skipwait";
+  //通知点击
+  static const all_noti_c = "all_noti_c";
+  //通知出发点
+  static const all_noti_t = "all_noti_t";
 
 }
