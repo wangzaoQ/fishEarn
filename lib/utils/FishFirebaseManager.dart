@@ -78,25 +78,6 @@ class FishFirebaseManager{
     getInstallReferrerWithRetry();
   }
 
-  void getADConfig() {
-    // Map<String, dynamic> jsonData = {};
-    // try{
-    //   String jsonString = FirebaseRemoteConfig.instance.getString("oxrsl_ad_config");
-    //   jsonData = jsonDecode(jsonString);
-    // }catch (e){
-    //
-    // }
-    // if(jsonData.isEmpty){
-    //   jsonData = CommonConfig.defaultADJson;
-    // }
-    // var adManager = ADLoadManager();
-    // adManager.adRootData = ADData.fromJson(jsonData);
-    // LogUtils.logD("ad data:${adManager.adRootData?.toJson()}");
-    // ADEnum.intAD.adRequestList.clear();
-    // ADEnum.rewardedAD.adRequestList.clear();
-    // ADEnum.intAD.adRequestList.addAll(adManager.adRootData?.oxrslInt??[]);
-    // ADEnum.rewardedAD.adRequestList.addAll(adManager.adRootData?.oxrslRv??[]);
-  }
 
   Future<void> getInstallReferrerWithRetry({
     int maxRetry = 3,

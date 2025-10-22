@@ -3,7 +3,21 @@ class EventConfig{
   static const new3 = "new3";
   static const new4 = "new4";
 
+  /**
+   * "ad_code_id:广告位ID；
+      ad_format：广告位类型，rv/int；
+      ad_platform：广告平台，admob、max、topon、tradplus、other"
+   */
+  static const ad_request = "ad_request";
 
+  /**
+   * "ad_code_id:广告位ID；
+      ad_format：广告位类型，rv/int；
+      ad_platform：广告平台，admob、max、topon、tradplus、other"
+   */
+  static const fixrn_ad_return = "fixrn_ad_return";
+  static const fixrn_ad_chance = "fixrn_ad_chance";
+  static const fixrn_ad_impression_fail = "fixrn_ad_impression_fail";
   //AD 开屏
   static const fixrn_launch = "fixrn_launch";
   //升级
@@ -111,5 +125,9 @@ class EventConfig{
   static const all_noti_c = "all_noti_c";
   //通知出发点
   static const all_noti_t = "all_noti_t";
+  //广告获取失败弹窗
+  static const ad_fail = "ad_fail";
+  //广告获取失败弹窗 重试按钮点击
+  static const ad_fail_c = "ad_fail_c";
 
 }

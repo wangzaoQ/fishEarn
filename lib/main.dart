@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:adjust_sdk/adjust.dart';
+import 'package:adjust_sdk/adjust_attribution.dart';
+import 'package:adjust_sdk/adjust_config.dart';
 import 'package:applovin_max/applovin_max.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -27,8 +30,10 @@ import 'package:fish_earn/utils/ad/maxListener/RewardedListenerDispatcher.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_custom_facebook/flutter_custom_facebook.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_tba_info/flutter_tba_info.dart';
 import 'package:provider/provider.dart';
 
 import 'FishStartPage.dart';
@@ -49,11 +54,11 @@ Future<void> main() async {
       LogUtils.logD("$TAG Firebase init error");
     }
     try {
-      // FlutterCustomFacebook.instance.initFaceBook(
-      //   facebookId: CommonConfig.facebookId,
-      //   facebookToken: CommonConfig.facebookToken,
-      //   facebookAppName: CommonConfig.facebookName,
-      // );
+      FlutterCustomFacebook.instance.initFaceBook(
+        facebookId: LocalConfig.facebookId,
+        facebookToken: LocalConfig.facebookToken,
+        facebookAppName: LocalConfig.facebookName,
+      );
     } catch (e) {
       LogUtils.logD("$TAG facebook init error");
     }
@@ -66,7 +71,7 @@ Future<void> main() async {
   }
   GlobalDataManager.instance.init();
   TimeUtils.dataReset();
-
+  _initAdjust();
   // 延迟3秒执行
   Future.delayed(const Duration(seconds: 3), () async {
     await FishNFManager.instance.init();
@@ -100,6 +105,47 @@ Future<void> main() async {
   );
   // runApp(const MyApp());
 }
+
+_initAdjust() async {
+  String appToken = LocalConfig.adjustToken; // 从 adjust 控制台拿
+  var disId = await FlutterTbaInfo.instance.getDistinctId();
+  Adjust.addGlobalCallbackParameter('customer_user_id', disId);
+  final config = AdjustConfig(appToken, AdjustEnvironment.production);
+  config.logLevel = AdjustLogLevel.verbose;
+  // 归因信息
+  config.attributionCallback = (AdjustAttribution attributionChangedData) {
+    print('[Adjust]: Attribution changed!');
+    if (attributionChangedData.trackerToken != null) {
+      print('[Adjust]: Tracker token: ${attributionChangedData.trackerToken}');
+    }
+    if (attributionChangedData.trackerName != null) {
+      print('[Adjust]: Tracker name: ${attributionChangedData.trackerName}');
+    }
+    if (attributionChangedData.campaign != null) {
+      print('[Adjust]: Campaign: ${attributionChangedData.campaign}');
+    }
+    if (attributionChangedData.network != null) {
+      print('[Adjust]: Network: ${attributionChangedData.network}');
+    }
+    if (attributionChangedData.creative != null) {
+      print('[Adjust]: Creative: ${attributionChangedData.creative}');
+    }
+    if (attributionChangedData.adgroup != null) {
+      print('[Adjust]: Adgroup: ${attributionChangedData.adgroup}');
+    }
+    if (attributionChangedData.clickLabel != null) {
+      print('[Adjust]: Click label: ${attributionChangedData.clickLabel}');
+    }
+    if (attributionChangedData.fbInstallReferrer != null) {
+      print('[Adjust]: facebook install referrer: ${attributionChangedData.fbInstallReferrer}');
+    }
+    if (attributionChangedData.jsonResponse != null) {
+      print('[Adjust]: JSON Response: ${attributionChangedData.jsonResponse}');
+    }
+  };
+  Adjust.initSdk(config);
+}
+
 
 
 class MyApp extends StatefulWidget {

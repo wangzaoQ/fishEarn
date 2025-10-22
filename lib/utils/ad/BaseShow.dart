@@ -1,4 +1,9 @@
 
+import 'package:adjust_sdk/adjust.dart';
+import 'package:adjust_sdk/adjust_ad_revenue.dart';
+import 'package:applovin_max/applovin_max.dart';
+import 'package:fish_earn/utils/net/EventManager.dart';
+
 import '../../config/global.dart';
 import '../../data/ADResultData.dart';
 import '../LogUtils.dart';
@@ -40,12 +45,6 @@ abstract class BaseShow {
     if(showTag.contains("reward")){
       RiskUserManager.instance.riskRewardDismiss();
     }
-    // NetControl().postEvent(PointConfig.oxrsl_ad_imp_close,params: {
-    //   "ad_pos_id":showTag,
-    //   "ad_code_id":adResultData.adRequestData?.zgsbckua??"",
-    //   "ad_format":adResultData.adRequestData?.rnucwtgt??"",
-    //   "ad_platform":adResultData.adRequestData?.hxsgrrzm??"",
-    // });
   }
 
   // 全屏广告展示
@@ -72,7 +71,25 @@ abstract class BaseShow {
   void setADDismissTime() {
   }
   void addADEvent(ADResultData adResultData,String pointTag) {
-    // NetControl().adImpression(adResultData,pointTag);
+    EventManager.instance.adImpression(adResultData,pointTag);
+    sendAdToSdk(adResultData);
     // AFUtils.instance.logEvent(adResultData);
+  }
+
+  sendAdToSdk(ADResultData adResultData) {
+    try {
+      var max = (adResultData.adAny) as MaxAd;
+      AdjustAdRevenue adjustAdRevenue = AdjustAdRevenue('applovin_max_sdk');
+      adjustAdRevenue.setRevenue(max.revenue, 'USD');
+      adjustAdRevenue.adRevenueNetwork = max.networkPlacement;
+      adjustAdRevenue.adRevenuePlacement = max.placement;
+      Adjust.trackAdRevenue(adjustAdRevenue);
+      LogUtils.logD("af logs:: af revenue success ${max.revenue}");
+    } catch (e) {
+      LogUtils.logD("af logs:: af revenue error $e");
+    }
+
+    // FacebookAppEvents fb = FacebookAppEvents();
+    // fb.logPurchase(amount: max.revenue, currency: "USD");
   }
 }

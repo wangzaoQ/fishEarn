@@ -92,5 +92,7 @@
   "app_play_game": "Play Game",
   "app_login_tips": "Please first check the privacy policy and terms of service.",
   "app_ad_no_cache": "Ad failed, earnings stopped",
-  "app_offline_title": "Psst... your fish made money!"
+  "app_offline_title": "Psst... your fish made money!",
+  "app_ad_fail_title": "Ad failed  earnings stopped",
+  "app_ad_try_again": "Try Again"
 }

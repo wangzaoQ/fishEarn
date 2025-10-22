@@ -1,5 +1,7 @@
 import 'package:android_play_install_referrer/android_play_install_referrer.dart';
+import 'package:applovin_max/applovin_max.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
+import 'package:fish_earn/data/ADResultData.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/net/HttpManager.dart';
 import 'package:fish_earn/utils/net/NetParamsManager.dart';
@@ -25,6 +27,27 @@ class EventManager {
       var map = await NetParamsManager.instance.getCommonJson();
       map["pagoda"] = {};
       HttpManager.dio.post("", data: map).catchError((e) {
+        LogUtils.logE("error:${e}");
+      });
+    });
+  }
+
+  void adImpression(ADResultData adResultData, String pointTag) {
+    LogUtils.logD("postEvent key:adImpression");
+    Future(() async{
+      var ad = (adResultData.adAny) as MaxAd;
+      var map = await NetParamsManager.instance.getCommonJson();
+      map["aurora"] = ad.revenue* 1_000_000;
+      map["ulster"] = "USD";
+      map["smithy"] = ad.networkName;
+      map["jackass"] = "max";
+      map["squadron"] = adResultData.adRequestData?.igteaams??"";
+      map["sickish"] = adResultData.adType;
+      map["peroxide"] = ad.revenuePrecision;
+      map["chair"] = pointTag;
+      map["ak"] = "throng";
+
+      HttpManager.dio.post("",data: map).catchError((e){
         LogUtils.logE("error:${e}");
       });
     });
@@ -86,4 +109,5 @@ class EventManager {
     //   LogUtils.logE("error:$e");
     // });
   }
+
 }

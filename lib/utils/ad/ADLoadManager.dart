@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/TimeUtils.dart';
+import 'package:fish_earn/utils/net/EventManager.dart';
 
 import '../../data/ADRequestData.dart';
 import '../../data/ADResultData.dart';
@@ -92,11 +94,11 @@ class ADLoadManager {
 
     BaseLoader adLoader = MaxLoader(data, adEnum);
     if(addRequestPoint){
-      // NetControl().postEvent(PointConfig.ad_request,params: {
-      //   "ad_code_id":data.zgsbckua??"",
-      //   "ad_format":data.rnucwtgt??"",
-      //   "ad_platform":data.hxsgrrzm??"",
-      // });
+      EventManager.instance.postEvent(EventConfig.ad_request,params: {
+        "ad_code_id":data.igteaams,
+        "ad_format":data.uwkcopbx,
+        "ad_platform":data.wdlwgunk,
+      });
     }
     // 启动超时计时器
     var timeoutSeconds = 60;
@@ -124,12 +126,12 @@ class ADLoadManager {
         timeoutTimer?.cancel();
         saveCacheAD(adEnum, result);
         adEnum.adLoadStatus = ADEnum.AD_LOAD_SUCCESS;
-        // NetControl().postEvent(PointConfig.oxrsl_ad_return,params: {
-        //   "ad_code_id":result.adRequestData?.zgsbckua??"",
-        //   "ad_format":result.adRequestData?.rnucwtgt??"",
-        //   "ad_platform":result.adRequestData?.hxsgrrzm??"",
-        //   "ad_request_time":result.adRequestTime
-        // });
+        EventManager.instance.postEvent(EventConfig.fixrn_ad_return,params: {
+          "ad_code_id":data.igteaams,
+          "ad_format":data.uwkcopbx,
+          "ad_platform":data.wdlwgunk,
+          "ad_request_time":result.adRequestTime
+        });
         LogUtils.logD(
           "${TAG} LoadSuccess:$adEnum -enum:${adEnum.toString()} -time:${result.adRequestTime}",
         );

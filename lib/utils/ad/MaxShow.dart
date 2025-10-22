@@ -2,8 +2,10 @@ import 'package:applovin_max/applovin_max.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/RiskUserManager.dart';
+import '../../config/EventConfig.dart';
 import '../../config/LocalConfig.dart';
 import '../../data/ADResultData.dart';
+import '../net/EventManager.dart';
 import 'ADLoadManager.dart';
 import 'BaseShow.dart';
 import 'maxListener/InterstitialListenerDispatcher.dart';
@@ -28,11 +30,13 @@ class MaxShow extends BaseShow {
             adShowFullScreen(adEnum, "max int ad show",adResultData,pointTag);
           },
           onAdDisplayFailedCallback: (ad, error) {
-            // NetControl().postEvent(PointConfig.oxrsl_ad_impression_fail,params: {
-            //   "ad_pos_id":pointTag,
-            //   "msg":"impfail",
-            //   "ad_format":adResultData.adRequestData?.rnucwtgt??"",
-            // });
+            EventManager.instance.postEvent(EventConfig.fixrn_ad_impression_fail,
+                params: {
+                  "ad_pos_id":pointTag,
+                  "msg":"impfail",
+                  "ad_format":adResultData.adRequestData?.uwkcopbx??"",
+                  "ad_platform":adResultData.adRequestData?.wdlwgunk??"",
+                });
             adShowFailed(adEnum, "max int ad show error");
           },
           onAdClickedCallback: (ad) {
@@ -51,11 +55,13 @@ class MaxShow extends BaseShow {
             adResultData.adRequestData?.igteaams ?? "",
           );
         }else{
-          // NetControl().postEvent(PointConfig.oxrsl_ad_impression_fail,params: {
-          //   "ad_pos_id":pointTag,
-          //   "msg":"notPrepared",
-          //   "ad_format":adResultData.adRequestData?.rnucwtgt??"",
-          // });
+          EventManager.instance.postEvent(EventConfig.fixrn_ad_impression_fail,
+              params: {
+                "ad_pos_id":pointTag,
+                "msg":"notPrepared",
+                "ad_format":adResultData.adRequestData?.uwkcopbx??"",
+                "ad_platform":adResultData.adRequestData?.wdlwgunk??"",
+              });
           adShowFailed(adEnum, "max int ad isReady = false");
         }
         break;
@@ -71,11 +77,13 @@ class MaxShow extends BaseShow {
               adShowFullScreen(adEnum, "max reward ad show",adResultData,pointTag);
             },
             onAdDisplayFailedCallback: (ad, error) {
-              // NetControl().postEvent(PointConfig.oxrsl_ad_impression_fail,params: {
-              //   "ad_pos_id":pointTag,
-              //   "msg":"impfail",
-              //   "ad_format":adResultData.adRequestData?.rnucwtgt??"",
-              // });
+              EventManager.instance.postEvent(EventConfig.fixrn_ad_impression_fail,
+                  params: {
+                    "ad_pos_id":pointTag,
+                    "msg":"impfail",
+                    "ad_format":adResultData.adRequestData?.uwkcopbx??"",
+                    "ad_platform":adResultData.adRequestData?.wdlwgunk??"",
+                  });
               adShowFailed(adEnum, "max reward ad show error");
             },
             onAdClickedCallback: (ad) {
@@ -97,11 +105,13 @@ class MaxShow extends BaseShow {
         if (isReady) {
           AppLovinMAX.showRewardedAd(adResultData.adRequestData?.igteaams ?? "");
         }else{
-          // NetControl().postEvent(PointConfig.oxrsl_ad_impression_fail,params: {
-          //   "ad_pos_id":pointTag,
-          //   "msg":"notPrepared",
-          //   "ad_format":adResultData.adRequestData?.rnucwtgt??"",
-          // });
+          EventManager.instance.postEvent(EventConfig.fixrn_ad_impression_fail,
+              params: {
+                "ad_pos_id":pointTag,
+                "msg":"notPrepared",
+                "ad_format":adResultData.adRequestData?.uwkcopbx??"",
+                "ad_platform":adResultData.adRequestData?.wdlwgunk??"",
+              });
           adShowFailed(adEnum, "max reward ad isReady = false");
         }
         break;

@@ -1,9 +1,14 @@
 import 'package:applovin_max/applovin_max.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
+import 'package:fish_earn/utils/net/EventManager.dart';
+import 'package:fish_earn/view/pop/ADFailPop.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import '../../config/global.dart';
 import '../../data/ADResultData.dart';
+import '../../view/pop/BasePopView.dart';
 import '../GameManager.dart';
 import 'ADEnum.dart';
 import 'ADLoadManager.dart';
@@ -56,12 +61,18 @@ class ADShowManager{
       }
     }
     if(allowADChange){
-      // NetControl().postEvent(PointConfig.oxrsl_ad_chance,params: {"ad_pos_id":pointTag});
+      EventManager.instance.postEvent(EventConfig.fixrn_ad_chance,params: {"ad_pos_id":pointTag});
     }
 
     ADResultData? adResultData ;
     adResultData = getADData(adSwitch, adLoadManager, adResultData);
     if (awaitLoading && adResultData == null) {
+      if(globalContext!=null){
+        await BasePopView().showScaleDialog(
+          context: globalContext!,
+          child: ADFailPop(),
+        );
+      }
       EasyLoading.show(status: 'app_loading'.tr());
       var count = 0;
       while (adResultData == null && count < 10) {
@@ -74,12 +85,13 @@ class ADShowManager{
     }
     if (adResultData == null) {
       if(allowADChange){
-        // NetControl().postEvent(PointConfig.oxrsl_ad_impression_fail,
-        //     params: {
-        //       "ad_pos_id":pointTag,
-        //       "msg":"ad_nocache",
-        //       "ad_format":"",
-        // });
+        EventManager.instance.postEvent(EventConfig.fixrn_ad_impression_fail,
+            params: {
+              "ad_pos_id":pointTag,
+              "msg":"ad_nocache",
+              "ad_format":"",
+              "ad_platform":"",
+        });
         GameManager.instance.showTips("app_ad_no_cache".tr());
       }
       adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, tag = "no cache");

@@ -7,4 +7,10 @@ class LocalConfig{
   static final globalContext = navigatorKey.currentState?.overlay?.context;
   static const int = "interstitial";
   static const reward = "reward";
+
+  static const facebookId = "";
+  static const facebookToken = "";
+  static const facebookName = "";
+  static const adjustToken = "";
+
 }

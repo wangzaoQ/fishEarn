@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.63"
+  adjust_sdk:
+    dependency: "direct main"
+    description:
+      name: adjust_sdk
+      sha256: "213faa84c7ddd1e34de52bc2a4b90c5b0ac331ea6e8b1c0edee94eb27360ef36"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.4.4"
   advertising_id:
     dependency: "direct main"
     description:
@@ -518,6 +526,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_custom_facebook:
+    dependency: "direct main"
+    description:
+      name: flutter_custom_facebook
+      sha256: aeb860bb550cd3926a6258efd9c08700accd89aec942bf3b95e31f66cbe028ba
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.5"
   flutter_easyloading:
     dependency: "direct main"
     description:
