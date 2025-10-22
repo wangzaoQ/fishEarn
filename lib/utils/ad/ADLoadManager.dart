@@ -23,11 +23,6 @@ class ADLoadManager {
   // 全局唯一实例
   static final ADLoadManager instance = ADLoadManager._();
 
-  // 公共访问点
-  factory ADLoadManager() {
-    return instance;
-  }
-
   // 对外暴露的变量
   ADData? adRootData;
   final Map<ADEnum, ADResultData> adCache = {};
@@ -179,15 +174,15 @@ class ADLoadManager {
     cacheADShowCount+=1;
     LocalCacheUtils.putInt(LocalCacheConfig.cacheADShowCount, cacheADShowCount);
     RiskUserManager.instance.judgeADShow(cacheADShowCount);
-    // while (targetIndex < targets.length &&
-    //     cacheADShowCount >= targets[targetIndex]) {
-    //   targetIndex++;
-    //   LocalCacheUtils.putInt(
-    //     CacheConfig.cacheADTargetIndex,
-    //     targetIndex,
-    //   );
-    //   NetControl().postEvent(PointConfig.pv_dall,params: {"pv_numbers":targets[targetIndex]});
-    // }
+    while (targetIndex < targets.length &&
+        cacheADShowCount >= targets[targetIndex]) {
+      targetIndex++;
+      LocalCacheUtils.putInt(
+        LocalCacheConfig.cacheADTargetIndex,
+        targetIndex,
+      );
+      EventManager.instance.postEvent(EventConfig.pv_dall,params: {"ad":targets[targetIndex]});
+    }
   }
   void addClickNumber() {
     var cacheADClickCount = LocalCacheUtils.getInt(LocalCacheConfig.cacheADClickCount,defaultValue: 0);

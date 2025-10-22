@@ -40,7 +40,7 @@ class MaxShow extends BaseShow {
             adShowFailed(adEnum, "max int ad show error");
           },
           onAdClickedCallback: (ad) {
-            ADLoadManager().addClickNumber();
+            ADLoadManager.instance.addClickNumber();
           },
           onAdHiddenCallback: (ad) {
             adDismissFullScreen(adEnum,"max int ad dismiss",adResultData);
@@ -87,7 +87,7 @@ class MaxShow extends BaseShow {
               adShowFailed(adEnum, "max reward ad show error");
             },
             onAdClickedCallback: (ad) {
-              ADLoadManager().addClickNumber();
+              ADLoadManager.instance.addClickNumber();
             },
             onAdHiddenCallback: (ad) {
               adDismissFullScreen(adEnum,"max reward ad dismiss",adResultData);

@@ -55,7 +55,7 @@ class _CashPage2State extends State<CashPage> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          color: Color(0xFF2F5FC5), // #012169 的十六进制写法
+          color: Color(widget.payType == 0?0xFF2F5FC5:0xFF44B04C), // #012169 的十六进制写法
         ),
         child: Stack(
           children: [
@@ -192,39 +192,39 @@ class _CashPage2State extends State<CashPage> {
                               Navigator.popUntil(context, (route) => route.isFirst);
                               return;
                             }
-                            // if ((widget.payType == 0) &&
-                            //     _payPalController != null) {
-                            //   var accountText = _payPalController!.text.trim();
-                            //   if (accountText.isEmpty) {
-                            //     GameManager.instance.showTips(
-                            //         "app_not_enough_food".tr());
-                            //     return;
-                            //   } else {
-                            //     if (!EmailValidator.validate(accountText)) {
-                            //       _payPalController!.text = "";
-                            //       GameManager.instance.showTips(
-                            //           "app_cash_tips_error".tr());
-                            //       return;
-                            //     }
-                            //   }
-                            //   eventParamsList.add("account");
-                            // } else if (widget.payType == 1 &&
-                            //     _cashController != null) {
-                            //   var phoneText = _cashController!.text.trim();
-                            //   if (phoneText.isEmpty) {
-                            //     GameManager.instance.showTips(
-                            //         "app_cash_tips".tr());
-                            //     return;
-                            //   } else {
-                            //     if (phoneText.length != 10) {
-                            //       _cashController!.text = "";
-                            //       GameManager.instance.showTips(
-                            //           "app_cash_tips_error".tr());
-                            //       return;
-                            //     }
-                            //   }
-                            //   eventParamsList.add("phone");
-                            // }
+                            if ((widget.payType == 0) &&
+                                _payPalController != null) {
+                              var accountText = _payPalController!.text.trim();
+                              if (accountText.isEmpty) {
+                                GameManager.instance.showTips(
+                                    "app_cash_info_error".tr());
+                                return;
+                              } else {
+                                if (!EmailValidator.validate(accountText)) {
+                                  _payPalController!.text = "";
+                                  GameManager.instance.showTips(
+                                      "app_cash_info_error".tr());
+                                  return;
+                                }
+                              }
+                              eventParamsList.add("account");
+                            } else if (widget.payType == 1 &&
+                                _cashController != null) {
+                              var phoneText = _cashController!.text.trim();
+                              if (phoneText.isEmpty) {
+                                GameManager.instance.showTips(
+                                    "app_cash_info_error".tr());
+                                return;
+                              } else {
+                                if (phoneText.length != 10) {
+                                  _cashController!.text = "";
+                                  GameManager.instance.showTips(
+                                      "app_cash_info_error".tr());
+                                  return;
+                                }
+                              }
+                              eventParamsList.add("phone");
+                            }
                             LocalCacheUtils.putInt(LocalCacheConfig.cacheKeyCash, widget.payStatus,);
                             LocalCacheUtils.putString(LocalCacheConfig.taskCurrentKey,"task1");
                             Navigator.pop(context, 0);
@@ -356,7 +356,7 @@ class _CashPage2State extends State<CashPage> {
     if (widget.payType == 0) {
       return 0xFF1E54B4;
     } else if (widget.payType == 1) {
-      return 0xFF0CB841;
+      return 0xFF44B04C;
     }
     return 0xFF44B04C;
   }

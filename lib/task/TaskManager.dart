@@ -68,7 +68,7 @@ class TaskManager {
 
   /// 获取当前任务内容
   Map<String, dynamic>? getCurrentTask() {
-    _currentTask ??= LocalCacheUtils.getString(LocalCacheConfig.taskCurrentKey, defaultValue: "");
+    _currentTask= LocalCacheUtils.getString(LocalCacheConfig.taskCurrentKey, defaultValue: "");
     if (_currentTask == null || _currentTask!.isEmpty) return null;
     return {
       _currentTask!: tasks[_currentTask],

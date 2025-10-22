@@ -96,5 +96,6 @@
   "app_ad_fail_title": "Ad failed  earnings stopped",
   "app_ad_try_again": "Try Again",
   "app_limit_withdraw": "Limit met  withdraw now！！",
-  "app_right_now": "Right Now"
+  "app_right_now": "Right Now",
+  "app_cash_info_error": "The format you entered is incorrect"
 }

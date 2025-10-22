@@ -43,6 +43,7 @@ class _FishStartPageState extends State<FishStartPage>
   @override
   void initState() {
     super.initState();
+    ADLoadManager.instance.preloadAll("startPage");
     allowShowStart = false;
     // ADLoadManager().preloadAll("startPage");
     cacheFirstKey = LocalCacheUtils.getBool(
@@ -86,7 +87,7 @@ class _FishStartPageState extends State<FishStartPage>
     });
     _controller.addListener(() {
       if (!cacheFirstKey) {
-        var ad = ADLoadManager().getCacheAD(ADEnum.intAD);
+        var ad = ADLoadManager.instance.getCacheAD(ADEnum.intAD);
         if (ad != null && animalFirst) {
           animalFirst = false;
           _controller.animateTo(

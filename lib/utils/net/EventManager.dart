@@ -95,7 +95,9 @@ class EventManager {
       // params?.forEach((key, value) {
       //   map['$key'] = value;
       // });
-      map["bater"] = params;
+      if(params!=null){
+        map["bater"] = params;
+      }
       HttpManager.dio.post("", data: map).catchError((e) {
         LogUtils.logE("error:$e");
       });

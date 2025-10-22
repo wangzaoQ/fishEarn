@@ -50,10 +50,9 @@ class ADShowManager{
       adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, tag = "is risk user:${user.userRiskFrom}");
       return;
     }
-    var adLoadManager = ADLoadManager();
     var adSwitch = false;
     if(tag.contains("reward")){
-      adSwitch = ADLoadManager().adRootData?.fixrn_switch??false;
+      adSwitch = ADLoadManager.instance.adRootData?.fixrn_switch??false;
     }else if(tag.contains("int")){
       var gameData = LocalCacheUtils.getGameData();
       var allow = GlobalDataManager.instance.allowShowInt(gameData.coin);
@@ -67,7 +66,7 @@ class ADShowManager{
     }
 
     ADResultData? adResultData ;
-    adResultData = getADData(adSwitch, adLoadManager, adResultData);
+    adResultData = getADData(adSwitch, ADLoadManager.instance, adResultData);
     if (awaitLoading && adResultData == null) {
       if(LocalConfig.globalContext!=null){
         await BasePopView().showScaleDialog(
@@ -80,8 +79,8 @@ class ADShowManager{
       while (adResultData == null && count < 10) {
         await Future.delayed(const Duration(seconds: 1));
         count++;
-        adLoadManager.preloadAll("no cache await");
-        adResultData = getADData(adSwitch, adLoadManager, adResultData);
+        ADLoadManager.instance.preloadAll("no cache await");
+        adResultData = getADData(adSwitch, ADLoadManager.instance, adResultData);
       }
       EasyLoading.dismiss();
     }
@@ -102,7 +101,7 @@ class ADShowManager{
     //走通用的逻辑
     // registerPayBack(adResultData,pointTag);
     adShow.showScreenAd(adResultData,pointTag);
-    ADLoadManager().adCache.remove(adEnum);
+    ADLoadManager.instance.adCache.remove(adEnum);
   }
 
   ADResultData? getADData(bool adSwitch, ADLoadManager adLoadManager, ADResultData? adResultData) {

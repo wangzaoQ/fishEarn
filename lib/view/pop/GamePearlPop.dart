@@ -19,14 +19,12 @@ import 'BasePopView.dart';
 /// - 最后一圈平滑靠近 target（连续，不突跳）
 /// - 到达 target 后启动短时的缓慢阻尼晃动（settle），再固定到目标
 class GamePearlPop extends StatefulWidget {
-  final int pearlCount;
   final Duration totalDuration;
   final int targetIndex; // 0..5; 若传入无效则随机
   final int wobbleCount; // 完整振荡圈数（例如 3 表示 3 圈）
 
   const GamePearlPop({
     super.key,
-    required this.pearlCount,
     required this.targetIndex,
     this.wobbleCount = 3,
     this.totalDuration = const Duration(seconds: 3),
@@ -326,8 +324,11 @@ class _GamePearlPopState extends State<GamePearlPop>
         _mainController.forward(from: 0).whenComplete(_startSettle);
       });
     }
-
-    setState(() {});
+    setState(() {
+      var gameData = LocalCacheUtils.getGameData();
+      gameData.pearlCount-=1;
+      LocalCacheUtils.putGameData(gameData);
+    });
   }
 
   /// 启动 settle（到达目标后的小幅阻尼晃动），完成后固定在目标并清缓存
@@ -362,20 +363,19 @@ class _GamePearlPopState extends State<GamePearlPop>
     isRunning = true;
     EventManager.instance.postEvent(EventConfig.pearl_wheel_c);
     TaskManager.instance.addTask("spins");
-    if(widget.pearlCount <=0){
+    if(pearlCount <=0){
       isRunning = false;
       Navigator.pop(context,-2);
       return;
     }
     targetIndex = random.nextInt(5);
-    targetIndex = foodIndex;
     _setupMainAnim(targetIndex);
   }
-
+  int pearlCount = 0;
   @override
   Widget build(BuildContext context) {
+    pearlCount = LocalCacheUtils.getGameData().pearlCount;
     final int cycles = max(1, widget.wobbleCount);
-
     return Stack(
       children: [
         Positioned(
@@ -633,7 +633,7 @@ class _GamePearlPopState extends State<GamePearlPop>
                   left: 49.w,
                   top: 8.h,
                   child: Text(
-                    "${widget.pearlCount}",
+                    "${pearlCount}",
                     style: TextStyle(
                       color: const Color(0xFF561C3E),
                       fontSize: 15.sp,

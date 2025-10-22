@@ -52,7 +52,7 @@ abstract class BaseShow {
     adIsPlay = true;
     LogUtils.logD("$TAG App adShowFullScreen isPlay:${adIsPlay}");
     LogUtils.logD("$TAG adShowFullScreen tag:$tag adEnum:${adEnum.toString()}");
-    ADLoadManager().addShowNumber();
+    ADLoadManager.instance.addShowNumber();
     if(showTag.contains("reward")){
       RiskUserManager.instance.riskRewardShow();
     }
@@ -63,7 +63,7 @@ abstract class BaseShow {
   void loadComplete(String type, String tag) {
     adIsPlay = false;
     LogUtils.logD("$TAG loadComplete tag:$tag adEnum:${adEnum.toString()}");
-    ADLoadManager().preloadAll("loadComplete");
+    ADLoadManager.instance.preloadAll("loadComplete");
     result(type,hasValue);
   }
 

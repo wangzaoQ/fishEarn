@@ -131,5 +131,7 @@ class EventConfig{
   static const ad_fail_c = "ad_fail_c";
   //到达提现额度弹窗
   static const meet_withdraw = "meet_withdraw";
+  //终生累计广告数到达参数的时候，就打一次
+  static const pv_dall = "pv_dall";
 
 }

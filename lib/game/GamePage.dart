@@ -44,6 +44,7 @@ import '../utils/ArrowOverlay.dart';
 import '../utils/ClickManager.dart';
 import '../utils/LogUtils.dart';
 import '../utils/ad/ADEnum.dart';
+import '../utils/ad/ADLoadManager.dart';
 import '../utils/ad/ADShowManager.dart';
 import '../utils/net/EventManager.dart';
 import '../view/GameLifeProgress.dart';
@@ -110,6 +111,7 @@ class _GamePageState extends State<GamePage>
   @override
   void initState() {
     super.initState();
+    ADLoadManager.instance.preloadAll("gamePage");
     gameData = LocalCacheUtils.getGameData();
     userData = LocalCacheUtils.getUserData();
     WidgetsBinding.instance.addObserver(this); // ✅ 注册
@@ -202,6 +204,44 @@ class _GamePageState extends State<GamePage>
             gameData.level == 1
                 ? SizedBox.shrink()
                 : Positioned(top: 310.h, left: 32.w, child: GameLifePage()),
+            //珍珠
+            Positioned(
+              top: 54.h,
+              left: 166.w,
+              child: SizedBox(
+                width: 65.w,
+                height: 25.h,
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      "assets/images/bg_to_bar_coin.webp",
+                      height: 25.h,
+                      fit: BoxFit.fill,
+                    ),
+                    Center(
+                      child: Text(
+                        "${gameData.pearlCount}",
+                        style: TextStyle(
+                          color: const Color(0xFFF4FF72),
+                          fontSize: 15.sp,
+                          fontFamily: "AHV",
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 150.w,
+              top: 50.h,
+              child: Image.asset(
+                "assets/images/ic_pearl2.webp",
+                width: 32.w,
+                height: 32.h,
+                fit: BoxFit.cover,
+              ),
+            ),
             //鱼动画
             buildAnimal(),
             buildFood(),
@@ -347,12 +387,10 @@ class _GamePageState extends State<GamePage>
                         onPressed: () async {
                           if (!ClickManager.canClick(context: context)) return;
                           GameManager.instance.pauseMovement();
-                          var pearlCount = gameData.pearlCount;
                           //游戏结束
                           var result = await PopManager().show(
                             context: context,
                             child: GamePearlPop(
-                              pearlCount: pearlCount,
                               targetIndex: 2,
                             ),
                           );
