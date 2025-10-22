@@ -26,7 +26,7 @@ class _HomeTextState extends State<HomeText> {
     double strokeWidth = 3.w;
     var cachePrivacyKey = LocalCacheUtils.getBool(
       LocalCacheConfig.cachePrivacyKey,
-      defaultValue: false,
+      defaultValue: true,
     );
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,

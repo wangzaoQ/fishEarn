@@ -32,4 +32,5 @@ class LocalCacheConfig{
   static const cacheInstallFirst = "cacheInstallFirst";
   static const cacheShowMoney = "cacheShowMoney";
   static const cacheType = "cacheType";
+  static const firstShowCashLimit = "firstShowCashLimit";
 }

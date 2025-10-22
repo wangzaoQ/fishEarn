@@ -1,3 +1,4 @@
+
 import 'package:applovin_max/applovin_max.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/EventConfig.dart';
@@ -6,6 +7,7 @@ import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/net/EventManager.dart';
 import 'package:fish_earn/view/pop/ADFailPop.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import '../../config/LocalConfig.dart';
 import '../../config/global.dart';
 import '../../data/ADResultData.dart';
 import '../../view/pop/BasePopView.dart';
@@ -67,9 +69,9 @@ class ADShowManager{
     ADResultData? adResultData ;
     adResultData = getADData(adSwitch, adLoadManager, adResultData);
     if (awaitLoading && adResultData == null) {
-      if(globalContext!=null){
+      if(LocalConfig.globalContext!=null){
         await BasePopView().showScaleDialog(
-          context: globalContext!,
+          context: LocalConfig.globalContext!,
           child: ADFailPop(),
         );
       }

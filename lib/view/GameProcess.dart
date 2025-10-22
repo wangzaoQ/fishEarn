@@ -736,6 +736,7 @@ class _GameProgressState extends State<GameProgress>
 
   Future<void> toLevel2(BuildContext context) async {
     var userData = LocalCacheUtils.getUserData();
+    gameData = LocalCacheUtils.getGameData();
     userData.new3 = false;
     LocalCacheUtils.putUserData(userData);
     gameData.level = 2;

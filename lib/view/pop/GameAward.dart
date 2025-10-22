@@ -167,7 +167,7 @@ class _GameAwardPopState extends State<GameAwardPop>
               },
             ),
           ),
-          Align(
+          widget.type == 0?Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
               padding: EdgeInsetsGeometry.only(bottom: 100.h),
@@ -190,7 +190,7 @@ class _GameAwardPopState extends State<GameAwardPop>
                 ),
               ),
             ),
-          ),
+          ):SizedBox.shrink(),
           widget.type == 0?Positioned(
             right: 100.w,
             top: 597.h,
@@ -227,7 +227,11 @@ class _GameAwardPopState extends State<GameAwardPop>
     );
   }
 
+
+  var back = true;
   void toBack() {
+    if(!back)return;
+    back = false;
     ADShowManager(
       adEnum: ADEnum.intAD,
       tag: "int",

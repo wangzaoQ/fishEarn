@@ -129,5 +129,7 @@ class EventConfig{
   static const ad_fail = "ad_fail";
   //广告获取失败弹窗 重试按钮点击
   static const ad_fail_c = "ad_fail_c";
+  //到达提现额度弹窗
+  static const meet_withdraw = "meet_withdraw";
 
 }

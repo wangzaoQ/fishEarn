@@ -5,7 +5,7 @@ final class RiskDeviceUtils {
 
   RiskDeviceUtils._internal();
 
-  final _methodChannel = const MethodChannel('zxcv');
+  final _methodChannel = const MethodChannel('fhea');
 
   //设备是否被Root
   Future<bool> root() async {

@@ -1,9 +1,14 @@
 import 'dart:convert';
 
 import 'package:fish_earn/config/LocalCacheConfig.dart';
+import 'package:fish_earn/config/LocalConfig.dart';
 import 'package:fish_earn/data/GameData.dart';
 import 'package:fish_earn/data/UserData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../config/global.dart';
+import '../view/pop/BasePopView.dart';
+import '../view/pop/WithdrawPop.dart';
 
 class LocalCacheUtils{
   static SharedPreferences? _prefs;
@@ -64,9 +69,22 @@ class LocalCacheUtils{
   }
 
   // 保存Game，序列化成json字符串
-  static Future<bool> putGameData(GameData user) async {
-    String jsonStr = jsonEncode(user.toJson());
-    return await _prefs!.setString(LocalCacheConfig.cacheKeyLocalGame, jsonStr);
+  static Future<bool> putGameData(GameData gameData) async {
+    String jsonStr = jsonEncode(gameData.toJson());
+    var result =  await _prefs!.setString(LocalCacheConfig.cacheKeyLocalGame, jsonStr);
+    if(gameData.coin>=500){
+      if(LocalConfig.globalContext!=null){
+        var firstShowCashLimit = LocalCacheUtils.getBool(LocalCacheConfig.firstShowCashLimit,defaultValue: true);
+        if(firstShowCashLimit){
+          LocalCacheUtils.putBool(LocalCacheConfig.firstShowCashLimit, false);
+          await BasePopView().showScaleDialog(
+            context: LocalConfig.globalContext!,
+            child: WithdrawPop(),
+          );
+        }
+      }
+    }
+    return result;
   }
 
   // 读取Game，反序列化

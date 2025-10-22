@@ -94,5 +94,7 @@
   "app_ad_no_cache": "Ad failed, earnings stopped",
   "app_offline_title": "Psst... your fish made money!",
   "app_ad_fail_title": "Ad failed  earnings stopped",
-  "app_ad_try_again": "Try Again"
+  "app_ad_try_again": "Try Again",
+  "app_limit_withdraw": "Limit met  withdraw now！！",
+  "app_right_now": "Right Now"
 }

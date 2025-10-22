@@ -91,13 +91,12 @@ class EventManager {
     LogUtils.logD("postEvent key:${key} params:${params}");
     Future(() async {
       var map = await NetParamsManager.instance.getCommonJson();
-      var json = {};
-      json["ak"] = key;
-      params?.forEach((key, value) {
-        map['$key'] = value;
-      });
-      json["bater"] = map;
-      HttpManager.dio.post("", data: json).catchError((e) {
+      map["ak"] = key;
+      // params?.forEach((key, value) {
+      //   map['$key'] = value;
+      // });
+      map["bater"] = params;
+      HttpManager.dio.post("", data: map).catchError((e) {
         LogUtils.logE("error:$e");
       });
       if (onResult != null) {}

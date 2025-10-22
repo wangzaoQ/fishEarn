@@ -573,6 +573,7 @@ class _GamePageState extends State<GamePage>
 
   void clickProtect() {
     if (!ClickManager.canClick(context: context)) return;
+    userData = LocalCacheUtils.getUserData();
     if (userData.new4) {
       userData.new4 = false;
       LocalCacheUtils.putUserData(userData);
@@ -1000,6 +1001,7 @@ class _GamePageState extends State<GamePage>
   void showMarkNew2() {
     EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop2"});
     pausTemp();
+    userData = LocalCacheUtils.getUserData();
     userData.new1 = false;
     LocalCacheUtils.putUserData(userData);
     // 创建控制器
@@ -1245,6 +1247,7 @@ class _GamePageState extends State<GamePage>
         await toPropsAwardPop();
         EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop6"});
         resumeTemp();
+        userData = LocalCacheUtils.getUserData();
         userData.new5 = false;
         LocalCacheUtils.putUserData(userData);
         toCashMain(context);

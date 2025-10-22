@@ -193,7 +193,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       if (allowBgm) {
         AudioUtils().playBGM("audio/bg1.mp3");
       }
-      if(isNeedAd&&mounted && globalContext!=null){
+      if(isNeedAd&&mounted && LocalConfig.globalContext!=null){
         isNeedAd = false;
         if(currentRouteName  != "StartPage" && !adIsPlay){
           allowShowStart = true;
@@ -201,12 +201,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           allowShowStart = false;
         }
         LogUtils.logD("$TAG App resume start allowStart:${allowShowStart} currentRouteName:${currentRouteName} isPlay:${adIsPlay}");
-        if(globalContext != null && allowShowStart){
+        if(LocalConfig.globalContext != null && allowShowStart){
           WidgetsBinding.instance.addPostFrameCallback((_) {
             LogUtils.logD("$TAG App resume start2");
             adIsPlay = false;
             Navigator.push(
-              globalContext!,
+              LocalConfig.globalContext!,
               MaterialPageRoute(builder: (_) => FishStartPage(type: 1),settings: const RouteSettings(name: "StartPage"),),
             );
           });
