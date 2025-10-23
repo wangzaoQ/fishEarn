@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../utils/AudioUtils.dart';
+import '../../utils/ClickManager.dart';
 import '../GameText.dart';
 
 class LevelUp2_3 extends StatefulWidget {
@@ -59,7 +60,7 @@ class _LevelUp2_3State extends State<LevelUp2_3>
               height: 32.h,
             ),
             onPressed: () {
-              AudioUtils().playClickAudio();
+              if (!ClickManager.canClick(context: context)) return;
               Navigator.pop(context, null);
             },
           ),
@@ -184,7 +185,7 @@ class _LevelUp2_3State extends State<LevelUp2_3>
               ),
             ),
             onPressed: () {
-              AudioUtils().playClickAudio();
+              if (!ClickManager.canClick(context: context)) return;
               Navigator.pop(context, 1);
             },
           ),

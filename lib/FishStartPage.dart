@@ -212,12 +212,16 @@ class _FishStartPageState extends State<FishStartPage>
                               );
                             },
                             onTerms: () {
-                              MaterialPageRoute(
-                                builder: (_) => WebViewPage(
-                                  url: hUrl,
-                                  title: "app_contact_us".tr(),
-                                ),
+                              Navigator.push(
+                                context,
+                                  MaterialPageRoute(
+                                    builder: (_) => WebViewPage(
+                                      url: hUrl,
+                                      title: "app_contact_us".tr(),
+                                    ),
+                                  )
                               );
+
                             },
                           ),
                         ),

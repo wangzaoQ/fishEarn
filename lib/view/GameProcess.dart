@@ -79,7 +79,6 @@ class _GameProgressState extends State<GameProgress>
 
   late GameData gameData;
 
-
   @override
   void didUpdateWidget(covariant GameProgress oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -113,8 +112,8 @@ class _GameProgressState extends State<GameProgress>
         LocalCacheConfig.cacheType,
         defaultValue: 0,
       );
-      if(firstShowWithdraw){
-        firstShowWithdraw =false;
+      if (firstShowWithdraw) {
+        firstShowWithdraw = false;
         EventManager.instance.postEvent(EventConfig.home_withdraw);
       }
     }
@@ -140,7 +139,9 @@ class _GameProgressState extends State<GameProgress>
                     child: Stack(
                       children: [
                         Image.asset(
-                          cacheType == 0 ? "assets/images/bg_home_cash_paypal.webp" : "assets/images/bg_home_cash.webp",
+                          cacheType == 0
+                              ? "assets/images/bg_home_cash_paypal.webp"
+                              : "assets/images/bg_home_cash.webp",
                           width: double.infinity,
                           height: 127.h,
                           fit: BoxFit.fill,
@@ -156,7 +157,9 @@ class _GameProgressState extends State<GameProgress>
                               height: 27.h,
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Color(cacheType == 0?0xFF2F5FC5:0xFF44B04C),
+                                  color: Color(
+                                    cacheType == 0 ? 0xFF2F5FC5 : 0xFF44B04C,
+                                  ),
                                   // #012169 的十六进制写法
                                   borderRadius: BorderRadius.circular(
                                     14,
@@ -166,16 +169,17 @@ class _GameProgressState extends State<GameProgress>
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    cacheType == 0 ?
-                                    Image.asset(
-                                      width: 70.w,
-                                      height: 17.h,
-                                      "assets/images/ic_cash_paypal.webp",
-                                    ):Image.asset(
-                                      width: 77.w,
-                                      height: 20.h,
-                                      "assets/images/ic_cash_cash.webp",
-                                    ),
+                                    cacheType == 0
+                                        ? Image.asset(
+                                            width: 70.w,
+                                            height: 17.h,
+                                            "assets/images/ic_cash_paypal.webp",
+                                          )
+                                        : Image.asset(
+                                            width: 77.w,
+                                            height: 20.h,
+                                            "assets/images/ic_cash_cash.webp",
+                                          ),
                                     Image.asset(
                                       width: 15.w,
                                       height: 10.h,
@@ -272,8 +276,11 @@ class _GameProgressState extends State<GameProgress>
                                 ],
                               ),
                               onPressed: () {
-                                if (!ClickManager.canClick(context: context)) return;
-                                EventManager.instance.postEvent(EventConfig.home_withdraw_c);
+                                if (!ClickManager.canClick(context: context))
+                                  return;
+                                EventManager.instance.postEvent(
+                                  EventConfig.home_withdraw_c,
+                                );
                                 setState(() {
                                   widget.onConfirm(10);
                                 });
@@ -329,8 +336,12 @@ class _GameProgressState extends State<GameProgress>
                                 var All = 500;
                                 return LayoutBuilder(
                                   builder: (context, constraints) {
-                                    final progress = (current / All).clamp(0.0, 1.0); // 限制范围 0~1
-                                    final clipWidth = (constraints.maxWidth - 4) * progress;
+                                    final progress = (current / All).clamp(
+                                      0.0,
+                                      1.0,
+                                    ); // 限制范围 0~1
+                                    final clipWidth =
+                                        (constraints.maxWidth - 4) * progress;
 
                                     return Stack(
                                       fit: StackFit.expand,
@@ -348,10 +359,14 @@ class _GameProgressState extends State<GameProgress>
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: ClipRect(
-                                              clipper: ProgressClipper(width: clipWidth),
+                                              clipper: ProgressClipper(
+                                                width: clipWidth,
+                                              ),
                                               child: FittedBox(
-                                                fit: BoxFit.none, // 不缩放图片
-                                                alignment: Alignment.centerLeft, // 从左对齐
+                                                fit: BoxFit.none,
+                                                // 不缩放图片
+                                                alignment: Alignment.centerLeft,
+                                                // 从左对齐
                                                 child: Image.asset(
                                                   "assets/images/bg_home_cash_progress2.webp",
                                                   height: 25.h,
@@ -363,8 +378,7 @@ class _GameProgressState extends State<GameProgress>
                                       ],
                                     );
                                   },
-                                )
-                                ; // 只重建这一小块
+                                ); // 只重建这一小块
                               },
                             ),
                           ),
@@ -499,7 +513,10 @@ class _GameProgressState extends State<GameProgress>
                             ),
                             onPressed: () async {
                               if (!ClickManager.canClick(context: context)) return;
-                              EventManager.instance.postEvent(EventConfig.home_growing_c,params: {"type": gameData.level});
+                              EventManager.instance.postEvent(
+                                EventConfig.home_growing_c,
+                                params: {"type": gameData.level},
+                              );
                               if (gameData.level == 1 &&
                                   widget.progress == 0.5) {
                                 var userData = LocalCacheUtils.getUserData();
@@ -511,16 +528,23 @@ class _GameProgressState extends State<GameProgress>
                                   if (result == 1) {
                                     toLevel2(context);
                                   }
-                                }else{
+                                } else {
                                   if (result == 1) {
-                                    if(!allowClickAd)return;
+                                    if (!allowClickAd) return;
                                     allowClickAd = false;
-                                    ADShowManager(adEnum:ADEnum.rewardedAD,tag:"reward",result: (type,hasValue){
-                                      allowClickAd = true;
-                                      if(hasValue){
-                                        toLevel2(context);
-                                      }
-                                    }).showScreenAD(EventConfig.fixrn_grow_rv,awaitLoading: true);
+                                    ADShowManager(
+                                      adEnum: ADEnum.rewardedAD,
+                                      tag: "reward",
+                                      result: (type, hasValue) {
+                                        allowClickAd = true;
+                                        if (hasValue) {
+                                          toLevel2(context);
+                                        }
+                                      },
+                                    ).showScreenAD(
+                                      EventConfig.fixrn_grow_rv,
+                                      awaitLoading: true,
+                                    );
                                   }
                                 }
                               }
@@ -590,8 +614,7 @@ class _GameProgressState extends State<GameProgress>
                               height: 68.h,
                               child: Stack(
                                 children: [
-                                  (widget.progress == 1 &&
-                                          gameData.level == 2)
+                                  (widget.progress == 1 && gameData.level == 2)
                                       ? RotationTransition(
                                           turns: _controller,
                                           child: Image.asset(
@@ -611,26 +634,41 @@ class _GameProgressState extends State<GameProgress>
                               ),
                             ),
                             onPressed: () async {
-                              if (!ClickManager.canClick(context: context)) return;
-                              EventManager.instance.postEvent(EventConfig.home_growing_c,params: {"type": gameData.level});
-                              GameManager.instance.pauseMovement();
-                              if (gameData.level == 2 &&
-                                  widget.progress == 1) {
+                              if (!ClickManager.canClick(context: context))
+                                return;
+                              EventManager.instance.postEvent(
+                                EventConfig.home_growing_c,
+                                params: {"type": gameData.level},
+                              );
+                              if (gameData.level == 2 && widget.progress == 1) {
                                 var result = await PopManager().show(
                                   context: context,
                                   child: LevelUp2_3(),
                                 );
                                 if (result == 1) {
-                                  gameData.level = 3;
-                                  LocalCacheUtils.putGameData(gameData);
-                                  widget.onConfirm(3);
-                                  await PopManager().show(
-                                    context: context,
-                                    child: LevelPop2_3(),
+                                  if (!allowClickAd) return;
+                                  allowClickAd = false;
+                                  ADShowManager(
+                                    adEnum: ADEnum.rewardedAD,
+                                    tag: "reward",
+                                    result: (type, hasValue) async {
+                                      allowClickAd = true;
+                                      if (hasValue) {
+                                        gameData.level = 3;
+                                        LocalCacheUtils.putGameData(gameData);
+                                        widget.onConfirm(3);
+                                        await PopManager().show(
+                                          context: context,
+                                          child: LevelPop2_3(),
+                                        );
+                                      }
+                                    },
+                                  ).showScreenAD(
+                                    EventConfig.fixrn_grow_rv,
+                                    awaitLoading: true,
                                   );
                                 }
                               }
-                              GameManager.instance.resumeMovement();
                             },
                           ),
                         ),
@@ -755,7 +793,10 @@ class _GameProgressState extends State<GameProgress>
   GlobalKey globalKeyNew3 = GlobalKey();
 
   void showMarkNew3() {
-    EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop3"});
+    EventManager.instance.postEvent(
+      EventConfig.new_guide,
+      params: {"pop_step": "pop3"},
+    );
 
     var userData = LocalCacheUtils.getUserData();
     userData.new2 = false;
@@ -851,7 +892,10 @@ class _GameProgressState extends State<GameProgress>
       textSkip: "",
       paddingFocus: 0,
       onFinish: () {
-        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop3"});
+        EventManager.instance.postEvent(
+          EventConfig.new_guide_c,
+          params: {"pop_step": "pop3"},
+        );
         toLevel2(context);
       },
       onClickTarget: (target) {

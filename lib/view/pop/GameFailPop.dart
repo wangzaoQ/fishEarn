@@ -5,6 +5,7 @@ import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameText.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../config/EventConfig.dart';
@@ -56,8 +57,13 @@ class _GameFailPopState extends State<GameFailPop> {
             ),
           ),
           Positioned(
-            left: 40.w,
-            top: 537.h,
+            left: 87.w,
+            right: 87.w,
+            top: 459.h,
+            child: GameText(showText: "app_game_fail_content".tr(),strokeWidth: 1.w,strokeColor: Color(0xFFFF0066),fillColor: Colors.white,),),
+          Positioned(
+            right: 40.w,
+            top: 539.h,
             child: CupertinoButton(
               padding: EdgeInsets.zero,
               pressedOpacity: 0.7,
@@ -106,25 +112,34 @@ class _GameFailPopState extends State<GameFailPop> {
             ),
           ),
           Positioned(
-            right: 40.w,
-            top: 537.h,
+            right: 32.w,
+            top: 524.h,
+            child: Image.asset(
+              "assets/images/ic_ad_tips.webp",
+              width: 36.w,
+              height: 36.h,
+            ),
+          ),
+          Positioned(
+            left: 54.w,
+            top: 541.h,
             child: CupertinoButton(
               padding: EdgeInsets.zero,
               pressedOpacity: 0.7,
               child: SizedBox(
-                width: 139.w,
-                height: 45.h,
+                width: 115.w,
+                height: 37.h,
                 child: Stack(
                   alignment: Alignment.center, // 让子元素默认居中
                   children: [
-                    Image.asset("assets/images/bg_cancel.webp"),
+                    Image.asset("assets/images/bg_fail_button.webp"),
                     Center(
                       child: AutoSizeText(
                         "app_starting_over".tr(),
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFFB84418),
+                          color: Color(0xFF755510),
                         ),
                         maxLines: 1,
                       ),

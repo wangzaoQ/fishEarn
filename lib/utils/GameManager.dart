@@ -127,6 +127,17 @@ class GameManager{
     LocalCacheUtils.putGameData(gameData);
   }
 
+  void addOneLife(GameData gameData) {
+    allowTime = true;
+    globalShowFood = false;
+    globalShowDanger1 = false;
+    globalShowDanger2 = false;
+    globalShowShark = false;
+    globalShowProtect = false;
+    gameData.life = 100;
+    LocalCacheUtils.putGameData(gameData);
+  }
+
   void addLife(GameData gameData) {
     gameData.life+=GameConfig.lifeIncreaseAmount;
     if(gameData.life>100){

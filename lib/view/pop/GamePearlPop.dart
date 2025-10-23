@@ -324,11 +324,6 @@ class _GamePearlPopState extends State<GamePearlPop>
         _mainController.forward(from: 0).whenComplete(_startSettle);
       });
     }
-    setState(() {
-      var gameData = LocalCacheUtils.getGameData();
-      gameData.pearlCount-=1;
-      LocalCacheUtils.putGameData(gameData);
-    });
   }
 
   /// 启动 settle（到达目标后的小幅阻尼晃动），完成后固定在目标并清缓存
@@ -369,6 +364,7 @@ class _GamePearlPopState extends State<GamePearlPop>
       return;
     }
     targetIndex = random.nextInt(5);
+    targetIndex = foodIndex;
     _setupMainAnim(targetIndex);
   }
   int pearlCount = 0;

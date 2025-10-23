@@ -386,7 +386,7 @@ class _GamePageState extends State<GamePage>
                         ),
                         onPressed: () async {
                           if (!ClickManager.canClick(context: context)) return;
-                          GameManager.instance.pauseMovement();
+                          pausTemp();
                           //游戏结束
                           var result = await PopManager().show(
                             context: context,
@@ -394,6 +394,9 @@ class _GamePageState extends State<GamePage>
                               targetIndex: 2,
                             ),
                           );
+                          gameData = LocalCacheUtils.getGameData();
+                          gameData.pearlCount-=1;
+                          LocalCacheUtils.putGameData(gameData);
                           //2 双倍 1单倍
                           var awardResult = 1;
                           if (result != null) {
@@ -414,6 +417,7 @@ class _GamePageState extends State<GamePage>
                                 child: GameAwardPop(type: 0, money: result),
                               );
                             }
+                            gameData = LocalCacheUtils.getGameData();
                             if (result == -1) {
                               setState(() {
                                 gameData.foodCount += 30;
@@ -428,8 +432,7 @@ class _GamePageState extends State<GamePage>
                             }
                             LocalCacheUtils.putGameData(gameData);
                           }
-
-                          GameManager.instance.resumeMovement();
+                          resumeTemp();
                         },
                       ),
                     ),
@@ -803,6 +806,10 @@ class _GamePageState extends State<GamePage>
           LocalCacheUtils.putGameData(gameData);
         });
         return true;
+      }else{
+        GameManager.instance.addOneLife(gameData);
+        setState(() {
+        });
       }
     }
     return false;
@@ -959,8 +966,7 @@ class _GamePageState extends State<GamePage>
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
       LogUtils.logD("${TAG} resumed");
-      GameManager.instance.resumeMovement();
-      registerTimer();
+      resumeTemp();
     } else if (state == AppLifecycleState.paused) {
       LogUtils.logD("${TAG} paused");
       pausTemp();
