@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -527,7 +528,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                   toBack();
                 },
                 child: Text(
-                  "${"app_only".tr()} +\$${selectedCoin}",
+                  "${"app_only".tr()} +\$${GameManager.instance.getCoinShow(selectedCoin)}",
                   style: TextStyle(
                     fontSize: 15.sp,
                     color: Color(0xBFFFFFFF),

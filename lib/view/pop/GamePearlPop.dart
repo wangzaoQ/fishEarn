@@ -364,7 +364,6 @@ class _GamePearlPopState extends State<GamePearlPop>
       return;
     }
     targetIndex = random.nextInt(5);
-    targetIndex = foodIndex;
     _setupMainAnim(targetIndex);
   }
   int pearlCount = 0;

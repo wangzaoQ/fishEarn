@@ -165,6 +165,8 @@ class _GamePageState extends State<GamePage>
         //   globalShowDanger2 = true;
         // });
         showMarkNew4();
+      }else if(event.message == EventConfig.toCash){
+        toCashMain(context);
       }
     });
     EventManager.instance.postEvent(EventConfig.home_page);
@@ -415,7 +417,6 @@ class _GamePageState extends State<GamePage>
                         onPressed: () async {
                           if (!ClickManager.canClick(context: context)) return;
                           pausTemp();
-                          //游戏结束
                           var result = await PopManager().show(
                             context: context,
                             child: GamePearlPop(targetIndex: 2),
@@ -448,7 +449,7 @@ class _GamePageState extends State<GamePage>
                               setState(() {
                                 gameData.foodCount += 30;
                               });
-                            } else {
+                            } else if(result!=-2){
                               await PopManager().show(
                                 context: context,
                                 needAlpha: 0,
@@ -522,17 +523,19 @@ class _GamePageState extends State<GamePage>
                   ),
                 ),
                 onPressed: () async {
+                  if (!ClickManager.canClick(context: context)) return;
                   var progress = GameManager.instance.getPropsProgress(
                     propsTime,
                   );
-                  if (!ClickManager.canClick(context: context)) return;
                   if (progress == 1 || userData.new5) {
+                    pausTemp();
                     var result = await toPropsAwardPop();
                     if (result == 1) {
                       setState(() {
                         propsTime = 0;
                       });
                     }
+                    resumeTemp();
                   }
                 },
               ),

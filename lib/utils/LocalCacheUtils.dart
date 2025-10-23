@@ -6,7 +6,9 @@ import 'package:fish_earn/data/GameData.dart';
 import 'package:fish_earn/data/UserData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../config/EventConfig.dart';
 import '../config/global.dart';
+import '../event/NotifyEvent.dart';
 import '../view/pop/BasePopView.dart';
 import '../view/pop/WithdrawPop.dart';
 
@@ -77,10 +79,13 @@ class LocalCacheUtils{
         var firstShowCashLimit = LocalCacheUtils.getBool(LocalCacheConfig.firstShowCashLimit,defaultValue: true);
         if(firstShowCashLimit){
           LocalCacheUtils.putBool(LocalCacheConfig.firstShowCashLimit, false);
-          await BasePopView().showScaleDialog(
+          var result = await BasePopView().showScaleDialog(
             context: LocalConfig.globalContext!,
             child: WithdrawPop(),
           );
+          if(result == 1){
+            eventBus.fire(NotifyEvent(EventConfig.toCash));
+          }
         }
       }
     }

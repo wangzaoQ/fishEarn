@@ -2,6 +2,7 @@ class EventConfig{
   // 新用户流程
   static const new3 = "new3";
   static const new4 = "new4";
+  static const toCash = "toCash";
 
   /**
    * "ad_code_id:广告位ID；
