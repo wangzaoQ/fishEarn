@@ -3,8 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class NFGuidePop extends StatefulWidget {
+import '../../config/EventConfig.dart';
+import '../../utils/ClickManager.dart';
+import '../../utils/net/EventManager.dart';
 
+class NFGuidePop extends StatefulWidget {
   const NFGuidePop({super.key});
 
   @override
@@ -13,8 +16,12 @@ class NFGuidePop extends StatefulWidget {
 
 class _GameAwardPopState extends State<NFGuidePop> {
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: 311.w,
       decoration: BoxDecoration(
@@ -48,7 +55,8 @@ class _GameAwardPopState extends State<NFGuidePop> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pop(context, -1);
+                      if (!ClickManager.canClick(context: context)) return;
+                      Navigator.pop(context, 0);
                     },
                   ),
                 ),
@@ -70,14 +78,17 @@ class _GameAwardPopState extends State<NFGuidePop> {
                 ),
               ),
               SizedBox(height: 18.h),
-              Align(alignment: Alignment.topCenter,child:Image.asset(
-                "assets/images/ic_nf_guide.webp",
-                width: 101.w,
-                height: 139.h,
-              ),),
+              Align(
+                alignment: Alignment.topCenter,
+                child: Image.asset(
+                  "assets/images/ic_nf_guide.webp",
+                  width: 101.w,
+                  height: 139.h,
+                ),
+              ),
               SizedBox(height: 18.h),
               Padding(
-                padding: EdgeInsetsGeometry.symmetric(horizontal: 12.w),
+                padding: EdgeInsetsGeometry.symmetric(horizontal: 10.w),
                 child: Text(
                   textAlign: TextAlign.center, // ✅ 每行水平居中
                   "app_nf_guide_content".tr(),
@@ -102,7 +113,7 @@ class _GameAwardPopState extends State<NFGuidePop> {
                   ),
                   child: Center(
                     child: Text(
-                      "app_nf_guide_button".tr(),
+                      "app_nf_guide_ok".tr(),
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14.sp,
@@ -113,12 +124,14 @@ class _GameAwardPopState extends State<NFGuidePop> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.popUntil(context, (route) => route.isFirst);
+                  if (!ClickManager.canClick(context: context)) return;
+                  Navigator.pop(context, 1);
                 },
               ),
 
               SizedBox(height: 10.h),
-              /// 确认按钮
+
+              /// 取消
               CupertinoButton(
                 padding: EdgeInsets.zero,
                 child: Center(
@@ -131,13 +144,14 @@ class _GameAwardPopState extends State<NFGuidePop> {
                       style: TextStyle(
                         fontSize: 14.sp,
                         fontFamily: "AHV",
-                        color: Colors.white,
+                        color: Color(0xFF666666),
                       ),
                     ),
                   ),
                 ),
                 onPressed: () {
-                  Navigator.popUntil(context, (route) => route.isFirst);
+                  if (!ClickManager.canClick(context: context)) return;
+                  Navigator.pop(context, 0);
                 },
               ),
               SizedBox(height: 16.h),

@@ -72,6 +72,7 @@
   "app_nf_guide_content": "Turn on notifications to claim your $5 reward!",
   "app_nf_guide_ok": "Allow & Get $5",
   "app_nf_guide_cancel": "Not Now",
+  "app_nf_net_error_title": "No Network Currently",
   "app_only": "only",
 
   "nf_t1_1": "\uD83D\uDC20 Your Fish Earned $50!",
@@ -88,6 +89,11 @@
   "nf_t3_2": "$100 Fast – Boost activated!",
   "nf_c3_1": "Special reward from the ocean - tap to discover!",
   "nf_c3_2": "Your $100 Fast ticket is ready!",
+
+  "nf_t4_1": "Urgency Hook",
+  "nf_t4_2": "Cash out Nudge",
+  "nf_c4_1": "\uD83D\uDD14 $0.50 earned! Tap to claim.",
+  "nf_c4_2": "\uD83D\uDCB0 $0.80 ready! Withdraw now!",
 
   "app_play_game": "Play Game",
   "app_login_tips": "Please first check the privacy policy and terms of service.",

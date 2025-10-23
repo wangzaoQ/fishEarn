@@ -183,6 +183,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
     // 根据生命周期状态处理逻辑
     if (state == AppLifecycleState.resumed) {
+      FishNFManager.instance.checkNF();
       timeoutTimer?.cancel();
       isForeground = true;
       LogUtils.logD("$TAG App isForeground:${isForeground}");

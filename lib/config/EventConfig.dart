@@ -145,5 +145,10 @@ class EventConfig{
   static const old_users_award = "old_users_award";
   static const old_users_award_1x = "old_users_award_1x";
   static const old_users_award_2x = "old_users_award_1x";
+  //通知二次弹窗展示
+  static const noti_confirm_pop = "noti_confirm_pop";
+  static const noti_confirm_pop_close = "noti_confirm_pop_close";
+  //通知二次弹窗点击allow
+  static const noti_confirm_pop_c = "noti_confirm_pop_c";
 
 }

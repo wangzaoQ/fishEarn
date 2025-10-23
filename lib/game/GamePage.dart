@@ -10,6 +10,7 @@ import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/config/LocalConfig.dart';
 import 'package:fish_earn/task/TaskManager.dart';
 import 'package:fish_earn/utils/AudioUtils.dart';
+import 'package:fish_earn/utils/FishNFManager.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:fish_earn/utils/GlobalTimerManager.dart';
@@ -25,6 +26,7 @@ import 'package:fish_earn/view/pop/GameAward.dart';
 import 'package:fish_earn/view/pop/GameFailPop.dart';
 import 'package:fish_earn/view/pop/GamePearlPop.dart';
 import 'package:fish_earn/view/pop/LevelPop1_2.dart';
+import 'package:fish_earn/view/pop/NFGuidePop.dart';
 import 'package:fish_earn/view/pop/NoPearlPop.dart';
 import 'package:fish_earn/view/pop/OfflinePop.dart';
 import 'package:fish_earn/view/pop/PopManger.dart';
@@ -139,6 +141,41 @@ class _GamePageState extends State<GamePage>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       LocalCacheUtils.putBool(LocalCacheConfig.firstLogin, false);
       registerTimer();
+      await FishNFManager.instance.init();
+      var allowNF = await FishNFManager.instance.allowNF();
+      if(allowNF){
+        FishNFManager.instance.startNF();
+      }else{
+        EventManager.instance.postEvent(EventConfig.noti_confirm_pop);
+        var result = await PopManager().show(
+          context: context,
+          child: NFGuidePop()
+        );
+        if(result == 1){
+          EventManager.instance.postEvent(EventConfig.noti_confirm_pop_c);
+          var gameData = LocalCacheUtils.getGameData();
+          gameData.coin+=5;
+          LocalCacheUtils.putGameData(gameData);
+          await PopManager().show(
+            context: context,
+            needAlpha: 0,
+            child: CoinAnimalPop(),
+          );
+        }
+        EventManager.instance.postEvent(EventConfig.noti_confirm_pop_close);
+      }
+      var allowShowOffline = LocalCacheUtils.getBool(LocalCacheConfig.allowShowOffline,defaultValue: false);
+      if(allowShowOffline){
+        await PopManager().show(
+          context: context,
+          child: OfflinePop(),
+        );
+        await PopManager().show(
+          context: context,
+          needAlpha: 0,
+          child: CoinAnimalPop(),
+        );
+      }
       if (userData.new1 ||
           userData.new2 ||
           userData.new3 ||
@@ -158,19 +195,6 @@ class _GamePageState extends State<GamePage>
           toCashMain(context);
         }
       }
-      var allowShowOffline = LocalCacheUtils.getBool(LocalCacheConfig.allowShowOffline,defaultValue: false);
-      if(allowShowOffline){
-        await PopManager().show(
-          context: context,
-          child: OfflinePop(),
-        );
-        await PopManager().show(
-          context: context,
-          needAlpha: 0,
-          child: CoinAnimalPop(),
-        );
-      }
-
       // TaskManager.instance.addTask("login");
     });
     eventBus.on<NotifyEvent>().listen((event) {
@@ -450,12 +474,12 @@ class _GamePageState extends State<GamePage>
                               );
                             } else if (result == -1) {
                               //食物
-                              awardResult = await BasePopView().showScaleDialog(
+                              awardResult = await PopManager().show(
                                 context: context,
                                 child: GameAwardPop(type: 1, money: 30),
                               );
                             } else {
-                              awardResult = await BasePopView().showScaleDialog(
+                              awardResult = await PopManager().show(
                                 context: context,
                                 child: GameAwardPop(type: 0, money: result),
                               );

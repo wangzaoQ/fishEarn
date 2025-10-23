@@ -2,20 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="196dp">
+    android:layout_height="200dp">
 
-    <ImageView
-        android:id="@+id/fln_beauty_notify_image"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        tools:ignore="ContentDescription" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="14dp">
+        >
 
         <TextView
             android:id="@+id/fln_beauty_notify_title"
@@ -23,9 +17,11 @@
             android:layout_height="wrap_content"
             android:textColor="#000000"
             android:textSize="12sp"
-            tools:text="This is title" />
+            tools:text="This is title"
+            android:visibility="gone"
+            />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -34,35 +30,45 @@
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
-                android:id="@+id/fln_beauty_notify_app_icon"
-                android:layout_width="54dp"
-                android:layout_height="54dp"
+                android:id="@+id/fln_beauty_notify_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
                 tools:ignore="ContentDescription" />
-
             <TextView
                 android:id="@+id/fln_beauty_notify_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
+                android:layout_marginLeft="14dp"
+                android:layout_marginRight="14dp"
+                android:layout_centerInParent="true"
                 android:maxLines="3"
-                android:textColor="#000000"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:shadowColor="#000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="5"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 tools:text="This is body" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/fln_beauty_notify_btn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/fln_beauty_notify_btn_bg"
+            android:layout_height="32dp"
+            android:background="@drawable/fish_nf_button"
             android:ellipsize="end"
             android:gravity="center"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
+            android:layout_marginLeft="52dp"
+            android:layout_marginRight="52dp"
             android:singleLine="true"
+            android:layout_marginTop="13dp"
+            android:layout_marginBottom="13dp"
             android:textColor="#FFFFFF"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             tools:text="This is button" />
     </LinearLayout>
