@@ -40,7 +40,7 @@ class EventManager {
       map["aurora"] = ad.revenue* 1_000_000;
       map["ulster"] = "USD";
       map["smithy"] = ad.networkName;
-      map["jackass"] = "max";
+      map["farkas"] = "max";
       map["squadron"] = adResultData.adRequestData?.igteaams??"";
       map["sickish"] = adResultData.adType;
       map["peroxide"] = ad.revenuePrecision;

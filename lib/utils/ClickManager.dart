@@ -6,7 +6,7 @@ import 'NetWorkManager.dart';
 class ClickManager {
   static DateTime? _lastClickTime;
 
-  static bool canClick({required BuildContext context,int interval = 1100}) {
+  static bool canClick({required BuildContext context,int interval = 500}) {
     AudioUtils().playClickAudio();
     if (NetWorkManager().isNetError(context)) return false;
     final now = DateTime.now();
@@ -16,5 +16,9 @@ class ClickManager {
       return true;
     }
     return false;
+  }
+
+  static void clickAudio() {
+    AudioUtils().playClickAudio();
   }
 }

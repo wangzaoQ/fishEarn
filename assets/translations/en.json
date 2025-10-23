@@ -98,5 +98,10 @@
   "app_limit_withdraw": "Limit met  withdraw now！！",
   "app_right_now": "Right Now",
   "app_cash_info_error": "The format you entered is incorrect",
-  "app_game_fail_content": "starved to death couldn’t make money"
+  "app_game_fail_content": "starved to death couldn’t make money",
+  "app_game_protect_pop_content": "Grasp the key step to success.\nYou're about to cash out $500",
+  "app_game_protect_pop_button1": "Buy for $50",
+  "app_game_protect_pop_button2": "Free Protection",
+  "app_wealth_paused": "Wealth Paused",
+  "app_more_fun": "More Fun"
 }

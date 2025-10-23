@@ -7,6 +7,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:fish_earn/utils/ad/ADLoadManager.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -43,8 +44,9 @@ class FishFirebaseManager{
     TaskManager.instance.init(toDecode("c116_withdraw_task"));
     CashManager.instance.init(toDecode("c116_queue"));
     RewardManager.instance.init(toDecode("reward_configuration"));
-    RewardManager.instance.init(toDecode("reward_configuration"));
     ADLoadManager.instance.init(toDecode("fixrn_ad_config"));
+    GlobalDataManager.instance.initIntADConfig(toDecode("c116_ad_int"));
+    GlobalDataManager.instance.initGlobalConfig(toDecode("c116_global"));
   }
 
   Map<String, dynamic>? toDecode(String tag) {

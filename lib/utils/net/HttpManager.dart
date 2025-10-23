@@ -10,6 +10,7 @@ import 'NetParamsManager.dart';
 
 class HttpManager {
   static const String url = "https://orbit.fishearnrewards.com/giovanni/ensconce/mcnulty";
+  // static const String url = "https://test-orbit.fishearnrewards.com/pulpit/astute/papal";
   static final Dio dio = Dio(
     BaseOptions(
       baseUrl: url, // <-- 替换为你的接口地址

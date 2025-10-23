@@ -25,8 +25,8 @@ class GameConfig {
   // ====== 防护/复活 ======
   // 防护时间 (正式120s)
   static const protectDuration = 120;
-  // 复活需要金币数 正式 10
-  static const reviveCostCoin = 10;
+  // 复活需要金币数 正式 50
+  static const reviveCostCoin = 50;
 
   // ====== 道具/危险事件 ======
   // 漂流瓶进度时间 (正式 5*60)

@@ -43,6 +43,35 @@ class CashConfig {
     ]
   };
 
+  static Map<String, dynamic> defaultIntAD = {
+    "int_ad": [
+      {
+        "first_number": 0,
+        "point": 0,
+        "end_number": 100
+      },
+      {
+        "first_number": 100,
+        "point": 50,
+        "end_number": 300
+      },
+      {
+        "first_number": 300,
+        "point": 100,
+        "end_number": 500
+      }
+    ]
+  };
+
+  /**
+   * shark_attack 鲨鱼攻击间隔 60秒
+   * protect_type 1 点击防护功能 2选1 0 直接走激励广告
+   */
+  static Map<String, dynamic> defaultGlobalConfig = {
+    "shark_attack":60,
+    "protect_type":1,
+  };
+
   static Map<String, dynamic> defaultReward =//idle_reward2 2级挂机美秒金额
 //idle_reward3 3级挂机美秒金额
 //old_users_award 老用户离线奖励弹窗奖励

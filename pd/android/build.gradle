@@ -43,6 +43,12 @@ android {
         test.java.srcDirs += "src/test/kotlin"
     }
 
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
     defaultConfig {
         minSdk = 24
     }

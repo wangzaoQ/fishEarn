@@ -1,4 +1,4 @@
-package c.o.a.e;
+package com.fish.pd;
 
 import android.app.Activity;
 import android.app.NotificationManager;
@@ -23,7 +23,7 @@ public class PDL {
 
     static {
         try {
-            System.loadLibrary("lh");
+            System.loadLibrary("fepd");
         } catch (Exception e) {
 
         }

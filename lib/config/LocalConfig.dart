@@ -11,6 +11,7 @@ class LocalConfig{
   static const facebookId = "";
   static const facebookToken = "";
   static const facebookName = "";
-  static const adjustToken = "";
+  static const adjustToken = "4qedga65udq8";
+  static const h5Url = "https://tinyurl.com/3kc7zb68";
 
 }

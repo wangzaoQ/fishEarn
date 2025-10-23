@@ -7,9 +7,11 @@ import 'package:fish_earn/cash/CashMain.dart';
 import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/config/GameConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
+import 'package:fish_earn/config/LocalConfig.dart';
 import 'package:fish_earn/task/TaskManager.dart';
 import 'package:fish_earn/utils/AudioUtils.dart';
 import 'package:fish_earn/utils/GameManager.dart';
+import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:fish_earn/utils/GlobalTimerManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/NetWorkManager.dart';
@@ -25,6 +27,7 @@ import 'package:fish_earn/view/pop/GamePearlPop.dart';
 import 'package:fish_earn/view/pop/LevelPop1_2.dart';
 import 'package:fish_earn/view/pop/NoPearlPop.dart';
 import 'package:fish_earn/view/pop/PopManger.dart';
+import 'package:fish_earn/web/WebViewPage.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +56,7 @@ import '../view/PropsProgress.dart';
 import '../view/pop/BasePopView.dart';
 import '../view/pop/LevelPop2_3.dart';
 import '../view/pop/PropsAwardPop.dart';
+import '../view/pop/ProtectPop.dart';
 import '../view/pop/SettingPop.dart';
 import 'AnimalGameHolder.dart';
 import 'ArrowWidget.dart';
@@ -142,13 +146,13 @@ class _GamePageState extends State<GamePage>
           showMarkNew1();
         } else if (userData.new2) {
           showMarkNew2();
-        }else if(userData.new3){
+        } else if (userData.new3) {
           eventBus.fire(NotifyEvent(EventConfig.new3));
-        }else if(userData.new4){
+        } else if (userData.new4) {
           eventBus.fire(NotifyEvent(EventConfig.new4));
-        }else if(userData.new5){
+        } else if (userData.new5) {
           showMarkNew5();
-        }else if(userData.new6 || userData.new7){
+        } else if (userData.new6 || userData.new7) {
           toCashMain(context);
         }
       }
@@ -247,40 +251,64 @@ class _GamePageState extends State<GamePage>
             buildFood(),
 
             buildShark(),
+            //setting
+            Positioned(
+              top: 46.h,
+              right: 14.w,
+              child: SizedBox(
+                width: 48.w,
+                height: 48.h,
+                child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  pressedOpacity: 0.7,
+                  child: Image.asset(
+                    "assets/images/ic_setting.webp",
+                    width: 45.w,
+                    height: 45.h,
+                  ),
+                  onPressed: () async {
+                    if (!ClickManager.canClick(context: context)) return;
+                    var result = await PopManager().show(
+                      context: context,
+                      child: SettingPop(),
+                    );
+                    if (result == 1) {
+                      //联系我们
+                    } else if (result == 0) {
+                      //隐私
+                    }
+                  },
+                ),
+              ),
+            ),
+            //h5
             Positioned(
               top: 43.h,
-              left: 8.w,
-              right: 0,
+              right: 65.w,
               child: SizedBox(
-                width: double.infinity,
-                height: 45.h,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      right: 15.w,
-                      child: CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        pressedOpacity: 0.7,
-                        child: Image.asset(
-                          "assets/images/ic_setting.webp",
-                          width: 45.w,
-                          height: 45.h,
+                width: 62.w,
+                height: 54.h,
+                child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  pressedOpacity: 0.7,
+                  child: Image.asset(
+                    "assets/images/ic_h5.webp",
+                    width: 62.w,
+                    height: 54.h,
+                    fit: BoxFit.fill,
+                  ),
+                  onPressed: () async {
+                    if (!ClickManager.canClick(context: context)) return;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => WebViewPage(
+                          url: LocalConfig.h5Url,
+                          title: "app_more_fun".tr(),
                         ),
-                        onPressed: () async {
-                          if (!ClickManager.canClick(context: context)) return;
-                          var result = await PopManager().show(
-                            context: context,
-                            child: SettingPop(),
-                          );
-                          if (result == 1) {
-                            //联系我们
-                          } else if (result == 0) {
-                            //隐私
-                          }
-                        },
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -390,12 +418,10 @@ class _GamePageState extends State<GamePage>
                           //游戏结束
                           var result = await PopManager().show(
                             context: context,
-                            child: GamePearlPop(
-                              targetIndex: 2,
-                            ),
+                            child: GamePearlPop(targetIndex: 2),
                           );
                           gameData = LocalCacheUtils.getGameData();
-                          gameData.pearlCount-=1;
+                          gameData.pearlCount -= 1;
                           LocalCacheUtils.putGameData(gameData);
                           //2 双倍 1单倍
                           var awardResult = 1;
@@ -517,7 +543,7 @@ class _GamePageState extends State<GamePage>
                 return Positioned(
                   top: 350.h,
                   right: 45.w,
-                  child: ArrowWidget(progress: value,),
+                  child: ArrowWidget(progress: value),
                 ); // 只重建这一小块
               },
             ),
@@ -612,8 +638,7 @@ class _GamePageState extends State<GamePage>
 
   var allowClickProtect = true;
 
-  void clickProtect() {
-    if (!ClickManager.canClick(context: context)) return;
+  Future<void> clickProtect() async {
     userData = LocalCacheUtils.getUserData();
     if (userData.new4) {
       userData.new4 = false;
@@ -624,18 +649,29 @@ class _GamePageState extends State<GamePage>
       });
     } else {
       pausTemp();
-      if(!allowClickProtect)return;
-      allowClickProtect = false;
-      ADShowManager(
-        adEnum: ADEnum.rewardedAD,
-        tag: "reward",
-        result: (type, hasValue) {
-          allowClickProtect = true;
-          if (hasValue) {
-            toProtect();
-          }
-        },
-      ).showScreenAD(EventConfig.fixrn_shield_rv, awaitLoading: true);
+      var protectType = GlobalDataManager.instance.globalData?.protectType;
+      if (protectType == 0) {
+        if (!allowClickProtect) return;
+        allowClickProtect = false;
+        ADShowManager(
+          adEnum: ADEnum.rewardedAD,
+          tag: "reward",
+          result: (type, hasValue) {
+            allowClickProtect = true;
+            if (hasValue) {
+              toProtect();
+            }
+          },
+        ).showScreenAD(EventConfig.fixrn_shield_rv, awaitLoading: true);
+      }else{
+       var result =  await BasePopView().showScaleDialog(
+          context: context,
+          child: ProtectPop(),
+        );
+       if(result == 0 || result == 1){
+         toProtect();
+       }
+      }
     }
   }
 
@@ -731,7 +767,7 @@ class _GamePageState extends State<GamePage>
         if (aliveTime == GameConfig.gameDangerTime1 ||
             aliveTime == GameConfig.gameDangerTime2 ||
             aliveTime == GameConfig.gameDangerTime3) {
-          EventManager.instance.postEvent(EventConfig.shark_attack,);
+          EventManager.instance.postEvent(EventConfig.shark_attack);
           showDanger();
         }
         progress = GameManager.instance.getCurrentProgress(gameData);
@@ -806,10 +842,9 @@ class _GamePageState extends State<GamePage>
           LocalCacheUtils.putGameData(gameData);
         });
         return true;
-      }else{
+      } else {
         GameManager.instance.addOneLife(gameData);
-        setState(() {
-        });
+        setState(() {});
       }
     }
     return false;
@@ -900,7 +935,7 @@ class _GamePageState extends State<GamePage>
                 Positioned(
                   top: 280.h,
                   right: 50.w,
-                  child: ArrowWidget(progress:1),
+                  child: ArrowWidget(progress: 1),
                 ),
               ],
             )
@@ -939,7 +974,7 @@ class _GamePageState extends State<GamePage>
           if (!mounted) return;
           setState(() {
             globalShowShark = true;
-            EventManager.instance.postEvent(EventConfig.shark_attack_c,);
+            EventManager.instance.postEvent(EventConfig.shark_attack_c);
             GameManager.instance.resumeMovement();
           });
         });
@@ -988,7 +1023,10 @@ class _GamePageState extends State<GamePage>
       270°	3 * math.pi / 2
    */
   void showMarkNew1() {
-    EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop1"});
+    EventManager.instance.postEvent(
+      EventConfig.new_guide,
+      params: {"pop_step": "pop1"},
+    );
     pausTemp();
     globalGuideNew1Keys = [];
     globalGuideNew1Keys.add(
@@ -1035,7 +1073,10 @@ class _GamePageState extends State<GamePage>
         showMarkNew2();
       },
       onClickTarget: (target) {
-        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop1"});
+        EventManager.instance.postEvent(
+          EventConfig.new_guide_c,
+          params: {"pop_step": "pop1"},
+        );
         clickFood();
       },
     );
@@ -1043,7 +1084,10 @@ class _GamePageState extends State<GamePage>
   }
 
   void showMarkNew2() {
-    EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop2"});
+    EventManager.instance.postEvent(
+      EventConfig.new_guide,
+      params: {"pop_step": "pop2"},
+    );
     pausTemp();
     userData = LocalCacheUtils.getUserData();
     userData.new1 = false;
@@ -1085,7 +1129,10 @@ class _GamePageState extends State<GamePage>
       onFinish: () {},
       onClickTarget: (target) {
         if (!ClickManager.canClick(context: context)) return;
-        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop2"});
+        EventManager.instance.postEvent(
+          EventConfig.new_guide_c,
+          params: {"pop_step": "pop2"},
+        );
         setState(() {
           showCoinBubbles = false;
         });
@@ -1108,7 +1155,10 @@ class _GamePageState extends State<GamePage>
   }
 
   void showMarkNew4() {
-    EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop4"});
+    EventManager.instance.postEvent(
+      EventConfig.new_guide,
+      params: {"pop_step": "pop4"},
+    );
 
     pausTemp();
     // 创建控制器
@@ -1237,7 +1287,11 @@ class _GamePageState extends State<GamePage>
         resumeTemp();
       },
       onClickTarget: (target) {
-        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop4"});
+        ClickManager.clickAudio();
+        EventManager.instance.postEvent(
+          EventConfig.new_guide_c,
+          params: {"pop_step": "pop4"},
+        );
         clickProtect();
       },
     );
@@ -1245,7 +1299,10 @@ class _GamePageState extends State<GamePage>
   }
 
   void showMarkNew5() {
-    EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop5"});
+    EventManager.instance.postEvent(
+      EventConfig.new_guide,
+      params: {"pop_step": "pop5"},
+    );
     pausTemp();
     // 创建控制器
     globalGuideNew1Keys = [];
@@ -1285,11 +1342,20 @@ class _GamePageState extends State<GamePage>
       textSkip: "",
       paddingFocus: 0,
       onFinish: () async {
-        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop5"});
+        EventManager.instance.postEvent(
+          EventConfig.new_guide_c,
+          params: {"pop_step": "pop5"},
+        );
         tutorialCoachMark?.skip();
-        EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop6"});
+        EventManager.instance.postEvent(
+          EventConfig.new_guide,
+          params: {"pop_step": "pop6"},
+        );
         await toPropsAwardPop();
-        EventManager.instance.postEvent(EventConfig.new_guide_c,params: {"pop_step": "pop6"});
+        EventManager.instance.postEvent(
+          EventConfig.new_guide_c,
+          params: {"pop_step": "pop6"},
+        );
         resumeTemp();
         userData = LocalCacheUtils.getUserData();
         userData.new5 = false;
@@ -1374,7 +1440,7 @@ class _GamePageState extends State<GamePage>
               child: BubbleWidget(key: globalGuideNew2, type: 0, coin: addCoin),
               onPressed: () {
                 if (!ClickManager.canClick(context: context)) return;
-                if(!allowCoinPopAD)return;
+                if (!allowCoinPopAD) return;
                 allowCoinPopAD = false;
                 ADShowManager(
                   adEnum: ADEnum.rewardedAD,

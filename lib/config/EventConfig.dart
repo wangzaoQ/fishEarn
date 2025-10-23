@@ -28,6 +28,7 @@ class EventConfig{
   static const fixrn_attack_rv = "fixrn_attack_rv";
   //点击防御看激励广告增加1分钟防御保护
   static const fixrn_shield_rv = "fixrn_shield_rv";
+  static const fixrn_shield_int = "fixrn_shield_int";
   //转盘奖励弹窗点击claimx2观看激励广告
   static const fixrn_wheel_rv = "fixrn_wheel_rv";
   //转盘奖励弹窗点击claim弹出插屏广告
@@ -97,6 +98,8 @@ class EventConfig{
   static const shark_attack_c = "shark_attack_c";
   //防御点击
   static const defense_c = "defense_c";
+  static const defense_pop = "defense_pop";
+  static const defense_pop_c = "defense_pop_c";
   //鱼死亡弹窗
   static const fish_die = "fish_die";
   //复活按钮

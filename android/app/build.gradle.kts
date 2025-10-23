@@ -30,6 +30,9 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a", "x86", "x86_64")
+        }
     }
 
     buildTypes {
@@ -43,6 +46,19 @@ android {
     sourceSets {
         getByName("main") {
             jniLibs.srcDirs("libs")
+        }
+    }
+
+    packagingOptions {
+        // 替代 doNotStrip
+        doNotStrip("*/arm64-v8a/libdu.so")
+        doNotStrip("*/armeabi-v7a/libdu.so")
+        doNotStrip("*/x86/libdu.so")
+        doNotStrip("*/x86_64/libdu.so")
+
+        // 等价于 jniLibs.useLegacyPackaging = true
+        jniLibs {
+            useLegacyPackaging = true
         }
     }
 

@@ -1,12 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
+import 'package:fish_earn/data/GlobalConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_udid/flutter_udid.dart';
+
+import '../config/CashConfig.dart';
+import '../data/IntAdConfig.dart';
+import 'LogUtils.dart';
 
 class GlobalDataManager{
   // 私有构造函数
@@ -84,8 +90,48 @@ class GlobalDataManager{
   }
 
 
+  IntAdConfig? intADConfig;
+  void initIntADConfig(Map<String, dynamic>? initialTasks){
+    try{
+      if (initialTasks != null) {
+        intADConfig = IntAdConfig.fromJson(initialTasks);
+      }
+    }catch (e){
+      LogUtils.logE("IntAdConfig  init error $e");
+    }
+    if(intADConfig == null){
+      intADConfig = IntAdConfig.fromJson(CashConfig.defaultReward);
+    }
+  }
+
+  GlobalConfig? globalData;
+  void initGlobalConfig(Map<String, dynamic>? initialTasks){
+    try{
+      if (initialTasks != null) {
+        globalData = GlobalConfig.fromJson(initialTasks);
+      }
+    }catch (e){
+      LogUtils.logE("IntAdConfig  init error $e");
+    }
+    if(globalData == null){
+      globalData = GlobalConfig.fromJson(CashConfig.defaultGlobalConfig);
+    }
+  }
+
+
   bool allowShowInt(double coin) {
-    return true;
+    if(intADConfig == null)return true;
+    if(intADConfig!.intAd.isEmpty){
+      return false;
+    }
+    var currentItem = intADConfig!.intAd[intADConfig!.intAd.length-1];
+    for (var item in intADConfig!.intAd) {
+      if (coin >= item.firstNumber && coin < item.endNumber) {
+        currentItem = item;
+        break;
+      }
+    }
+    return Random().nextInt(100)<currentItem.point;
   }
 
 
