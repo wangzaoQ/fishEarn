@@ -45,6 +45,8 @@ class _TaskProcessState extends State<TaskProcess> {
               progress: (task1Current/task1Config).toDouble(),
               // 进度 0~1
               backgroundColor: Color(task1Complete?0xFF86E659:0xFFC0C0C0),
+              progressColor: Color(task1Complete?0xFF86E659:0xFFC0C0C0),
+
               width: 306.w,
               height: 14.h,
               padding: 0,
@@ -82,6 +84,7 @@ class _TaskProcessState extends State<TaskProcess> {
               progress: (task2Current/task2Config).toDouble(),
               // 进度 0~1
               backgroundColor: Color(task2Complete?0xFF86E659:0xFFC0C0C0),
+              progressColor: Color(task2Complete?0xFF86E659:0xFFC0C0C0),
               width: 306.w,
               height: 14.h,
               padding: 0,

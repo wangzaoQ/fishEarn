@@ -26,6 +26,7 @@ import 'package:fish_earn/view/pop/GameFailPop.dart';
 import 'package:fish_earn/view/pop/GamePearlPop.dart';
 import 'package:fish_earn/view/pop/LevelPop1_2.dart';
 import 'package:fish_earn/view/pop/NoPearlPop.dart';
+import 'package:fish_earn/view/pop/OfflinePop.dart';
 import 'package:fish_earn/view/pop/PopManger.dart';
 import 'package:fish_earn/web/WebViewPage.dart';
 import 'package:flame/game.dart';
@@ -84,6 +85,7 @@ class _GamePageState extends State<GamePage>
   //道具相关
   var propsTime = 0;
   var aliveTime = 0;
+  var realShowSharkTime = 0;
   Timer? _timer = null;
 
   //第一次展示危险提示
@@ -134,7 +136,7 @@ class _GamePageState extends State<GamePage>
     //   LocalCacheConfig.firstShowProtectKey,
     //   defaultValue: true,
     // );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       LocalCacheUtils.putBool(LocalCacheConfig.firstLogin, false);
       registerTimer();
       if (userData.new1 ||
@@ -156,6 +158,18 @@ class _GamePageState extends State<GamePage>
           toCashMain(context);
         }
       }
+      var allowShowOffline = LocalCacheUtils.getBool(LocalCacheConfig.allowShowOffline,defaultValue: false);
+      if(allowShowOffline){
+        await PopManager().show(
+          context: context,
+          child: OfflinePop(),
+        );
+        await PopManager().show(
+          context: context,
+          needAlpha: 0,
+          child: CoinAnimalPop(),
+        );
+      }
 
       // TaskManager.instance.addTask("login");
     });
@@ -170,6 +184,8 @@ class _GamePageState extends State<GamePage>
       }
     });
     EventManager.instance.postEvent(EventConfig.home_page);
+
+
   }
 
   @override
@@ -673,6 +689,8 @@ class _GamePageState extends State<GamePage>
         );
        if(result == 0 || result == 1){
          toProtect();
+       }else{
+         resumeTemp();
        }
       }
     }
@@ -742,7 +760,9 @@ class _GamePageState extends State<GamePage>
           gameData.levelTime -= 1;
         }
         propsTime++;
-        aliveTime++;
+        if(!globalShowDanger2){
+          aliveTime++;
+        }
         if (!showCoinBubbles) timeCoinBubbles++;
         if (!showFoodBubbles) timeFoodBubbles++;
         if (!showPearlBubbles1) timePearBubbles++;
@@ -767,11 +787,38 @@ class _GamePageState extends State<GamePage>
         }
 
         LocalCacheUtils.putGameData(gameData);
-        if (aliveTime == GameConfig.gameDangerTime1 ||
-            aliveTime == GameConfig.gameDangerTime2 ||
-            aliveTime == GameConfig.gameDangerTime3) {
+        var dangerTime = GlobalDataManager.instance.globalData?.sharkAttack??60;
+        if (aliveTime == dangerTime) {
+          aliveTime = 0;
+          realShowSharkTime = 0;
           EventManager.instance.postEvent(EventConfig.shark_attack);
           showDanger();
+        }
+        if(globalShowDanger2) {
+          realShowSharkTime++;
+          AudioUtils().playTempAudio("audio/danger.mp3");
+          if (realShowSharkTime == 5) {
+            setState(() {
+              globalShowDanger2 = false;
+              // ArrowOverlay.hide();
+              GameManager.instance.hideDanger();
+              globalShowShark = true;
+              EventManager.instance.postEvent(EventConfig.shark_attack_c);
+              GameManager.instance.resumeMovement();
+            });
+            Future.delayed(const Duration(milliseconds: 2000), () async {
+              if (!mounted) return;
+              globalShowShark = false;
+              if (!globalShowProtect) {
+                bool result = await isGameOver(force: true);
+                if (result) {
+                  return;
+                }
+              } else {
+                TaskManager.instance.addTask("defend");
+              }
+            });
+          }
         }
         progress = GameManager.instance.getCurrentProgress(gameData);
         SchedulerBinding.instance.addPostFrameCallback((_) {
@@ -841,6 +888,7 @@ class _GamePageState extends State<GamePage>
         registerTimer();
         cutTime = 0;
         aliveTime = 0;
+        realShowSharkTime = 0;
         setState(() {
           LocalCacheUtils.putGameData(gameData);
         });
@@ -946,56 +994,16 @@ class _GamePageState extends State<GamePage>
     );
   }
 
-  var isShowDanger = false;
 
   void showDanger() {
-    if (isShowDanger) return;
-    isShowDanger = true;
     if (globalShowDanger2) return;
+    globalShowDanger2 = true;
     setState(() {
-      globalShowDanger2 = true;
-      // GameManager.instance.swimToCenter();
     });
     if (!globalShowProtect) {
       GameManager.instance.pauseMovement();
       GameManager.instance.showDanger();
     }
-    var timeCount = 0;
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!mounted) return;
-      timeCount++;
-      AudioUtils().playTempAudio("audio/danger.mp3");
-      if (timeCount == 5) {
-        _timer?.cancel();
-        setState(() {
-          globalShowDanger2 = false;
-          // ArrowOverlay.hide();
-          GameManager.instance.hideDanger();
-        });
-        Future.delayed(const Duration(milliseconds: 1000), () async {
-          if (!mounted) return;
-          setState(() {
-            globalShowShark = true;
-            EventManager.instance.postEvent(EventConfig.shark_attack_c);
-            GameManager.instance.resumeMovement();
-          });
-        });
-        Future.delayed(const Duration(milliseconds: 2000), () async {
-          if (!mounted) return;
-          isShowDanger = false;
-          globalShowShark = false;
-          if (!globalShowProtect) {
-            bool result = await isGameOver(force: true);
-            if (result) {
-              return;
-            }
-          } else {
-            TaskManager.instance.addTask("defend");
-          }
-        });
-      }
-    });
   }
 
   /// 监听 App 生命周期切换

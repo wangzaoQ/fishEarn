@@ -530,21 +530,7 @@ class _GameProgressState extends State<GameProgress>
                                   }
                                 } else {
                                   if (result == 1) {
-                                    if (!allowClickAd) return;
-                                    allowClickAd = false;
-                                    ADShowManager(
-                                      adEnum: ADEnum.rewardedAD,
-                                      tag: "reward",
-                                      result: (type, hasValue) {
-                                        allowClickAd = true;
-                                        if (hasValue) {
-                                          toLevel2(context);
-                                        }
-                                      },
-                                    ).showScreenAD(
-                                      EventConfig.fixrn_grow_rv,
-                                      awaitLoading: true,
-                                    );
+                                    showADLevel2();
                                   }
                                 }
                               }
@@ -646,27 +632,7 @@ class _GameProgressState extends State<GameProgress>
                                   child: LevelUp2_3(),
                                 );
                                 if (result == 1) {
-                                  if (!allowClickAd) return;
-                                  allowClickAd = false;
-                                  ADShowManager(
-                                    adEnum: ADEnum.rewardedAD,
-                                    tag: "reward",
-                                    result: (type, hasValue) async {
-                                      allowClickAd = true;
-                                      if (hasValue) {
-                                        gameData.level = 3;
-                                        LocalCacheUtils.putGameData(gameData);
-                                        widget.onConfirm(3);
-                                        await PopManager().show(
-                                          context: context,
-                                          child: LevelPop2_3(),
-                                        );
-                                      }
-                                    },
-                                  ).showScreenAD(
-                                    EventConfig.fixrn_grow_rv,
-                                    awaitLoading: true,
-                                  );
+                                  showADLevel3();
                                 }
                               }
                             },
@@ -724,13 +690,16 @@ class _GameProgressState extends State<GameProgress>
                           ),
                         ),
                         // widget.gameData.level == 2 && widget.progress == 1?SizedBox.shrink():
-                        Positioned(
+                        gameData.level == 1?Positioned(
                           left: 110.w,
                           top: 55.h, // 在进度条下方一点
                           child: CupertinoButton(
                             padding: EdgeInsets.zero,
                             pressedOpacity: 0.7,
-                            onPressed: null,
+                            onPressed: (){
+                              if (!ClickManager.canClick(context: context)) return;
+                              showADLevel2();
+                            },
                             child: SizedBox(
                               width: 46.w,
                               height: 25.h,
@@ -762,7 +731,49 @@ class _GameProgressState extends State<GameProgress>
                               ),
                             ),
                           ),
-                        ),
+                        ):SizedBox.shrink(),
+                        gameData.level == 2?Positioned(
+                          left: 180.w,
+                          top: 55.h, // 在进度条下方一点
+                          child: CupertinoButton(
+                            padding: EdgeInsets.zero,
+                            pressedOpacity: 0.7,
+                            onPressed: (){
+                              if (!ClickManager.canClick(context: context)) return;
+                              showADLevel3();
+                            },
+                            child: SizedBox(
+                              width: 46.w,
+                              height: 25.h,
+                              child: Stack(
+                                children: [
+                                  Image.asset(
+                                    "assets/images/ic_up_arrow.webp",
+                                    width: 23.w,
+                                    height: 23.h,
+                                  ),
+                                  Positioned(
+                                    left: 15.w,
+                                    bottom: 0.h,
+                                    child: GameText(
+                                      showText: "app_up".tr(),
+                                      fontSize: 12.sp,
+                                      strokeColor: Color(0xFF000000),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    left: 13.w,
+                                    child: Image.asset(
+                                      "assets/images/ic_ad_tips.webp",
+                                      width: 15.w,
+                                      height: 15.h,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ):SizedBox.shrink(),
                       ],
                     ),
                   ),
@@ -903,6 +914,48 @@ class _GameProgressState extends State<GameProgress>
       },
     );
     tutorialCoachMark?.show(context: context);
+  }
+
+  void showADLevel2() {
+    if (!allowClickAd) return;
+    allowClickAd = false;
+    ADShowManager(
+      adEnum: ADEnum.rewardedAD,
+      tag: "reward",
+      result: (type, hasValue) {
+        allowClickAd = true;
+        if (hasValue) {
+          toLevel2(context);
+        }
+      },
+    ).showScreenAD(
+      EventConfig.fixrn_grow_rv,
+      awaitLoading: true,
+    );
+  }
+
+  void showADLevel3() {
+    if (!allowClickAd) return;
+    allowClickAd = false;
+    ADShowManager(
+      adEnum: ADEnum.rewardedAD,
+      tag: "reward",
+      result: (type, hasValue) async {
+        allowClickAd = true;
+        if (hasValue) {
+          gameData.level = 3;
+          LocalCacheUtils.putGameData(gameData);
+          widget.onConfirm(3);
+          await PopManager().show(
+            context: context,
+            child: LevelPop2_3(),
+          );
+        }
+      },
+    ).showScreenAD(
+      EventConfig.fixrn_grow_rv,
+      awaitLoading: true,
+    );
   }
 
   //

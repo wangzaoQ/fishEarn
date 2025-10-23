@@ -42,6 +42,10 @@ class EventConfig{
   static const fixrn_bottle_int = "fixrn_bottle_int";
   //排队
   static const fixrn_skipwait_rv = "fixrn_skipwait_rv";
+  //离线奖励弹窗点击Claim 200%观看激励广告
+  static const fixrn_offline_rv = "fixrn_offline_rv";
+  //离线奖励弹窗点击Only xx弹出插屏广告
+  static const fixrn_offline_int = "fixrn_offline_int";
 
 
   //事件 安装（自定义）
@@ -137,5 +141,9 @@ class EventConfig{
   static const meet_withdraw = "meet_withdraw";
   //终生累计广告数到达参数的时候，就打一次
   static const pv_dall = "pv_dall";
+  //老用户离线奖励弹窗展示
+  static const old_users_award = "old_users_award";
+  static const old_users_award_1x = "old_users_award_1x";
+  static const old_users_award_2x = "old_users_award_1x";
 
 }

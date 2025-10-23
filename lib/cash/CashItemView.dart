@@ -142,14 +142,14 @@ class _CashWidgetState extends State<CashItemView> {
                     onPressed: () async {
                       if (!ClickManager.canClick(context: context)) return;
                       var gameData = LocalCacheUtils.getGameData();
-                      if(gameData.coin<widget.money){
-                        BasePopView().showScaleDialog(
-                          context: context,
-                          child: CashErrorPop( money: widget.money),
-                        );
-                        return;
-                      }
-                      await Navigator.push(
+                      // if(gameData.coin<widget.money){
+                      //   BasePopView().showScaleDialog(
+                      //     context: context,
+                      //     child: CashErrorPop( money: widget.money),
+                      //   );
+                      //   return;
+                      // }
+                      var result = await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) => CashPage(
@@ -159,7 +159,13 @@ class _CashWidgetState extends State<CashItemView> {
                           ),
                         ),
                       );
-                      setState(() {});
+                      setState(() {
+                        if(result == 0){
+                          var gameData = LocalCacheUtils.getGameData();
+                          gameData.coin-=widget.money;
+                          LocalCacheUtils.putGameData(gameData);
+                        }
+                      });
                     },
                   ),
                 ),

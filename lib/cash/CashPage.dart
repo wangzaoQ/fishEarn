@@ -188,43 +188,41 @@ class _CashPage2State extends State<CashPage> {
                             ),
                           ),
                           onPressed: () {
-                            if (widget.isGuide) {
-                              Navigator.popUntil(context, (route) => route.isFirst);
-                              return;
-                            }
-                            if ((widget.payType == 0) &&
-                                _payPalController != null) {
-                              var accountText = _payPalController!.text.trim();
-                              if (accountText.isEmpty) {
-                                GameManager.instance.showTips(
-                                    "app_cash_info_error".tr());
-                                return;
-                              } else {
-                                if (!EmailValidator.validate(accountText)) {
-                                  _payPalController!.text = "";
-                                  GameManager.instance.showTips(
-                                      "app_cash_info_error".tr());
-                                  return;
-                                }
-                              }
-                              eventParamsList.add("account");
-                            } else if (widget.payType == 1 &&
-                                _cashController != null) {
-                              var phoneText = _cashController!.text.trim();
-                              if (phoneText.isEmpty) {
-                                GameManager.instance.showTips(
-                                    "app_cash_info_error".tr());
-                                return;
-                              } else {
-                                if (phoneText.length != 10) {
-                                  _cashController!.text = "";
-                                  GameManager.instance.showTips(
-                                      "app_cash_info_error".tr());
-                                  return;
-                                }
-                              }
-                              eventParamsList.add("phone");
-                            }
+                            // if ((widget.payType == 0) &&
+                            //     _payPalController != null) {
+                            //   var accountText = _payPalController!.text.trim();
+                            //   if (accountText.isEmpty) {
+                            //     GameManager.instance.showTips(
+                            //         "app_cash_info_error".tr());
+                            //     return;
+                            //   } else {
+                            //     if (!EmailValidator.validate(accountText)) {
+                            //       _payPalController!.text = "";
+                            //       GameManager.instance.showTips(
+                            //           "app_cash_info_error".tr());
+                            //       return;
+                            //     }
+                            //   }
+                            //   eventParamsList.add("account");
+                            //   LocalCacheUtils.putString(LocalCacheConfig.cashName,accountText);
+                            // } else if (widget.payType == 1 &&
+                            //     _cashController != null) {
+                            //   var phoneText = _cashController!.text.trim();
+                            //   if (phoneText.isEmpty) {
+                            //     GameManager.instance.showTips(
+                            //         "app_cash_info_error".tr());
+                            //     return;
+                            //   } else {
+                            //     if (phoneText.length != 10) {
+                            //       _cashController!.text = "";
+                            //       GameManager.instance.showTips(
+                            //           "app_cash_info_error".tr());
+                            //       return;
+                            //     }
+                            //   }
+                            //   eventParamsList.add("phone");
+                            //   LocalCacheUtils.putString(LocalCacheConfig.cashName,phoneText);
+                            // }
                             LocalCacheUtils.putInt(LocalCacheConfig.cacheKeyCash, widget.payStatus,);
                             LocalCacheUtils.putString(LocalCacheConfig.taskCurrentKey,"task1");
                             Navigator.pop(context, 0);

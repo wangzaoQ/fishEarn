@@ -22,6 +22,7 @@ class TimeUtils{
       if(isConsecutiveDay(day,timestamp)){
         TaskManager.instance.addLogin(day,timestamp);
       }
+      LocalCacheUtils.putBool(LocalCacheConfig.allowShowOffline, true);
       // CacheManager.putBool(CacheConfig.cacheDayCashKey, true);
       // var user = CacheManager.getUser();
       // if(user.userRisk && user.riskType == 1){

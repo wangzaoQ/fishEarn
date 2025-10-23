@@ -33,4 +33,6 @@ class LocalCacheConfig{
   static const cacheShowMoney = "cacheShowMoney";
   static const cacheType = "cacheType";
   static const firstShowCashLimit = "firstShowCashLimit";
+  static const cashName = "cashName";
+  static const allowShowOffline = "allowShowOffline";
 }

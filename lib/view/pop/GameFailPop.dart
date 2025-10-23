@@ -60,7 +60,7 @@ class _GameFailPopState extends State<GameFailPop> {
             left: 70.w,
             right: 70.w,
             top: 459.h,
-            child: GameText(showText: "app_game_fail_content".tr(),strokeWidth: 1.w,strokeColor: Color(0xFFFF0066),fillColor: Colors.white,),),
+            child: Center(child: GameText(showText: "app_game_fail_content".tr(),strokeWidth: 1.w,strokeColor: Color(0xFFFF0066),fillColor: Colors.white,),)),
           Positioned(
             right: 40.w,
             top: 539.h,

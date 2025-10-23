@@ -68,7 +68,7 @@ class CashConfig {
    * protect_type 1 点击防护功能 2选1 0 直接走激励广告
    */
   static Map<String, dynamic> defaultGlobalConfig = {
-    "shark_attack":60,
+    "shark_attack":30,
     "protect_type":1,
   };
 

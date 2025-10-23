@@ -66,6 +66,8 @@ class _CashMainState extends State<CashMain> {
             if (tutorialCoachMark?.isShowing ?? false) {
               // 自定义逻辑
               tutorialCoachMark?.skip(); // 关闭当前教程
+            }else{
+              Navigator.pop(context);
             }
           }
         },
