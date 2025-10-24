@@ -52,6 +52,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
     coinList.add(coin2);
     coinList.add(coin3);
     EventManager.instance.postEvent(EventConfig.drift_bottle);
+    AudioUtils().playTempAudio("audio/award.mp3");
   }
 
   int selected = -1;

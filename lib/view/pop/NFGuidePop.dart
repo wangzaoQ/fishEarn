@@ -2,9 +2,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../config/EventConfig.dart';
 import '../../utils/ClickManager.dart';
+import '../../utils/LogUtils.dart';
 import '../../utils/net/EventManager.dart';
 
 class NFGuidePop extends StatefulWidget {
@@ -22,7 +24,14 @@ class _GameAwardPopState extends State<NFGuidePop> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return PopScope(
+        canPop: false, // 禁止默认返回
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop) {
+            toBack();
+          }
+        },
+        child:Container(
       width: 311.w,
       decoration: BoxDecoration(
         color: const Color(0xFFE1EFF7),
@@ -56,7 +65,7 @@ class _GameAwardPopState extends State<NFGuidePop> {
                     ),
                     onPressed: () {
                       if (!ClickManager.canClick(context: context)) return;
-                      Navigator.pop(context, 0);
+                      toBack();
                     },
                   ),
                 ),
@@ -123,8 +132,17 @@ class _GameAwardPopState extends State<NFGuidePop> {
                     ),
                   ),
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (!ClickManager.canClick(context: context)) return;
+                  EventManager.instance.postEvent(EventConfig.noti_confirm_pop_c);
+                  var status = await Permission.notification.status;
+                  if (status.isDenied || status.isPermanentlyDenied) {
+                    // 如果权限被拒绝或永久拒绝，则打开系统设置页面
+                    bool opened = await openAppSettings();
+                    LogUtils.logD("open nf setting: $opened");
+                  } else if (status.isGranted) {
+                    LogUtils.logD("nf allow");
+                  }
                   Navigator.pop(context, 1);
                 },
               ),
@@ -151,7 +169,7 @@ class _GameAwardPopState extends State<NFGuidePop> {
                 ),
                 onPressed: () {
                   if (!ClickManager.canClick(context: context)) return;
-                  Navigator.pop(context, 0);
+                  toBack();
                 },
               ),
               SizedBox(height: 16.h),
@@ -159,6 +177,11 @@ class _GameAwardPopState extends State<NFGuidePop> {
           ),
         ],
       ),
-    );
+    ));
+  }
+
+  void toBack() {
+    EventManager.instance.postEvent(EventConfig.noti_confirm_pop_close);
+    Navigator.pop(context, 0);
   }
 }

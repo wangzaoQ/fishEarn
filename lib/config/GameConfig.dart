@@ -23,8 +23,8 @@ class GameConfig {
   static const lifeDecreaseAmount = 2;
 
   // ====== 防护/复活 ======
-  // 防护时间 (正式120s)
-  static const protectDuration = 120;
+  // 防护时间 (正式60s)
+  static const protectDuration = 60;
   // 复活需要金币数 正式 50
   static const reviveCostCoin = 50;
 

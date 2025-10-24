@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/game/GamePage.dart';
 import 'package:fish_earn/utils/GameManager.dart';
+import 'package:fish_earn/utils/GlobalTimerManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/LogUtils.dart';
 import 'package:fish_earn/utils/ad/ADEnum.dart';
@@ -43,6 +44,9 @@ class _FishStartPageState extends State<FishStartPage>
   @override
   void initState() {
     super.initState();
+    GameManager.instance.pauseMovement();
+    GlobalTimerManager().cancelTimer();
+    isLaunch = true;
     ADLoadManager.instance.preloadAll("startPage");
     allowShowStart = false;
     // ADLoadManager().preloadAll("startPage");
@@ -59,6 +63,7 @@ class _FishStartPageState extends State<FishStartPage>
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         if (cacheFirstKey) {
+          isLaunch = false;
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -70,8 +75,10 @@ class _FishStartPageState extends State<FishStartPage>
           ADShowManager(adEnum: ADEnum.intAD, tag: "open", result: (type, hasValue) {
               if(!mounted)return;
               if(widget.type == 1){
+                isLaunch = false;
                 Navigator.pop(context, null);
               }else{
+                isLaunch = false;
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -282,5 +289,10 @@ class _FishStartPageState extends State<FishStartPage>
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../config/EventConfig.dart';
 import '../../task/RewardManager.dart';
 import '../../task/TaskManager.dart';
+import '../../utils/AudioUtils.dart';
 import '../../utils/LocalCacheUtils.dart';
 import '../../utils/net/EventManager.dart';
 import '../GameText.dart';
@@ -99,6 +100,7 @@ class _GamePearlPopState extends State<GamePearlPop>
     coinList.add(coin3);
     coinList.add(coin4);
     EventManager.instance.postEvent(EventConfig.pearl_wheel);
+    AudioUtils().playTempAudio("audio/turntable.mp3");
   }
 
   double? getCoin(int currentIndex){

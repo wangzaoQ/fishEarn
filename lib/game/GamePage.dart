@@ -146,13 +146,13 @@ class _GamePageState extends State<GamePage>
       if(allowNF){
         FishNFManager.instance.startNF();
       }else{
+        pausTemp();
         EventManager.instance.postEvent(EventConfig.noti_confirm_pop);
         var result = await PopManager().show(
           context: context,
           child: NFGuidePop()
         );
         if(result == 1){
-          EventManager.instance.postEvent(EventConfig.noti_confirm_pop_c);
           var gameData = LocalCacheUtils.getGameData();
           gameData.coin+=5;
           LocalCacheUtils.putGameData(gameData);
@@ -162,7 +162,7 @@ class _GamePageState extends State<GamePage>
             child: CoinAnimalPop(),
           );
         }
-        EventManager.instance.postEvent(EventConfig.noti_confirm_pop_close);
+        resumeTemp();
       }
       var allowShowOffline = LocalCacheUtils.getBool(LocalCacheConfig.allowShowOffline,defaultValue: false);
       if(allowShowOffline){
@@ -194,6 +194,8 @@ class _GamePageState extends State<GamePage>
         } else if (userData.new6 || userData.new7) {
           toCashMain(context);
         }
+      }else{
+
       }
       // TaskManager.instance.addTask("login");
     });
@@ -202,6 +204,7 @@ class _GamePageState extends State<GamePage>
         // setState(() {
         //   globalShowDanger2 = true;
         // });
+        resumeTemp();
         showMarkNew4();
       }else if(event.message == EventConfig.toCash){
         toCashMain(context);
@@ -232,7 +235,9 @@ class _GamePageState extends State<GamePage>
         if (!didPop) {
           if (tutorialCoachMark?.isShowing ?? false) {
             // 自定义逻辑
-            tutorialCoachMark?.skip(); // 关闭当前教程
+            // tutorialCoachMark?.skip(); // 关闭当前教程
+          }else{
+            Navigator.pop(context);
           }
         }
       },
@@ -371,7 +376,12 @@ class _GamePageState extends State<GamePage>
                           if (result == 10) {
                             toCashMain(context);
                           } else {
-                            setState(() {});
+                            gameData = LocalCacheUtils.getGameData();
+                            progress = GameManager.instance.getCurrentProgress(gameData);
+                            globalTimeListener.value = progress;
+                            setState(() {
+
+                            });
                           }
                         },
                       ); // 只重建这一小块
@@ -461,9 +471,6 @@ class _GamePageState extends State<GamePage>
                             context: context,
                             child: GamePearlPop(targetIndex: 2),
                           );
-                          gameData = LocalCacheUtils.getGameData();
-                          gameData.pearlCount -= 1;
-                          LocalCacheUtils.putGameData(gameData);
                           //2 双倍 1单倍
                           var awardResult = 1;
                           if (result != null) {
@@ -485,6 +492,10 @@ class _GamePageState extends State<GamePage>
                               );
                             }
                             gameData = LocalCacheUtils.getGameData();
+                            if(result!=-2){
+                              gameData.pearlCount -= 1;
+                              LocalCacheUtils.putGameData(gameData);
+                            }
                             if (result == -1) {
                               setState(() {
                                 gameData.foodCount += 30;
@@ -498,6 +509,9 @@ class _GamePageState extends State<GamePage>
                               gameData.coin += result * awardResult;
                             }
                             LocalCacheUtils.putGameData(gameData);
+                            setState(() {
+
+                            });
                           }
                           resumeTemp();
                         },
@@ -726,6 +740,7 @@ class _GamePageState extends State<GamePage>
     LocalCacheUtils.putGameData(gameData);
     setState(() {
       globalShowDanger2 = false;
+      alreadyShowProtectPop = false;
       // ArrowOverlay.hide();
       if (globalShowDanger1) {
         GameManager.instance.hideDanger();
@@ -770,6 +785,8 @@ class _GamePageState extends State<GamePage>
 
   var guideProps = false;
 
+  var alreadyShowProtectPop = false;
+
   Future<void> registerTimer() async {
     bool result = await isGameOver();
     if (result) {
@@ -778,6 +795,10 @@ class _GamePageState extends State<GamePage>
     GlobalTimerManager().startTimer(
       onTick: () async {
         if (!allowTime) return;
+        if(adIsPlay || isLaunch){
+          return;
+        }
+
         gameData = LocalCacheUtils.getGameData();
         userData = LocalCacheUtils.getUserData();
         if (gameData.level > 0 && gameData.levelTime >= 1) {
@@ -813,6 +834,7 @@ class _GamePageState extends State<GamePage>
         LocalCacheUtils.putGameData(gameData);
         var dangerTime = GlobalDataManager.instance.globalData?.sharkAttack??60;
         if (aliveTime == dangerTime) {
+          LogUtils.logD("${TAG} GlobalTimer 到达鲨鱼攻击时间:${dangerTime}");
           aliveTime = 0;
           realShowSharkTime = 0;
           EventManager.instance.postEvent(EventConfig.shark_attack);
@@ -821,27 +843,39 @@ class _GamePageState extends State<GamePage>
         if(globalShowDanger2) {
           realShowSharkTime++;
           AudioUtils().playTempAudio("audio/danger.mp3");
-          if (realShowSharkTime >= 5 && !adIsPlay) {
-            setState(() {
-              globalShowDanger2 = false;
-              // ArrowOverlay.hide();
-              GameManager.instance.hideDanger();
-              globalShowShark = true;
-              EventManager.instance.postEvent(EventConfig.shark_attack_c);
-              GameManager.instance.resumeMovement();
-            });
-            Future.delayed(const Duration(milliseconds: 2000), () async {
-              if (!mounted) return;
-              globalShowShark = false;
-              if (!globalShowProtect) {
-                bool result = await isGameOver(force: true);
-                if (result) {
-                  return;
+          if (realShowSharkTime >= 5 && !alreadyShowProtectPop) {
+            LogUtils.logD("${TAG} GlobalTimer 触发鲨鱼攻击 realShowSharkTime:${realShowSharkTime} alreadyShowProtectPop:${alreadyShowProtectPop}");
+            pausTemp();
+            alreadyShowProtectPop = true;
+            var result =  await BasePopView().showScaleDialog(
+              context: context,
+              child: ProtectPop(),
+            );
+            if(result == 0 || result == 1){
+              toProtect();
+            }else{
+              resumeTemp();
+              setState(() {
+                globalShowDanger2 = false;
+                alreadyShowProtectPop = false;
+                // ArrowOverlay.hide();
+                GameManager.instance.hideDanger();
+                globalShowShark = true;
+                EventManager.instance.postEvent(EventConfig.shark_attack_c);
+              });
+              Future.delayed(const Duration(milliseconds: 2000), () async {
+                if (!mounted) return;
+                globalShowShark = false;
+                if (!globalShowProtect) {
+                  bool result = await isGameOver(force: true);
+                  if (result) {
+                    return;
+                  }
+                } else {
+                  TaskManager.instance.addTask("defend");
                 }
-              } else {
-                TaskManager.instance.addTask("defend");
-              }
-            });
+              });
+            }
           }
         }
         progress = GameManager.instance.getCurrentProgress(gameData);
@@ -1103,7 +1137,6 @@ class _GamePageState extends State<GamePage>
       textSkip: "",
       paddingFocus: 0,
       onFinish: () {
-        resumeTemp();
         // eventBus.fire(NotifyEvent("new2"));
         showMarkNew2();
       },
@@ -1123,7 +1156,6 @@ class _GamePageState extends State<GamePage>
       EventConfig.new_guide,
       params: {"pop_step": "pop2"},
     );
-    pausTemp();
     userData = LocalCacheUtils.getUserData();
     userData.new1 = false;
     LocalCacheUtils.putUserData(userData);
@@ -1181,7 +1213,6 @@ class _GamePageState extends State<GamePage>
           gameData.coin += addCoin;
           LocalCacheUtils.putGameData(gameData);
           GameManager.instance.updateCoinToGame(gameData.coin);
-          resumeTemp();
           eventBus.fire(NotifyEvent(EventConfig.new3));
         });
       },
@@ -1319,7 +1350,6 @@ class _GamePageState extends State<GamePage>
       textSkip: "",
       paddingFocus: 0,
       onFinish: () {
-        resumeTemp();
       },
       onClickTarget: (target) {
         ClickManager.clickAudio();
@@ -1391,7 +1421,6 @@ class _GamePageState extends State<GamePage>
           EventConfig.new_guide_c,
           params: {"pop_step": "pop6"},
         );
-        resumeTemp();
         userData = LocalCacheUtils.getUserData();
         userData.new5 = false;
         LocalCacheUtils.putUserData(userData);

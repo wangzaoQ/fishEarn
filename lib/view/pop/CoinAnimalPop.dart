@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../utils/AudioUtils.dart';
+
 class CoinAnimalPop extends StatefulWidget {
   const CoinAnimalPop({super.key});
 
@@ -14,6 +16,7 @@ class _CoinAnimalPopState extends State<CoinAnimalPop> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
+    AudioUtils().playTempAudio("audio/money.mp3");
     _lottieController = AnimationController(vsync: this);
 
     // 监听播放状态
