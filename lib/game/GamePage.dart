@@ -182,6 +182,7 @@ class _GamePageState extends State<GamePage>
           userData.new4 ||
           userData.new5) {
         if (userData.new1) {
+          GameManager.instance.swimToCenter();
           showMarkNew1();
         } else if (userData.new2) {
           showMarkNew2();
@@ -236,8 +237,6 @@ class _GamePageState extends State<GamePage>
           if (tutorialCoachMark?.isShowing ?? false) {
             // 自定义逻辑
             // tutorialCoachMark?.skip(); // 关闭当前教程
-          }else{
-            Navigator.pop(context);
           }
         }
       },
@@ -375,12 +374,15 @@ class _GamePageState extends State<GamePage>
                         onConfirm: (result) {
                           if (result == 10) {
                             toCashMain(context);
-                          } else {
+                          } else if(result == 99){
+                            pausTemp();
+                          }else if(result == 100){
+                            resumeTemp();
+                          }else{
                             gameData = LocalCacheUtils.getGameData();
                             progress = GameManager.instance.getCurrentProgress(gameData);
                             globalTimeListener.value = progress;
                             setState(() {
-
                             });
                           }
                         },

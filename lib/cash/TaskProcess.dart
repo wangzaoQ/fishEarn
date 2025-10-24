@@ -30,7 +30,7 @@ class _TaskProcessState extends State<TaskProcess> {
       task1Complete = true;
     }
     if (task2Current >= task2Config) {
-      task1Complete = true;
+      task2Complete = true;
     }
     var content1 = getTaskContent(task1,task1Current,task1Config);
     var content2 = getTaskContent(task2,task2Current,task2Config);

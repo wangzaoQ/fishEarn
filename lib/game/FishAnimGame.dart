@@ -131,6 +131,7 @@ class FishAnimGame extends FlameGame {
     }else{
       bgProtect.paint.color = bgProtect.paint.color.withOpacity(1.0);
       timeText.text = GlobalTimerManager().formatTime(time);
+      showProtect();
     }
   }
 

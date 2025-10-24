@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/cash/CashPage.dart';
+import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/config/GameConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
+import 'package:fish_earn/config/global.dart';
 import 'package:fish_earn/data/GameData.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
@@ -142,13 +144,13 @@ class _CashWidgetState extends State<CashItemView> {
                     onPressed: () async {
                       if (!ClickManager.canClick(context: context)) return;
                       var gameData = LocalCacheUtils.getGameData();
-                      // if(gameData.coin<widget.money){
-                      //   BasePopView().showScaleDialog(
-                      //     context: context,
-                      //     child: CashErrorPop( money: widget.money),
-                      //   );
-                      //   return;
-                      // }
+                      if(gameData.coin<widget.money){
+                        BasePopView().showScaleDialog(
+                          context: context,
+                          child: CashErrorPop( money: widget.money),
+                        );
+                        return;
+                      }
                       var result = await Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -160,11 +162,10 @@ class _CashWidgetState extends State<CashItemView> {
                         ),
                       );
                       setState(() {
-                        if(result == 0){
-                          var gameData = LocalCacheUtils.getGameData();
-                          gameData.coin-=widget.money;
-                          LocalCacheUtils.putGameData(gameData);
-                        }
+                        var gameData = LocalCacheUtils.getGameData();
+                        gameData.coin-=widget.money;
+                        LocalCacheUtils.putGameData(gameData);
+                        eventBus.fire(EventConfig.refreshCoin);
                       });
                     },
                   ),

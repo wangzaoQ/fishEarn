@@ -519,20 +519,7 @@ class _GameProgressState extends State<GameProgress>
                               );
                               if (gameData.level == 1 &&
                                   widget.progress == 0.5) {
-                                var userData = LocalCacheUtils.getUserData();
-                                var result = await PopManager().show(
-                                  context: context,
-                                  child: LevelUp1_2(),
-                                );
-                                if (!userData.new3) {
-                                  if (result == 1) {
-                                    toLevel2(context);
-                                  }
-                                } else {
-                                  if (result == 1) {
-                                    showADLevel2();
-                                  }
-                                }
+                                toLevel2(context);
                               }
                             },
                           ),
@@ -627,13 +614,7 @@ class _GameProgressState extends State<GameProgress>
                                 params: {"type": gameData.level},
                               );
                               if (gameData.level == 2 && widget.progress == 1) {
-                                var result = await PopManager().show(
-                                  context: context,
-                                  child: LevelUp2_3(),
-                                );
-                                if (result == 1) {
-                                  showADLevel3();
-                                }
+                                toLevel3();
                               }
                             },
                           ),
@@ -696,9 +677,15 @@ class _GameProgressState extends State<GameProgress>
                           child: CupertinoButton(
                             padding: EdgeInsets.zero,
                             pressedOpacity: 0.7,
-                            onPressed: (){
+                            onPressed: () async {
                               if (!ClickManager.canClick(context: context)) return;
-                              showADLevel2();
+                              var result = await PopManager().show(
+                                context: context,
+                                child: LevelUp1_2(),
+                              );
+                              if (result == 1) {
+                                showADLevel2();
+                              }
                             },
                             child: SizedBox(
                               width: 46.w,
@@ -738,9 +725,18 @@ class _GameProgressState extends State<GameProgress>
                           child: CupertinoButton(
                             padding: EdgeInsets.zero,
                             pressedOpacity: 0.7,
-                            onPressed: (){
+                            onPressed: () async {
                               if (!ClickManager.canClick(context: context)) return;
-                              showADLevel3();
+                              widget.onConfirm(99);
+                              var result = await PopManager().show(
+                                context: context,
+                                child: LevelUp2_3(),
+                              );
+                              if (result == 1) {
+                                showADLevel3();
+                              }else{
+                                widget.onConfirm(100);
+                              }
                             },
                             child: SizedBox(
                               width: 46.w,
@@ -796,8 +792,26 @@ class _GameProgressState extends State<GameProgress>
     gameData.coin += GameConfig.coin_1_2;
     LocalCacheUtils.putGameData(gameData);
     GameManager.instance.updateCoinToGame(gameData.coin);
-    eventBus.fire(NotifyEvent(EventConfig.new4));
+    widget.onConfirm(100);
+    if(userData.new4){
+      eventBus.fire(NotifyEvent(EventConfig.new4));
+    }
   }
+
+  Future<void> toLevel3() async {
+    gameData.level = 3;
+    LocalCacheUtils.putGameData(gameData);
+    widget.onConfirm(3);
+    await PopManager().show(
+      context: context,
+      child: LevelPop2_3(),
+    );
+    gameData.coin += GameConfig.coin_2_3;
+    LocalCacheUtils.putGameData(gameData);
+    GameManager.instance.updateCoinToGame(gameData.coin);
+    widget.onConfirm(100);
+  }
+
 
   TutorialCoachMark? tutorialCoachMark;
   late List<TargetFocus> globalKeyNew3Keys;
@@ -926,6 +940,8 @@ class _GameProgressState extends State<GameProgress>
         allowClickAd = true;
         if (hasValue) {
           toLevel2(context);
+        }else{
+          widget.onConfirm(100);
         }
       },
     ).showScreenAD(
@@ -943,13 +959,9 @@ class _GameProgressState extends State<GameProgress>
       result: (type, hasValue) async {
         allowClickAd = true;
         if (hasValue) {
-          gameData.level = 3;
-          LocalCacheUtils.putGameData(gameData);
-          widget.onConfirm(3);
-          await PopManager().show(
-            context: context,
-            child: LevelPop2_3(),
-          );
+          toLevel3();
+        }else{
+          widget.onConfirm(100);
         }
       },
     ).showScreenAD(
@@ -957,6 +969,8 @@ class _GameProgressState extends State<GameProgress>
       awaitLoading: true,
     );
   }
+
+
 
   //
   // void showMarkLevel2_3() {

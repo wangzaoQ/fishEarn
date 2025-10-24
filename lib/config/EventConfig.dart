@@ -2,6 +2,7 @@ class EventConfig{
   // 新用户流程
   static const new3 = "new3";
   static const new4 = "new4";
+  static const refreshCoin = "refreshCoin";
   static const toCash = "toCash";
 
   /**

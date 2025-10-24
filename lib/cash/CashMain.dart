@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/cash/CashItemView.dart';
@@ -12,7 +14,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../config/EventConfig.dart';
+import '../config/global.dart';
 import '../data/GameData.dart';
+import '../event/NotifyEvent.dart';
 import '../utils/ClickManager.dart';
 import '../utils/LocalCacheUtils.dart';
 import '../utils/net/EventManager.dart';
@@ -33,6 +37,7 @@ class _CashMainState extends State<CashMain> {
 
   var taskName = "";
 
+
   @override
   void initState() {
     super.initState();
@@ -52,6 +57,20 @@ class _CashMainState extends State<CashMain> {
     });
     taskName = TaskManager.instance.getCurrentTaskName();
     EventManager.instance.postEvent(EventConfig.cash_page);
+    _subscription = eventBus.on<NotifyEvent>().listen((event) {
+      if (event.message == EventConfig.refreshCoin) {
+        setState(() {
+          gameData = LocalCacheUtils.getGameData();
+          userData = LocalCacheUtils.getUserData();
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
   }
 
   // 0 paypal 1 cash
@@ -367,6 +386,8 @@ class _CashMainState extends State<CashMain> {
   late List<TargetFocus> globalKeyNew6Keys;
   GlobalKey globalKeyNew6 = GlobalKey();
   GlobalKey globalKeyNew7 = GlobalKey();
+
+  StreamSubscription<NotifyEvent>? _subscription;
 
   void showMarkNew6() {
     EventManager.instance.postEvent(EventConfig.new_guide,params: {"pop_step": "pop7"});
