@@ -12,7 +12,7 @@ class TimeUtils{
   static var TAG = "TimeUtils";
 
   static void dataReset(){
-    var day = LocalCacheUtils.getInt(LocalCacheConfig.cacheDataRestKey);
+    var day = LocalCacheUtils.getInt(LocalCacheConfig.cacheDataRestKey,defaultValue: 0);
     var laseDay = getFormattedDate(day);
     int timestamp = DateTime.now().millisecondsSinceEpoch;
     var currentDay = getFormattedDate(timestamp);
@@ -22,7 +22,9 @@ class TimeUtils{
       if(isConsecutiveDay(day,timestamp)){
         TaskManager.instance.addLogin(day,timestamp);
       }
-      LocalCacheUtils.putBool(LocalCacheConfig.allowShowOffline, true);
+      if(day!=0){
+        LocalCacheUtils.putBool(LocalCacheConfig.allowShowOffline, true);
+      }
       // CacheManager.putBool(CacheConfig.cacheDayCashKey, true);
       // var user = CacheManager.getUser();
       // if(user.userRisk && user.riskType == 1){

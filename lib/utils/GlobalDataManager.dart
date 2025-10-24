@@ -100,7 +100,7 @@ class GlobalDataManager{
       LogUtils.logE("IntAdConfig  init error $e");
     }
     if(intADConfig == null){
-      intADConfig = IntAdConfig.fromJson(CashConfig.defaultReward);
+      intADConfig = IntAdConfig.fromJson(CashConfig.defaultIntAD);
     }
   }
 

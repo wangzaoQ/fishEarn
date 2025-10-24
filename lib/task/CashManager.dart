@@ -1,10 +1,12 @@
 import 'dart:math';
 
 import 'package:faker/faker.dart';
+import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/LogUtils.dart';
 import 'package:fish_earn/utils/TimeUtils.dart';
+import 'package:fish_earn/utils/net/EventManager.dart';
 
 import '../config/CashConfig.dart';
 import '../data/QueueUser.dart';
@@ -31,8 +33,8 @@ class CashManager {
     }catch (e){
       LogUtils.logE("$TAG init error $e");
     }
-    if(ranks == null){
-      // ranks = Map<String, dynamic>.from(CashConfig.defaultRank);
+    if(ranks.isEmpty){
+      ranks = Map<String, dynamic>.from(CashConfig.defaultRank);
     }
   }
 
@@ -47,7 +49,7 @@ class CashManager {
     return '${parts[0].substring(0, 2)}****@${parts[1]}';
   }
   //生成显示的排行队列
-  List<QueueUser> generateQueue() {
+  List<QueueUser> generateQueue(bool needRefresh) {
     List<dynamic> queueList = ranks["queue"];
     LogUtils.logD("$TAG generateQueue ranks:${ranks}");
     if (queueList.isEmpty)return[];
@@ -71,7 +73,7 @@ class CashManager {
     int timestamp = DateTime.now().millisecondsSinceEpoch;
     var betweenTime = TimeUtils.minutesBetweenTimestamps(timestamp,localTime);
     var refresh = true;
-    if(betweenTime<randomM){
+    if(betweenTime<randomM && needRefresh == false){
       refresh = false;
     }else{
       LocalCacheUtils.putInt(LocalCacheConfig.cacheLastRankRefreshTimeKey,timestamp);
@@ -119,11 +121,19 @@ class CashManager {
       }else{
         account = maskEmail(email);
       }
+      var isCurrent = rangeList[i] == currentUserRank;
+      var accountInfo = account;
+      if(isCurrent){
+        var cashName = LocalCacheUtils.getString(LocalCacheConfig.cashName,defaultValue: "");
+        if(cashName!=""){
+          accountInfo = cashName;
+        }
+      }
       var queueUser = QueueUser(
         rank: formatted,
-        account: account,
+        account: accountInfo,
         amount: amount,
-        isCurrentUser: rangeList[i] == currentUserRank,
+        isCurrentUser: isCurrent,
       );
       LogUtils.logD("$TAG queueUser:${queueUser.toString()}");
       queue.add(
@@ -145,4 +155,24 @@ class CashManager {
     // 生成连续整数集合
     return List.generate(length, (i) => start + i);
   }
+
+
+  /// money 值变动时调用
+  void onMoneyChanged(int money) {
+    // 当前 money 属于哪个档位（整除 50）
+    // ~/ 为取整除法，如 253 ~/ 50 = 5
+    int currentLevel = money ~/ 50;
+    int lastTriggerLevel = LocalCacheUtils.getInt(LocalCacheConfig.lastTriggerLevel,defaultValue: 0);
+    // 如果当前档位比之前更高，说明 money 达到了新的阶段
+    if (currentLevel > lastTriggerLevel) {
+      // 逐个触发未触发过的档位（避免跳档漏触发）
+      for (int level = lastTriggerLevel + 1; level <= currentLevel; level++) {
+        // level * 50 就是当前档位对应的 money 阈值
+        EventManager.instance.postEvent(EventConfig.cash_dall,params: {"type": level * 50});
+      }
+      // 更新最近一次触发的档位
+      LocalCacheUtils.putInt(LocalCacheConfig.lastTriggerLevel,lastTriggerLevel);
+    }
+  }
+
 }

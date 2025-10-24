@@ -33,7 +33,17 @@ class _CashProcessPopState extends State<CashProcessPop> {
   QueueUser? currentUser;
 
   Future<void> _initAsync() async {
-    userList = CashManager.instance.generateQueue();
+    updateUser(false);
+    // 更新状态
+    if (mounted) {
+      setState(() {
+        // 更新UI
+      });
+    }
+  }
+
+  void updateUser(bool needRefresh) {
+    userList = CashManager.instance.generateQueue(needRefresh);
     if (userList != null) {
       for (int i = 0; i < userList!.length; i++) {
         if (userList![i].isCurrentUser) {
@@ -41,13 +51,6 @@ class _CashProcessPopState extends State<CashProcessPop> {
           break;
         }
       }
-    }
-
-    // 更新状态
-    if (mounted) {
-      setState(() {
-        // 更新UI
-      });
     }
   }
 
@@ -343,7 +346,9 @@ class _CashProcessPopState extends State<CashProcessPop> {
                       result: (type, hasValue) {
                         if (hasValue) {
                           EventManager.instance.postEvent(EventConfig.queue_skipwait);
-                          Navigator.pop(context, 1);
+                          setState(() {
+                            updateUser(true);
+                          });
                         }
                       },
                     ).showScreenAD(EventConfig.fixrn_skipwait_rv, awaitLoading: true);

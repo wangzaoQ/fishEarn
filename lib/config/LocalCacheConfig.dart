@@ -35,4 +35,5 @@ class LocalCacheConfig{
   static const firstShowCashLimit = "firstShowCashLimit";
   static const cashName = "cashName";
   static const allowShowOffline = "allowShowOffline";
+  static const lastTriggerLevel = "lastTriggerLevel";
 }

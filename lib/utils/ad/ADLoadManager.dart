@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fish_earn/config/ADCofing.dart';
 import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
@@ -45,7 +46,7 @@ class ADLoadManager {
       LogUtils.logE("$TAG init error $e");
     }
     if(adRootData == null){
-      // rewardData = RewardData.fromJson(CashConfig.defaultReward);
+      adRootData = ADData.fromJson(ADConfig.defaultAD);
     }
     ADEnum.intAD.adRequestList.clear();
     ADEnum.rewardedAD.adRequestList.clear();
@@ -174,16 +175,26 @@ class ADLoadManager {
     cacheADShowCount+=1;
     LocalCacheUtils.putInt(LocalCacheConfig.cacheADShowCount, cacheADShowCount);
     RiskUserManager.instance.judgeADShow(cacheADShowCount);
-    while (targetIndex < targets.length &&
-        cacheADShowCount >= targets[targetIndex]) {
-      targetIndex++;
-      LocalCacheUtils.putInt(
-        LocalCacheConfig.cacheADTargetIndex,
-        targetIndex,
-      );
-      EventManager.instance.postEvent(EventConfig.pv_dall,params: {"ad":targets[targetIndex]});
+    onAdCountChanged(cacheADShowCount);
+  }
+
+  /// adCount 改变时调用，例如观看一条广告就 +1
+  void onAdCountChanged(int adCount) {
+    // 当前 adCount 属于哪个档位：
+    // 每 5 算 1 档，例如 12 → level = 2（表示已达 10）
+    int currentLevel = adCount ~/ 5;
+    int lastAdTriggerLevel = LocalCacheUtils.getInt(LocalCacheConfig.cacheADTargetIndex,defaultValue: 0);
+    // 如果当前档位比之前更高，说明达到新上报点
+    if (currentLevel > lastAdTriggerLevel) {
+      // 逐档上报，防止一次跳太多漏上报
+      for (int level = lastAdTriggerLevel + 1; level <= currentLevel; level++) {
+        EventManager.instance.postEvent(EventConfig.pv_dall,params: {"ad":level*5});
+      }
+      // 更新进度
+      LocalCacheUtils.putInt(LocalCacheConfig.cacheADTargetIndex,lastAdTriggerLevel);
     }
   }
+
   void addClickNumber() {
     var cacheADClickCount = LocalCacheUtils.getInt(LocalCacheConfig.cacheADClickCount,defaultValue: 0);
     cacheADClickCount+=1;

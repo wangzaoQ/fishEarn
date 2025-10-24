@@ -733,7 +733,7 @@ class _GameProgressState extends State<GameProgress>
                           ),
                         ):SizedBox.shrink(),
                         gameData.level == 2?Positioned(
-                          left: 180.w,
+                          left: 200.w,
                           top: 55.h, // 在进度条下方一点
                           child: CupertinoButton(
                             padding: EdgeInsets.zero,

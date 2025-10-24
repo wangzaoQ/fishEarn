@@ -150,5 +150,7 @@ class EventConfig{
   static const noti_confirm_pop_close = "noti_confirm_pop_close";
   //通知二次弹窗点击allow
   static const noti_confirm_pop_c = "noti_confirm_pop_c";
+  //终生累计cash到达对应参数值的时候，就打一次
+  static const cash_dall = "cash_dall";
 
 }

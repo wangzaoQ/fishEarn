@@ -93,7 +93,9 @@ class ADShowManager{
               "ad_format":"",
               "ad_platform":"",
         });
-        GameManager.instance.showTips("app_ad_no_cache".tr());
+        if(tag.contains("reward")){
+          GameManager.instance.showTips("app_ad_no_cache".tr());
+        }
       }
       adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, tag = "no cache");
       return;

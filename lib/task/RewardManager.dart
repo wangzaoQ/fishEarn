@@ -34,7 +34,7 @@ class RewardManager {
       LogUtils.logE("$TAG init error $e");
     }
     if(rewardData == null){
-      // rewardData = RewardData.fromJson(CashConfig.defaultReward);
+      rewardData = RewardData.fromJson(CashConfig.defaultReward);
     }
   }
 
