@@ -10,6 +10,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import '../../config/LocalConfig.dart';
 import '../../config/global.dart';
 import '../../data/ADResultData.dart';
+import '../../view/pop/ADLimitPop.dart';
 import '../../view/pop/BasePopView.dart';
 import '../GameManager.dart';
 import 'ADEnum.dart';
@@ -48,6 +49,12 @@ class ADShowManager{
     var user = LocalCacheUtils.getUserData();
     if(user.userRiskStatus){
       adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, tag = "is risk user:${user.userRiskFrom}");
+      if(tag.contains("reward")){
+        BasePopView().showScaleDialog(
+          context: LocalConfig.globalContext!,
+          child: ADLimitPop(),
+        );
+      }
       return;
     }
     var adSwitch = false;

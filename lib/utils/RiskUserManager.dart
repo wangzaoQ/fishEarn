@@ -4,10 +4,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
+import 'package:fish_earn/view/pop/PopManger.dart';
 import 'package:flutter/material.dart';
 
+import '../config/LocalConfig.dart';
 import '../data/RiskData.dart';
 import '../data/UserData.dart';
+import '../view/pop/ADLimitPop.dart';
 import 'GlobalDataManager.dart';
 import 'LogUtils.dart';
 import 'RiskDeviceUtils.dart';
@@ -322,7 +325,7 @@ class RiskUserManager {
     if(cacheADShowCount> riskData!.behavior.adDailyShow-1){
       updateUser2(user, "ad_daily_show");
       EventManager().postEvent(EventConfig.see_you_tommorow);
-      // BasePopQueue().show(context: GlobalConfig.globalContext!, child: ADLimitPop());
+      PopManager().show(context: LocalConfig.globalContext!, child: ADLimitPop());
     }
   }
 

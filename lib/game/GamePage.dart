@@ -821,7 +821,7 @@ class _GamePageState extends State<GamePage>
         if(globalShowDanger2) {
           realShowSharkTime++;
           AudioUtils().playTempAudio("audio/danger.mp3");
-          if (realShowSharkTime == 5) {
+          if (realShowSharkTime >= 5 && !adIsPlay) {
             setState(() {
               globalShowDanger2 = false;
               // ArrowOverlay.hide();
