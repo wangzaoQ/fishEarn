@@ -769,13 +769,18 @@ class _GamePageState extends State<GamePage>
   }
 
   void resumeTemp() {
+    LogUtils.logD("$TAG resumeTemp");
     registerTimer();
     GameManager.instance.resumeMovement();
   }
 
   void pausTemp() {
-    GameManager.instance.pauseMovement();
-    GlobalTimerManager().cancelTimer();
+    LogUtils.logD("$TAG pausTemp");
+    Future.delayed(const Duration(milliseconds: 500), () async {
+      if (!mounted) return;
+      GameManager.instance.pauseMovement();
+      GlobalTimerManager().cancelTimer();
+    });
   }
 
   Widget buildAnimal() {
@@ -800,7 +805,7 @@ class _GamePageState extends State<GamePage>
         if(adIsPlay || isLaunch){
           return;
         }
-
+        LogUtils.logD("${TAG} startTimer");
         gameData = LocalCacheUtils.getGameData();
         userData = LocalCacheUtils.getUserData();
         if (gameData.level > 0 && gameData.levelTime >= 1) {
@@ -1228,7 +1233,7 @@ class _GamePageState extends State<GamePage>
       params: {"pop_step": "pop4"},
     );
 
-    pausTemp();
+
     // 创建控制器
     globalGuideNew1Keys = [];
     globalGuideNew1Keys.add(
@@ -1363,6 +1368,7 @@ class _GamePageState extends State<GamePage>
       },
     );
     tutorialCoachMark?.show(context: context);
+    pausTemp();
   }
 
   void showMarkNew5() {

@@ -69,6 +69,9 @@ class _GameProgressState extends State<GameProgress>
         GlobalTimerManager().cancelTimer();
         GameManager.instance.pauseMovement();
         showMarkNew3();
+      }else if(event.message == EventConfig.refreshCoin){
+        setState(() {
+        });
       }
     });
     gameData = LocalCacheUtils.getGameData();
