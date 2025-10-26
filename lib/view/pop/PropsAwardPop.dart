@@ -494,8 +494,11 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                       });
                       Future.delayed(const Duration(milliseconds: 1000), () async {
                         if (!mounted) return;
+                        allowShowRVAD = true;
                         Navigator.pop(context,selectedCoin);
                       });
+                    }else{
+                      allowShowRVAD = true;
                     }
                   },
                 ).showScreenAD(EventConfig.fixrn_bottle_rv, awaitLoading: true);
@@ -600,14 +603,15 @@ class _PropsAwardPopState extends State<PropsAwardPop>
       ],
     );
   }
-
+  var allowClickAd = true;
   void toBack() {
+    if (!allowClickAd) return;
+    allowClickAd = false;
     ADShowManager(
       adEnum: ADEnum.intAD,
       tag: "int",
       result: (type, hasValue) {
         if(!mounted)return;
-
         Navigator.pop(context, selectedCoin);
       },
     ).showScreenAD(EventConfig.fixrn_bottle_int);

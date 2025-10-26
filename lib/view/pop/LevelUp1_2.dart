@@ -23,12 +23,12 @@ class _LevelUp1_2State extends State<LevelUp1_2>
   @override
   void initState() {
     super.initState();
+    EventManager.instance.postEvent(EventConfig.growing_ad_pop);
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3), // 一圈时间
     )..repeat(); // 无限旋转
     AudioUtils().playTempAudio("audio/levelUp.mp3");
-    EventManager.instance.postEvent(EventConfig.growing_ad_pop);
   }
 
   @override

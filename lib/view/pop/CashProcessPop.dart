@@ -42,6 +42,9 @@ class _CashProcessPopState extends State<CashProcessPop> {
     }
   }
 
+  var allowClickAd = true;
+
+
   void updateUser(bool needRefresh) {
     userList = CashManager.instance.generateQueue(needRefresh);
     if (userList != null) {
@@ -340,10 +343,13 @@ class _CashProcessPopState extends State<CashProcessPop> {
                   ),
                   onPressed: () {
                     if (!ClickManager.canClick(context: context)) return;
+                    if (!allowClickAd) return;
+                    allowClickAd = false;
                     ADShowManager(
                       adEnum: ADEnum.rewardedAD,
                       tag: "reward",
                       result: (type, hasValue) {
+                        allowClickAd = true;
                         if (hasValue) {
                           EventManager.instance.postEvent(EventConfig.queue_skipwait);
                           setState(() {

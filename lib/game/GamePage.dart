@@ -141,29 +141,35 @@ class _GamePageState extends State<GamePage>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       LocalCacheUtils.putBool(LocalCacheConfig.firstLogin, false);
       registerTimer();
-      await FishNFManager.instance.init();
-      var allowNF = await FishNFManager.instance.allowNF();
-      if(allowNF){
-        FishNFManager.instance.startNF();
-      }else{
-        pausTemp();
-        EventManager.instance.postEvent(EventConfig.noti_confirm_pop);
-        var result = await PopManager().show(
-          context: context,
-          child: NFGuidePop()
-        );
-        if(result == 1){
-          var gameData = LocalCacheUtils.getGameData();
-          gameData.coin+=5;
-          LocalCacheUtils.putGameData(gameData);
-          await PopManager().show(
-            context: context,
-            needAlpha: 0,
-            child: CoinAnimalPop(),
+      try{
+        await FishNFManager.instance.init();
+        var allowNF = await FishNFManager.instance.allowNF();
+        if(allowNF){
+          FishNFManager.instance.startNF();
+        }else{
+          pausTemp();
+          EventManager.instance.postEvent(EventConfig.noti_confirm_pop);
+
+          var result = await PopManager().show(
+              context: context,
+              child: NFGuidePop()
           );
+          if(result == 1){
+            var gameData = LocalCacheUtils.getGameData();
+            gameData.coin+=5;
+            LocalCacheUtils.putGameData(gameData);
+            await PopManager().show(
+              context: context,
+              needAlpha: 0,
+              child: CoinAnimalPop(),
+            );
+          }
+          resumeTemp();
         }
-        resumeTemp();
+      }catch(e){
+        LogUtils.logD("$TAG ${e}");
       }
+
       var allowShowOffline = LocalCacheUtils.getBool(LocalCacheConfig.allowShowOffline,defaultValue: false);
       if(allowShowOffline){
         await PopManager().show(
@@ -176,28 +182,7 @@ class _GamePageState extends State<GamePage>
           child: CoinAnimalPop(),
         );
       }
-      if (userData.new1 ||
-          userData.new2 ||
-          userData.new3 ||
-          userData.new4 ||
-          userData.new5) {
-        if (userData.new1) {
-          GameManager.instance.swimToCenter();
-          showMarkNew1();
-        } else if (userData.new2) {
-          showMarkNew2();
-        } else if (userData.new3) {
-          eventBus.fire(NotifyEvent(EventConfig.new3));
-        } else if (userData.new4) {
-          eventBus.fire(NotifyEvent(EventConfig.new4));
-        } else if (userData.new5) {
-          showMarkNew5();
-        } else if (userData.new6 || userData.new7) {
-          toCashMain(context);
-        }
-      }else{
-
-      }
+      newUserGuide();
       // TaskManager.instance.addTask("login");
     });
     eventBus.on<NotifyEvent>().listen((event) {
@@ -214,6 +199,31 @@ class _GamePageState extends State<GamePage>
     EventManager.instance.postEvent(EventConfig.home_page);
 
 
+  }
+
+  void newUserGuide() {
+       if (userData.new1 ||
+        userData.new2 ||
+        userData.new3 ||
+        userData.new4 ||
+        userData.new5) {
+      if (userData.new1) {
+        GameManager.instance.swimToCenter();
+        showMarkNew1();
+      } else if (userData.new2) {
+        showMarkNew2();
+      } else if (userData.new3) {
+        eventBus.fire(NotifyEvent(EventConfig.new3));
+      } else if (userData.new4) {
+        eventBus.fire(NotifyEvent(EventConfig.new4));
+      } else if (userData.new5) {
+        showMarkNew5();
+      } else if (userData.new6 || userData.new7) {
+        toCashMain(context);
+      }
+    }else{
+
+    }
   }
 
   @override
@@ -1077,9 +1087,15 @@ class _GamePageState extends State<GamePage>
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.resumed) {
       LogUtils.logD("${TAG} resumed");
+      userData = LocalCacheUtils.getUserData();
+      newUserGuide();
       resumeTemp();
     } else if (state == AppLifecycleState.paused) {
       LogUtils.logD("${TAG} paused");
+      if (tutorialCoachMark?.isShowing ?? false) {
+        // 自定义逻辑
+        tutorialCoachMark?.skip(); // 关闭当前教程
+      }
       pausTemp();
     }
   }

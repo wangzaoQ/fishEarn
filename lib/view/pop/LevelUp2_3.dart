@@ -4,8 +4,10 @@ import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../config/EventConfig.dart';
 import '../../utils/AudioUtils.dart';
 import '../../utils/ClickManager.dart';
+import '../../utils/net/EventManager.dart';
 import '../GameText.dart';
 
 class LevelUp2_3 extends StatefulWidget {
@@ -22,6 +24,7 @@ class _LevelUp2_3State extends State<LevelUp2_3>
   @override
   void initState() {
     super.initState();
+    EventManager.instance.postEvent(EventConfig.growing_ad_pop);
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 3), // 一圈时间
