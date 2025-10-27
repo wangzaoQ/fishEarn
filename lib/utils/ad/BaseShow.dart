@@ -60,9 +60,9 @@ abstract class BaseShow {
   }
 
   // 通知加载完成
-  void loadComplete(String type, String tag) {
+  void loadComplete(String type, String tipsTag) {
     adIsPlay = false;
-    LogUtils.logD("$TAG loadComplete tag:$tag adEnum:${adEnum.toString()}");
+    LogUtils.logD("$TAG loadComplete tag:$tipsTag adEnum:${adEnum.toString()}");
     ADLoadManager.instance.preloadAll("loadComplete");
     result(type,hasValue);
   }

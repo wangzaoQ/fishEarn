@@ -37,7 +37,7 @@ class ADShowManager{
   Future<void> showScreenAD(String pointTag,{awaitLoading = false,allowADChange=true}) async {
     var isInitialized = await AppLovinMAX.isInitialized()??false;
     if(!isInitialized){
-      adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, tag = "adk init error");
+      adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, "adk init error");
       // NetControl().postEvent(PointConfig.oxrsl_ad_impression_fail,
       //     params: {
       //       "ad_pos_id":pointTag,
@@ -48,7 +48,7 @@ class ADShowManager{
     }
     var user = LocalCacheUtils.getUserData();
     if(user.userRiskStatus){
-      adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, tag = "is risk user:${user.userRiskFrom}");
+      adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, "is risk user:${user.userRiskFrom}");
       if(tag.contains("reward")){
         BasePopView().showScaleDialog(
           context: LocalConfig.globalContext!,
@@ -64,7 +64,7 @@ class ADShowManager{
       var gameData = LocalCacheUtils.getGameData();
       var allow = GlobalDataManager.instance.allowShowInt(gameData.coin);
       if(!allow){
-        adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, tag = "int is not allowed");
+        adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, "int is not allowed");
         return;
       }
     }
@@ -104,7 +104,7 @@ class ADShowManager{
           GameManager.instance.showTips("app_ad_no_cache".tr());
         }
       }
-      adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, tag = "no cache");
+      adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, "no cache");
       return;
     }
     //走通用的逻辑

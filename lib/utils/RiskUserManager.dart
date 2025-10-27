@@ -36,7 +36,6 @@ class RiskUserManager {
   void init(Map<String, dynamic>? initialTasks) async{
     // var encrypt = GlobalDataManager.instance.encrypt("MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMYl4KczbxQYcRCOgSH0lzRtfuI/jffXOXpHUXRVm3CRiyNL4M5U0Vy3qC+HO64/a1ZZ2FFcKLG69oOvUkCuMr0CAwEAAQ==",116);
     // LogUtils.logD("${TAG}encrypt:${encrypt}");
-    return;
     try{
       await RiskDeviceUtils.instance.initNumberUnit(apiKey: GlobalDataManager.instance.decrypt(apiKey,110));
     }catch (e){

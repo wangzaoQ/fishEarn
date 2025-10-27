@@ -211,6 +211,7 @@ class TaskManager {
         nextTask = "task7";
       }
       LogUtils.logD("$TAG: task next currentTask:$taskName nextTask:$nextTask ");
+      LocalCacheUtils.putString(LocalCacheConfig.taskCurrentKey,nextTask);
       LocalCacheUtils.putInt(task1,0);
       LocalCacheUtils.putInt(task2,0);
     }

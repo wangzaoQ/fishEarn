@@ -894,6 +894,11 @@ class _GamePageState extends State<GamePage>
               child: ProtectPop(),
             );
             if(result == 0 || result == 1){
+              if (!userData.new5) {
+                globalShowShark = true;
+                EventManager.instance.postEvent(EventConfig.shark_attack_c);
+                TaskManager.instance.addTask("defend");
+              }
               toProtect();
             }else{
               resumeTemp();

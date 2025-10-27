@@ -144,13 +144,13 @@ class _CashWidgetState extends State<CashItemView> {
                     onPressed: () async {
                       if (!ClickManager.canClick(context: context)) return;
                       var gameData = LocalCacheUtils.getGameData();
-                      if(gameData.coin<widget.money){
-                        BasePopView().showScaleDialog(
-                          context: context,
-                          child: CashErrorPop( money: widget.money),
-                        );
-                        return;
-                      }
+                      // if(gameData.coin<widget.money){
+                      //   BasePopView().showScaleDialog(
+                      //     context: context,
+                      //     child: CashErrorPop( money: widget.money),
+                      //   );
+                      //   return;
+                      // }
                       var result = await Navigator.push(
                         context,
                         MaterialPageRoute(

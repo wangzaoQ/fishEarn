@@ -191,7 +191,7 @@ class ADLoadManager {
         EventManager.instance.postEvent(EventConfig.pv_dall,params: {"ad":level*5});
       }
       // 更新进度
-      LocalCacheUtils.putInt(LocalCacheConfig.cacheADTargetIndex,lastAdTriggerLevel);
+      LocalCacheUtils.putInt(LocalCacheConfig.cacheADTargetIndex,currentLevel);
     }
   }
 

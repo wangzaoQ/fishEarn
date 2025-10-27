@@ -171,7 +171,7 @@ class CashManager {
         EventManager.instance.postEvent(EventConfig.cash_dall,params: {"type": level * 50});
       }
       // 更新最近一次触发的档位
-      LocalCacheUtils.putInt(LocalCacheConfig.lastTriggerLevel,lastTriggerLevel);
+      LocalCacheUtils.putInt(LocalCacheConfig.lastTriggerLevel,currentLevel);
     }
   }
 

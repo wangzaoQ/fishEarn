@@ -75,7 +75,7 @@ class LocalCacheUtils{
   static Future<bool> putGameData(GameData gameData) async {
     String jsonStr = jsonEncode(gameData.toJson());
     var result =  await _prefs!.setString(LocalCacheConfig.cacheKeyLocalGame, jsonStr);
-    // CashManager.instance.onMoneyChanged(gameData.coin.toInt());
+    CashManager.instance.onMoneyChanged(gameData.coin.toInt());
     if(gameData.coin>=500){
       var firstShowCashLimit = LocalCacheUtils.getBool(LocalCacheConfig.firstShowCashLimit,defaultValue: true);
       if(firstShowCashLimit){
