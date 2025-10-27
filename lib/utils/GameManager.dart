@@ -76,6 +76,10 @@ class GameManager{
     game?.updateProtectTime(time);
   }
 
+  updateUnLimitTime(int time){
+    game?.updateUnLimitTime(time);
+  }
+
   addCoin(GameData gameData){
     if(gameData.level == 2){
       gameData.coin+=RewardManager.instance.get2LevelCoin();

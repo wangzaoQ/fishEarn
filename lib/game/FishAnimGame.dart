@@ -135,6 +135,20 @@ class FishAnimGame extends FlameGame {
     }
   }
 
+  void updateUnLimitTime(int time){
+    // 每帧刷新文字，如果保护时间在减少
+    if(time == 0){
+      bgProtect.paint.color = bgProtect.paint.color.withOpacity(0.0);
+      timeText.text = "";
+      hideProtect();
+      globalShowProtect = false;
+    }else{
+      bgProtect.paint.color = bgProtect.paint.color.withOpacity(1.0);
+      timeText.text = GlobalTimerManager().formatTime(time);
+      showProtect();
+    }
+  }
+
   void showProtect(){
     globalShowProtect = true;
     fishComment?.showOverlay();

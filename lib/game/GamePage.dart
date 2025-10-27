@@ -119,6 +119,8 @@ class _GamePageState extends State<GamePage>
     return GameConfig.protectDuration;
   }
 
+  var allowShowNewUserGuide = false;
+
   @override
   void initState() {
     super.initState();
@@ -185,6 +187,7 @@ class _GamePageState extends State<GamePage>
           child: CoinAnimalPop(),
         );
       }
+      allowShowNewUserGuide = true;
       newUserGuide();
       // TaskManager.instance.addTask("login");
     });
@@ -221,7 +224,7 @@ class _GamePageState extends State<GamePage>
   var isShowGuide = false;
 
   Future<void> newUserGuide() async {
-    if(isShowGuide)return;
+    if(isShowGuide || !allowShowNewUserGuide)return;
     isShowGuide = true;
     userData = LocalCacheUtils.getUserData();
     var firstShowGuide1 = LocalCacheUtils.getBool(LocalCacheConfig.firstShowGuide1,defaultValue: true);
@@ -595,6 +598,15 @@ class _GamePageState extends State<GamePage>
                 },
               ),
             ),
+            // Positioned(
+            //   top: 400.h,
+            //   right: 22.w,
+            //   child: Column(children: [
+            //     Image.asset("assets/images/ic_cash_tips_top.webp",width: 30.w,height: 30.h,),
+            //     Text("40",style: TextStyle(fontSize: 15.sp,color: Color(0xFF651922)),),
+            //   ],),
+            // ),
+
             ValueListenableBuilder<double>(
               valueListenable: propsNotifier,
               builder: (_, value, __) {
@@ -723,7 +735,7 @@ class _GamePageState extends State<GamePage>
           );
         }
         gameData = LocalCacheUtils.getGameData();
-        if(result!=-2){
+        if(result!=-2 && !GlobalTimerManager().isTimer2Running()){
           gameData.pearlCount -= 1;
           LocalCacheUtils.putGameData(gameData);
         }
