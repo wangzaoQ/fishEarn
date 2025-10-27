@@ -55,6 +55,24 @@ class RewardManager {
     return 10;
   }
 
+  double get2LevelCoin(){
+    double coin =0.02;
+    try{
+      coin = (rewardData?.idleReward2?.prize[0]??0.02) as double;
+    }catch(e){
+    }
+    return coin;
+  }
+
+  double get3LevelCoin(){
+    double coin =0.05;
+    try{
+      coin = (rewardData?.idleReward3?.prize[0]??0.05) as double;
+    }catch(e){
+    }
+    return coin;
+  }
+
   double findReward(List<RewardRange>? rewardList, double value) {
     if(rewardList == null)return 0.0;
     if (rewardList.isEmpty) {

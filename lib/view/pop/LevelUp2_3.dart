@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../config/EventConfig.dart';
+import '../../task/RewardManager.dart';
 import '../../utils/AudioUtils.dart';
 import '../../utils/ClickManager.dart';
 import '../../utils/net/EventManager.dart';
@@ -139,7 +140,7 @@ class _LevelUp2_3State extends State<LevelUp2_3>
                   height: 45.h,
                 ),
                 GameText(
-                  showText: "+0.05/1s",
+                  showText: "+${RewardManager.instance.get3LevelCoin()}/1s",
                   fontSize: 25.sp,
                   fillColor: Color(0xFFFFEF50),
                   strokeColor: Color(0xFF9B4801),

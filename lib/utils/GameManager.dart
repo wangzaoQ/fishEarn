@@ -9,6 +9,7 @@ import '../config/GameConfig.dart';
 import '../config/global.dart';
 import '../data/GameData.dart';
 import '../game/FishAnimGame.dart';
+import '../task/RewardManager.dart';
 
 class GameManager{
   // 私有构造函数
@@ -77,9 +78,9 @@ class GameManager{
 
   addCoin(GameData gameData){
     if(gameData.level == 2){
-      gameData.coin+=0.02;
+      gameData.coin+=RewardManager.instance.get2LevelCoin();
     }else if(gameData.level == 3){
-      gameData.coin+=0.05;
+      gameData.coin+=RewardManager.instance.get3LevelCoin();
     }
   }
 

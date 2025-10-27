@@ -77,18 +77,19 @@ class LocalCacheUtils{
     var result =  await _prefs!.setString(LocalCacheConfig.cacheKeyLocalGame, jsonStr);
     // CashManager.instance.onMoneyChanged(gameData.coin.toInt());
     if(gameData.coin>=500){
-      if(LocalConfig.globalContext!=null){
-        var firstShowCashLimit = LocalCacheUtils.getBool(LocalCacheConfig.firstShowCashLimit,defaultValue: true);
-        if(firstShowCashLimit){
-          LocalCacheUtils.putBool(LocalCacheConfig.firstShowCashLimit, false);
-          var result = await BasePopView().showScaleDialog(
-            context: LocalConfig.globalContext!,
-            child: WithdrawPop(),
-          );
-          if(result == 1){
-            eventBus.fire(NotifyEvent(EventConfig.toCash));
-          }
+      var firstShowCashLimit = LocalCacheUtils.getBool(LocalCacheConfig.firstShowCashLimit,defaultValue: true);
+      if(firstShowCashLimit){
+        LocalCacheUtils.putBool(LocalCacheConfig.firstShowCashLimit, false);
+        eventBus.fire(NotifyEvent(EventConfig.cashTips1));
+        if(result == 1){
+          eventBus.fire(NotifyEvent(EventConfig.toCash));
         }
+      }
+    }else if(gameData.coin>=200){
+      var firstShowCashLimit = LocalCacheUtils.getBool(LocalCacheConfig.firstShowCashTips,defaultValue: true);
+      if(firstShowCashLimit){
+        LocalCacheUtils.putBool(LocalCacheConfig.firstShowCashTips, false);
+        eventBus.fire(NotifyEvent(EventConfig.cashTips2));
       }
     }
     return result;

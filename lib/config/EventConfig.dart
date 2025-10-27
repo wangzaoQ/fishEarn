@@ -4,6 +4,9 @@ class EventConfig{
   static const new4 = "new4";
   static const refreshCoin = "refreshCoin";
   static const toCash = "toCash";
+  static const cashTips1 = "cashTips1";
+  static const cashTips2 = "cashTips2";
+
 
   /**
    * "ad_code_id:广告位ID；

@@ -22,6 +22,7 @@ import 'package:fish_earn/view/SharkWidget.dart';
 import 'package:fish_earn/view/BubbleWidget.dart';
 import 'package:fish_earn/view/pop/CashProcessPop.dart';
 import 'package:fish_earn/view/pop/CoinAnimalPop.dart';
+import 'package:fish_earn/view/pop/FirstGuidePop.dart';
 import 'package:fish_earn/view/pop/GameAward.dart';
 import 'package:fish_earn/view/pop/GameFailPop.dart';
 import 'package:fish_earn/view/pop/GamePearlPop.dart';
@@ -57,10 +58,12 @@ import '../view/GameLifeProgress.dart';
 import '../view/GameText.dart';
 import '../view/PropsProgress.dart';
 import '../view/pop/BasePopView.dart';
+import '../view/pop/CashTipsPop.dart';
 import '../view/pop/LevelPop2_3.dart';
 import '../view/pop/PropsAwardPop.dart';
 import '../view/pop/ProtectPop.dart';
 import '../view/pop/SettingPop.dart';
+import '../view/pop/WithdrawPop.dart';
 import 'AnimalGameHolder.dart';
 import 'ArrowWidget.dart';
 import 'GameLifePage.dart';
@@ -185,7 +188,7 @@ class _GamePageState extends State<GamePage>
       newUserGuide();
       // TaskManager.instance.addTask("login");
     });
-    eventBus.on<NotifyEvent>().listen((event) {
+    eventBus.on<NotifyEvent>().listen((event) async {
       if (event.message == EventConfig.new4) {
         // setState(() {
         //   globalShowDanger2 = true;
@@ -194,15 +197,37 @@ class _GamePageState extends State<GamePage>
         showMarkNew4();
       }else if(event.message == EventConfig.toCash){
         toCashMain(context);
+      }else if(event.message == EventConfig.cashTips1){
+        pausTemp();
+        var result = await PopManager().show(context: context, child: WithdrawPop());
+        resumeTemp();
+      }else if(event.message == EventConfig.cashTips2){
+        pausTemp();
+        var result = await PopManager().show(context: context, child: CashTipsPop());
+        if(result == 1){
+          var result = await PopManager().show(context: context, child: PropsAwardPop());
+        }else if(result == 2){
+          toCashMain(context);
+        }
+        resumeTemp();
       }
     });
     EventManager.instance.postEvent(EventConfig.home_page);
-
-
   }
 
-  void newUserGuide() {
-       if (userData.new1 ||
+  Future<void> newUserGuide() async {
+    userData = LocalCacheUtils.getUserData();
+    var firstShowGuide1 = LocalCacheUtils.getBool(LocalCacheConfig.firstShowGuide1,defaultValue: true);
+    if(firstShowGuide1){
+      pausTemp();
+      var result = await BasePopView().showScaleDialog(
+        context: LocalConfig.globalContext!,
+        child: FirstGuidePop(),
+        needAlpha: 0.7
+      );
+      LocalCacheUtils.putBool(LocalCacheConfig.firstShowGuide1, false);
+    }
+    if (userData.new1 ||
         userData.new2 ||
         userData.new3 ||
         userData.new4 ||
@@ -1088,8 +1113,15 @@ class _GamePageState extends State<GamePage>
     if (state == AppLifecycleState.resumed) {
       LogUtils.logD("${TAG} resumed");
       userData = LocalCacheUtils.getUserData();
-      newUserGuide();
-      resumeTemp();
+      Future.delayed(Duration(seconds: 1), () async {
+        if (!mounted) return;
+        while(adIsPlay || isLaunch){
+          await Future.delayed(const Duration(seconds: 1));
+        }
+        newUserGuide();
+        resumeTemp();
+      });
+
     } else if (state == AppLifecycleState.paused) {
       LogUtils.logD("${TAG} paused");
       if (tutorialCoachMark?.isShowing ?? false) {

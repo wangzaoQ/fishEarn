@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../config/EventConfig.dart';
+import '../../task/RewardManager.dart';
 import '../../utils/AudioUtils.dart';
 import '../../utils/net/EventManager.dart';
 import '../GameText.dart';
@@ -95,7 +96,7 @@ class _LevelUp1_2State extends State<LevelUp1_2>
                           height: 45.h,
                         ),
                         GameText(
-                          showText: "+0.02/1s",
+                          showText: "+${RewardManager.instance.get2LevelCoin()}/1s",
                           fontSize: 25.sp,
                           fillColor: Color(0xFFFFEF50),
                           strokeColor: Color(0xFF9B4801),

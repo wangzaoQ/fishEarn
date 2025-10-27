@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:fish_earn/task/RewardManager.dart';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -289,7 +290,7 @@ class FishComponent extends SpriteAnimationComponent with HasGameRef<FishAnimGam
     _floatingTimer += dt;
     if (_floatingTimer >= 1.0 && level>1) {
       _floatingTimer = 0.0;
-      showFloatingText(level == 2? "+\$0.02": "+\$0.05", color: Color(0xFFFFEF50));
+      showFloatingText(level == 2? "+\$${RewardManager.instance.get2LevelCoin()}": "+\$${RewardManager.instance.get3LevelCoin()}", color: Color(0xFFFFEF50));
     }
   }
 

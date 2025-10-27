@@ -12,6 +12,7 @@ import 'package:flutter_udid/flutter_udid.dart';
 
 import '../config/CashConfig.dart';
 import '../data/IntAdConfig.dart';
+import '../task/RewardManager.dart';
 import 'LogUtils.dart';
 
 class GlobalDataManager{
@@ -41,7 +42,7 @@ class GlobalDataManager{
   }
 
   String getCommonCoin(int level){
-    return level == 2?"+0.02/s":"+0.05/s";
+    return level == 2?"+${RewardManager.instance.get2LevelCoin()}/s":"+${RewardManager.instance.get3LevelCoin()}/s";
   }
 
   Future<String> getDeviceId() async {
