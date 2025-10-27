@@ -70,6 +70,7 @@ class CashConfig {
   static Map<String, dynamic> defaultGlobalConfig = {
     "shark_attack":30,
     "protect_type":1,
+    "unlimited_time":40,
   };
 
   static Map<String, dynamic> defaultReward =//idle_reward2 2级挂机美秒金额

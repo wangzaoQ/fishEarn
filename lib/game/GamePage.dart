@@ -204,11 +204,14 @@ class _GamePageState extends State<GamePage>
       }else if(event.message == EventConfig.cashTips2){
         pausTemp();
         var result = await PopManager().show(context: context, child: CashTipsPop());
+        GlobalTimerManager().startTimer2();
         if(result == 1){
-          var result = await PopManager().show(context: context, child: PropsAwardPop());
+          await toPearlPop(context);
         }else if(result == 2){
-          toCashMain(context);
+          await toCashMain(context);
         }
+
+
         resumeTemp();
       }
     });
@@ -511,54 +514,7 @@ class _GamePageState extends State<GamePage>
                         ),
                         onPressed: () async {
                           if (!ClickManager.canClick(context: context)) return;
-                          pausTemp();
-                          var result = await PopManager().show(
-                            context: context,
-                            child: GamePearlPop(targetIndex: 2),
-                          );
-                          //2 双倍 1单倍
-                          var awardResult = 1;
-                          if (result != null) {
-                            if (result == -2) {
-                              await PopManager().show(
-                                context: context,
-                                child: NoPearlPop(),
-                              );
-                            } else if (result == -1) {
-                              //食物
-                              awardResult = await PopManager().show(
-                                context: context,
-                                child: GameAwardPop(type: 1, money: 30),
-                              );
-                            } else {
-                              awardResult = await PopManager().show(
-                                context: context,
-                                child: GameAwardPop(type: 0, money: result),
-                              );
-                            }
-                            gameData = LocalCacheUtils.getGameData();
-                            if(result!=-2){
-                              gameData.pearlCount -= 1;
-                              LocalCacheUtils.putGameData(gameData);
-                            }
-                            if (result == -1) {
-                              setState(() {
-                                gameData.foodCount += 30;
-                              });
-                            } else if(result!=-2){
-                              await PopManager().show(
-                                context: context,
-                                needAlpha: 0,
-                                child: CoinAnimalPop(),
-                              );
-                              gameData.coin += result * awardResult;
-                            }
-                            LocalCacheUtils.putGameData(gameData);
-                            setState(() {
-
-                            });
-                          }
-                          resumeTemp();
+                          await toPearlPop(context);
                         },
                       ),
                     ),
@@ -736,6 +692,66 @@ class _GamePageState extends State<GamePage>
         ),
       ),
     );
+  }
+
+  Future<void> toPearlPop(BuildContext context) async {
+    var needContinue = false;
+    pausTemp();
+    while(GlobalTimerManager().isTimer2Running()){
+      var result = await PopManager().show(
+        context: context,
+        child: GamePearlPop(targetIndex: 2,pearlPopType:GlobalTimerManager().isTimer2Running()?1:0),
+      );
+      //2 双倍 1单倍
+      var awardResult = 1;
+      if (result != null) {
+        if (result == -2) {
+          await PopManager().show(
+            context: context,
+            child: NoPearlPop(),
+          );
+        } else if (result == -1) {
+          //食物
+          awardResult = await PopManager().show(
+            context: context,
+            child: GameAwardPop(type: 1, money: 30),
+          );
+        } else {
+          awardResult = await PopManager().show(
+            context: context,
+            child: GameAwardPop(type: 0, money: result),
+          );
+        }
+        gameData = LocalCacheUtils.getGameData();
+        if(result!=-2){
+          gameData.pearlCount -= 1;
+          LocalCacheUtils.putGameData(gameData);
+        }
+        if (result == -1) {
+          setState(() {
+            gameData.foodCount += 30;
+          });
+        } else if(result!=-2){
+          await PopManager().show(
+            context: context,
+            needAlpha: 0,
+            child: CoinAnimalPop(),
+          );
+          gameData.coin += result * awardResult;
+        }
+        LocalCacheUtils.putGameData(gameData);
+        setState(() {
+
+        });
+        needContinue = true;
+      }else{
+        needContinue = false;
+      }
+      if(!needContinue){
+        break;
+      }
+    }
+    resumeTemp();
   }
 
   var allowClickProtect = true;

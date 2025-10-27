@@ -119,6 +119,11 @@ class GlobalDataManager{
     }
   }
 
+  int getUnLimitedTime(){
+    var time = globalData?.unlimitedTime??40;
+    return time;
+  }
+
 
   bool allowShowInt(double coin) {
     if(intADConfig == null)return true;
