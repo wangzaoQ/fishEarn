@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../config/EventConfig.dart';
 import '../../task/RewardManager.dart';
 import '../../utils/AudioUtils.dart';
+import '../../utils/ClickManager.dart';
 import '../../utils/net/EventManager.dart';
 import '../GameText.dart';
 
@@ -57,7 +58,7 @@ class _LevelUp1_2State extends State<LevelUp1_2>
               height: 32.h,
             ),
             onPressed: () {
-              AudioUtils().playClickAudio();
+              if (!ClickManager.canClick(context: context)) return;
               Navigator.pop(context, null);
             },
           ),

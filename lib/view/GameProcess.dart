@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/EventConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/data/GameData.dart';
+import 'package:fish_earn/task/RewardManager.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameText.dart';
@@ -555,7 +556,7 @@ class _GameProgressState extends State<GameProgress>
                                         left: 22.w,
                                         top: 2.h,
                                         child: Text(
-                                          "+\$${GameConfig.coin_1_2}",
+                                          "+\$${RewardManager.instance.findReward(RewardManager.instance.rewardData?.giveUp?.prize, gameData.coin)}",
                                           style: TextStyle(
                                             color: Color(0xFF561C3E),
                                             fontSize: 13.sp,
@@ -650,7 +651,7 @@ class _GameProgressState extends State<GameProgress>
                                         left: 22.w,
                                         top: 2.h,
                                         child: Text(
-                                          "+\$${GameConfig.coin_2_3}",
+                                          "+\$${RewardManager.instance.findReward(RewardManager.instance.rewardData?.giveUp?.prize, gameData.coin)}",
                                           style: TextStyle(
                                             color: Color(0xFF561C3E),
                                             fontSize: 13.sp,
@@ -792,7 +793,7 @@ class _GameProgressState extends State<GameProgress>
     LocalCacheUtils.putGameData(gameData);
     widget.onConfirm(2);
     await PopManager().show(context: context, child: LevelPop1_2());
-    gameData.coin += GameConfig.coin_1_2;
+    gameData.coin += RewardManager.instance.findReward(RewardManager.instance.rewardData?.giveUp?.prize, gameData.coin);
     LocalCacheUtils.putGameData(gameData);
     GameManager.instance.updateCoinToGame(gameData.coin);
     widget.onConfirm(100);
@@ -809,7 +810,7 @@ class _GameProgressState extends State<GameProgress>
       context: context,
       child: LevelPop2_3(),
     );
-    gameData.coin += GameConfig.coin_2_3;
+    gameData.coin += RewardManager.instance.findReward(RewardManager.instance.rewardData?.giveUp?.prize, gameData.coin);
     LocalCacheUtils.putGameData(gameData);
     GameManager.instance.updateCoinToGame(gameData.coin);
     widget.onConfirm(100);

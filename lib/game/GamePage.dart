@@ -215,7 +215,11 @@ class _GamePageState extends State<GamePage>
     EventManager.instance.postEvent(EventConfig.home_page);
   }
 
+  var isShowGuide = false;
+
   Future<void> newUserGuide() async {
+    if(isShowGuide)return;
+    isShowGuide = true;
     userData = LocalCacheUtils.getUserData();
     var firstShowGuide1 = LocalCacheUtils.getBool(LocalCacheConfig.firstShowGuide1,defaultValue: true);
     if(firstShowGuide1){
@@ -249,6 +253,10 @@ class _GamePageState extends State<GamePage>
     }else{
 
     }
+    Future.delayed(const Duration(seconds: 1), () async {
+      if (!mounted) return;
+      isShowGuide = false;
+    });
   }
 
   @override
