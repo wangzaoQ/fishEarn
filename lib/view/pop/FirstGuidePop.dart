@@ -1,5 +1,6 @@
 import 'package:fish_earn/task/RewardManager.dart';
 import 'package:fish_earn/view/GameText.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -194,24 +195,58 @@ class _FirstGuidePopState extends State<FirstGuidePop>
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: EdgeInsetsGeometry.only(bottom: 130.h),
-                child: Stack(
-                  children: [
-                    Image.asset(
-                      "assets/images/bg_guide1_bottom.webp",
-                      width: 355.w,
-                      fit: BoxFit.fill,
-                    ),
-                    Center(child:  Image.asset(
-                      "assets/images/ic_first_guide_arrow.webp",
-                      width: 61.w,
-                      height: 36.h,
-                      fit: BoxFit.fill,
-                    ),)
-                  ],
+                child: SizedBox(
+                  width: 355.w,
+                  height: 169.h,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        bottom: 0,
+                        child: Image.asset(
+                          "assets/images/bg_guide1_bottom.webp",
+                          width: 355.w,
+                          height: 169.h,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: EdgeInsetsGeometry.only(bottom: 30.h),
+                          child: Image.asset(
+                            "assets/images/ic_first_guide_arrow.webp",
+                            width: 61.w,
+                            height: 36.h,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
+          Align(alignment: Alignment.bottomCenter,child: Padding(padding: EdgeInsetsGeometry.only(bottom: 70.h),child: CupertinoButton(
+            onPressed: () {
+              if (!ClickManager.canClick(context: context)) return;
+              Navigator.pop(context);
+            },
+            child: Text(
+            "Next",
+              style: TextStyle(
+                fontSize: 20.sp,
+                color: Color(0xFFFFFFFF),
+                fontWeight: FontWeight.bold,
+                fontFamily: "AHV",
+                decoration: TextDecoration.underline,
+                // ✅ 下划线
+                decorationColor: Color(0xBFFFFFFF),
+                // 可选：自定义下划线颜色
+                decorationThickness: 1.h,
+              ),
+            ),
+          )),)
         ],
       ),
     );
