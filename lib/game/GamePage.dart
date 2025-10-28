@@ -177,6 +177,7 @@ class _GamePageState extends State<GamePage>
 
       var allowShowOffline = LocalCacheUtils.getBool(LocalCacheConfig.allowShowOffline,defaultValue: false);
       if(allowShowOffline){
+        LocalCacheUtils.putBool(LocalCacheConfig.allowShowOffline, false);
         await PopManager().show(
           context: context,
           child: OfflinePop(),
