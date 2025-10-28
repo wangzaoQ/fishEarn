@@ -96,6 +96,10 @@ class CashManager {
     }else{
       if(refresh){
         currentUserRank = currentUserRank - randomS;
+        if(currentUserRank<=0){
+          currentUserRank = 1;
+        }
+        LocalCacheUtils.putInt(LocalCacheConfig.cacheCashCurrentKey, currentUserRank);
         LogUtils.logD("$TAG other refresh currentUserRank:$currentUserRank");
         rangeList = generateSetWithCenter(currentUserRank,7);
         LocalCacheUtils.saveIntList(LocalCacheConfig.cacheLastRankRangeKey,rangeList);
@@ -128,6 +132,17 @@ class CashManager {
         if(cashName!=""){
           accountInfo = cashName;
         }
+        var type = LocalCacheUtils.getInt(LocalCacheConfig.cashMoneyType,defaultValue: 1);
+        //1 500 2 800 3 1000
+        var money = 500;
+        if(type == 1){
+          money = 500;
+        }else if(type == 2){
+          money = 800;
+        }else if(type == 3){
+          money = 1000;
+        }
+        amount = money;
       }
       var queueUser = QueueUser(
         rank: formatted,

@@ -156,5 +156,7 @@ class EventConfig{
   static const noti_confirm_pop_c = "noti_confirm_pop_c";
   //终生累计cash到达对应参数值的时候，就打一次
   static const cash_dall = "cash_dall";
+  //任务完成后的恭喜弹窗
+  static const congratulation_pop = "congratulation_pop";
 
 }

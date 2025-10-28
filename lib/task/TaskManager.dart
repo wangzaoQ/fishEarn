@@ -2,8 +2,12 @@ import 'dart:convert';
 
 import 'package:fish_earn/config/CashConfig.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
+import 'package:fish_earn/config/LocalConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/LogUtils.dart';
+
+import '../view/pop/CashProcessPop.dart';
+import '../view/pop/PopManger.dart';
 
 /// 任务管理器：
 ///
@@ -192,6 +196,7 @@ class TaskManager {
   }
 
   void nextTask(String task1, String task2, int task1Count, int task2Count, String taskName) {
+    LocalCacheUtils.putString(LocalCacheConfig.taskCurrentKey,"task5");
     var taskMap = TaskManager.instance.getCurrentSubTasks();
     var task1Config = taskMap[task1];
     var task2Config = taskMap[task2];
@@ -207,13 +212,28 @@ class TaskManager {
         nextTask = "task5";
       } else if(taskName == "task5"){
         nextTask = "task6";
-      } else if(taskName == "task6"){
-        nextTask = "task7";
       }
       LogUtils.logD("$TAG: task next currentTask:$taskName nextTask:$nextTask ");
       LocalCacheUtils.putString(LocalCacheConfig.taskCurrentKey,nextTask);
       LocalCacheUtils.putInt(task1,0);
       LocalCacheUtils.putInt(task2,0);
+      if(nextTask == "task6"){
+        LocalCacheUtils.putInt(
+          LocalCacheConfig.cacheKeyCash,-1
+        );
+        var type = LocalCacheUtils.getInt(LocalCacheConfig.cashMoneyType,defaultValue: 1);
+        //1 500 2 800 3 1000
+        var money = 500;
+        if(type == 1){
+          money = 500;
+        }else if(type == 2){
+          money = 800;
+        }else if(type == 3){
+          money = 1000;
+        }
+        PopManager().show(context: LocalConfig.globalContext!,
+            child: CashProcessPop(money: money,));
+      }
     }
   }
 

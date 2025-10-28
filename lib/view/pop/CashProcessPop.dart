@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../config/EventConfig.dart';
+import '../../config/LocalCacheConfig.dart';
 import '../../data/QueueUser.dart';
 import '../../utils/ClickManager.dart';
+import '../../utils/LocalCacheUtils.dart';
 import '../../utils/ad/ADEnum.dart';
 import '../../utils/ad/ADShowManager.dart';
 import '../../utils/net/EventManager.dart';
@@ -46,6 +48,13 @@ class _CashProcessPopState extends State<CashProcessPop> {
 
 
   void updateUser(bool needRefresh) {
+    var currentUserRank = LocalCacheUtils.getInt(
+      LocalCacheConfig.cacheCashCurrentKey,
+      defaultValue: 0,
+    );
+    if(currentUserRank == 1){
+      Navigator.pop(context,0);
+    }
     userList = CashManager.instance.generateQueue(needRefresh);
     if (userList != null) {
       for (int i = 0; i < userList!.length; i++) {

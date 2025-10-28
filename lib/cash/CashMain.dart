@@ -21,6 +21,7 @@ import '../utils/ClickManager.dart';
 import '../utils/LocalCacheUtils.dart';
 import '../utils/net/EventManager.dart';
 import '../view/pop/CashProcessPop.dart';
+import '../view/pop/CashSuccessPop.dart';
 import '../view/pop/PopManger.dart';
 import 'CashPage.dart';
 
@@ -228,7 +229,7 @@ class _CashMainState extends State<CashMain> {
                       fillColor: Color(0xFF33FFDB),
                     ),
                   ),
-                  taskName == ""?SizedBox.shrink():Positioned(
+                  taskName != "task6"?SizedBox.shrink():Positioned(
                     right: 3.h,
                     bottom: 8.h,
                     child: SizedBox(
@@ -239,11 +240,30 @@ class _CashMainState extends State<CashMain> {
                         pressedOpacity: 0.7,
                         child: Image.asset("assets/images/ic_toRank.webp",width: 80.w,
                           height: 80.h,fit: BoxFit.fill,),
-                        onPressed: () {
+                        onPressed: () async {
                           if (!ClickManager.canClick(context: context)) return;
                           EventManager.instance.postEvent(EventConfig.cash_queue);
-                          PopManager().show(context: context,
-                              child: CashProcessPop(money: 800,));
+                          var type = LocalCacheUtils.getInt(LocalCacheConfig.cashMoneyType,defaultValue: 1);
+                          //1 500 2 800 3 1000
+                          var money = 500;
+                          if(type == 1){
+                            money = 500;
+                          }else if(type == 2){
+                            money = 800;
+                          }else if(type == 3){
+                            money = 1000;
+                          }
+                          var result = await PopManager().show(context: context,
+                              child: CashProcessPop(money: money,));
+                          if(result == 0){
+                            PopManager().show(context: context,
+                                child: CashSuccessPop());
+                            LocalCacheUtils.putString(LocalCacheConfig.taskCurrentKey,"");
+                            taskName = TaskManager.instance.getCurrentTaskName();
+                            setState(() {
+
+                            });
+                          }
                         },
                       ),
                     ),
