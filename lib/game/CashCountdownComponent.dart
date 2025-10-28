@@ -1,8 +1,11 @@
 
 import 'dart:ui';
 
-import 'package:flame/components.dart' show PositionComponent, SpriteComponent, TextComponent, Sprite, Vector2, Anchor, TextPaint;
+import 'package:flame/components.dart' show PositionComponent, SpriteComponent, TextComponent, Sprite, Vector2, Anchor;
+import 'package:flame/text.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../utils/GlobalTimerManager.dart';
 
 /// ---------- 仅由外部时间驱动的倒计时组件 ----------
 /// 规则：外部每次有时间（可能来自服务器或逻辑层）就调用 setTime(seconds)
@@ -13,36 +16,51 @@ class CashCountdownComponent extends PositionComponent {
 
   final int initialSeconds;
   int _currentSeconds = 0;
-
+  late SpriteComponent bg;      // 背景图层
   late SpriteComponent icon;
   TextComponent? _textComponent;
 
   // 文本样式
-  final Color _textColor = const Color(0xFF651922);
+  final Color _textColor = const Color(0xFFFFFFFF);
   final double _fontSize = 15.sp;
   final String? _fontFamily = "AHV";
+  final double offsetX = 25.w;
 
   @override
   Future<void> onLoad() async {
     _currentSeconds = initialSeconds;
+    // 背景层（固定 60x60）
+    bg = SpriteComponent()
+      ..sprite = await Sprite.load("bg_fish_oval1.webp")
+      ..size = Vector2(60.w, 60.h)
+      ..anchor = Anchor.topLeft
+      ..position = Vector2(offsetX, 0);
 
     icon = SpriteComponent()
       ..sprite = await Sprite.load("ic_cash_tips_top.webp")
-      ..size = Vector2(30.w, 30.h)
-      ..anchor = Anchor.topLeft;
+      ..size = Vector2(38.w, 44.h)
+      ..anchor = Anchor.center
+      ..position = Vector2(
+        offsetX + bg.size.x / 2, // 背景中心 X
+        bg.size.y / 2,           // 背景中心 Y
+      );
 
+    add(bg);
     add(icon);
+
 
     // 初始按 initialSeconds 显示/隐藏
     if (_currentSeconds > 0) {
       _createAndAddText(_currentSeconds);
       icon.opacity = 1.0;
+      bg.opacity = 1.0;
     } else {
       icon.opacity = 0.0;
+      bg.opacity = 0.0;
     }
 
     // 设置一个合理的 size（估算）
-    size = Vector2(icon.size.x, icon.size.y + 20.h);
+    size = Vector2(70.w, 70.h);
   }
 
   /// 外部调用：把当前时间传进来（每次外部数据更新时调用）
@@ -56,10 +74,11 @@ class CashCountdownComponent extends PositionComponent {
     if (_currentSeconds > 0) {
       // 显示
       icon.opacity = 1.0;
+      bg.opacity = 1.0;
       if (_textComponent == null) {
         _createAndAddText(_currentSeconds);
       } else {
-        _textComponent!.text = _currentSeconds.toString();
+        _textComponent!.text = GlobalTimerManager().formatTime(_currentSeconds);
       }
     } else {
       // 隐藏：移除 text 并把 icon 设透明
@@ -68,6 +87,7 @@ class CashCountdownComponent extends PositionComponent {
         _textComponent = null;
       }
       icon.opacity = 0.0;
+      bg.opacity = 0.0;
     }
   }
 
@@ -84,13 +104,13 @@ class CashCountdownComponent extends PositionComponent {
     );
 
     final txt = TextComponent(
-      text: seconds.toString(),
+      text: GlobalTimerManager().formatTime(seconds),
       textRenderer: paint,
       anchor: Anchor.topLeft,
     );
 
     // 放在 icon 下方，微调偏移可按需要改
-    txt.position = Vector2(0, icon.size.y + 4.h);
+    txt.position = Vector2(23.w, icon.size.y + 10.h);
 
     _textComponent = txt;
     add(_textComponent!);

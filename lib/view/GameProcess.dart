@@ -556,7 +556,7 @@ class _GameProgressState extends State<GameProgress>
                                         left: 22.w,
                                         top: 2.h,
                                         child: Text(
-                                          "+\$${RewardManager.instance.findReward(RewardManager.instance.rewardData?.giveUp?.prize, gameData.coin)}",
+                                          "+\$10",
                                           style: TextStyle(
                                             color: Color(0xFF561C3E),
                                             fontSize: 13.sp,
@@ -651,7 +651,7 @@ class _GameProgressState extends State<GameProgress>
                                         left: 22.w,
                                         top: 2.h,
                                         child: Text(
-                                          "+\$${RewardManager.instance.findReward(RewardManager.instance.rewardData?.giveUp?.prize, gameData.coin)}",
+                                          "+\$20",
                                           style: TextStyle(
                                             color: Color(0xFF561C3E),
                                             fontSize: 13.sp,
@@ -793,7 +793,7 @@ class _GameProgressState extends State<GameProgress>
     LocalCacheUtils.putGameData(gameData);
     widget.onConfirm(2);
     await PopManager().show(context: context, child: LevelPop1_2());
-    gameData.coin += RewardManager.instance.findReward(RewardManager.instance.rewardData?.giveUp?.prize, gameData.coin);
+    gameData.coin += 10;
     LocalCacheUtils.putGameData(gameData);
     GameManager.instance.updateCoinToGame(gameData.coin);
     widget.onConfirm(100);
@@ -810,7 +810,7 @@ class _GameProgressState extends State<GameProgress>
       context: context,
       child: LevelPop2_3(),
     );
-    gameData.coin += RewardManager.instance.findReward(RewardManager.instance.rewardData?.giveUp?.prize, gameData.coin);
+    gameData.coin += 20;
     LocalCacheUtils.putGameData(gameData);
     GameManager.instance.updateCoinToGame(gameData.coin);
     widget.onConfirm(100);

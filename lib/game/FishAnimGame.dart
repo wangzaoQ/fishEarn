@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../config/global.dart';
 import '../utils/GameManager.dart';
 import '../utils/GlobalTimerManager.dart';
+import 'CashCountdownComponent.dart';
 import 'FishComponent.dart';
 
 class FishAnimGame extends FlameGame {
@@ -23,6 +24,8 @@ class FishAnimGame extends FlameGame {
   Color backgroundColor() => Colors.transparent;
   final int level;
   FishAnimGame(this.level);
+  late CashCountdownComponent cashCountdown;
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -110,6 +113,12 @@ class FishAnimGame extends FlameGame {
     if(!globalShowProtect){
       updateProtectTime(0);
     }
+
+
+    // --- ✅ 倒计时组件（初始为隐藏） ---
+    cashCountdown = CashCountdownComponent(initialSeconds: 0)
+      ..position = Vector2(size.x - 112.w , 400.h);
+    add(cashCountdown);
   }
 
   /// 外部调用以更新 coin 文本（只修改 TextComponent，不触发 Flutter rebuild）
@@ -136,17 +145,8 @@ class FishAnimGame extends FlameGame {
   }
 
   void updateUnLimitTime(int time){
-    // 每帧刷新文字，如果保护时间在减少
-    if(time == 0){
-      bgProtect.paint.color = bgProtect.paint.color.withOpacity(0.0);
-      timeText.text = "";
-      hideProtect();
-      globalShowProtect = false;
-    }else{
-      bgProtect.paint.color = bgProtect.paint.color.withOpacity(1.0);
-      timeText.text = GlobalTimerManager().formatTime(time);
-      showProtect();
-    }
+    // 只负责把外部时间传给倒计时组件，组件会根据是否为0显示/隐藏
+    cashCountdown.setTime(time);
   }
 
   void showProtect(){

@@ -65,142 +65,155 @@ class _FirstGuidePopState extends State<FirstGuidePop>
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () {
-          if (!ClickManager.canClick(context: context)) return;
-          Navigator.pop(context);
-        },
-        child:Stack(
-      children: [
-        // 第 1 步：
-        FadeTransition(
-          opacity: _fade1,
-          child: Positioned(
-            child: SizedBox(
-              width: 375.w,
-              height: 348.h,
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: 72.h,
-                    left: 52.w,
-                    right: 52.w,
-                    child: Image.asset(
-                      "assets/images/ic_guide1_title.webp",
-                      width: double.infinity,
-                      height: 63.h,
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        if (!ClickManager.canClick(context: context)) return;
+        Navigator.pop(context);
+      },
+      child: Stack(
+        children: [
+          // 第 1 步：
+          FadeTransition(
+            opacity: _fade1,
+            child: Positioned(
+              child: SizedBox(
+                width: 375.w,
+                height: 348.h,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 72.h,
+                      left: 52.w,
+                      right: 52.w,
+                      child: Image.asset(
+                        "assets/images/ic_guide1_title.webp",
+                        width: double.infinity,
+                        height: 63.h,
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    top: 233.h,
-                    left: 25.w,
-                    child: Image.asset(
-                      "assets/images/ic_guide1_fish1.webp",
-                      width: 103.w,
-                      height: 103.h,
+                    Positioned(
+                      top: 233.h,
+                      left: 25.w,
+                      child: Image.asset(
+                        "assets/images/ic_guide1_fish1.webp",
+                        width: 103.w,
+                        height: 103.h,
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    top: 198.h,
-                    left: 125.w,
-                    child: Image.asset(
-                      "assets/images/ic_guide1_fish2.webp",
-                      width: 103.w,
-                      height: 103.h,
+                    Positioned(
+                      top: 198.h,
+                      left: 125.w,
+                      child: Image.asset(
+                        "assets/images/ic_guide1_fish2.webp",
+                        width: 103.w,
+                        height: 103.h,
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    top: 163.h,
-                    right: 27.w,
-                    child: Image.asset(
-                      "assets/images/ic_guide1_fish3.webp",
-                      width: 107.w,
-                      height: 114.h,
+                    Positioned(
+                      top: 163.h,
+                      right: 27.w,
+                      child: Image.asset(
+                        "assets/images/ic_guide1_fish3.webp",
+                        width: 107.w,
+                        height: 114.h,
+                      ),
                     ),
-                  ),
 
-                  Positioned(
-                    // 文字基点：放在图片上方（可根据需要微调）
-                    top: 185.h, // 举例：比图片上方 30.h
-                    left: 125.w, // 与图片左对齐
-                    child: SizedBox(
-                      width: 103.w, // 根据文字长度调整宽度
-                      child: Center(
-                        child: SlideTransition(
-                          position: _offsetAnim,
-                          child: FadeTransition(
-                            opacity: _opacityAnim,
-                            child: GameText(
-                              showText: "+\$${RewardManager.instance.get2LevelCoin()}/s",
-                              fillColor: Color(0xFFF4FF72),
-                              strokeWidth: 1.w,
-                              strokeColor: Color(0xFF9B4801),
-                              fontSize: 22.sp,
+                    Positioned(
+                      // 文字基点：放在图片上方（可根据需要微调）
+                      top: 185.h, // 举例：比图片上方 30.h
+                      left: 125.w, // 与图片左对齐
+                      child: SizedBox(
+                        width: 103.w, // 根据文字长度调整宽度
+                        child: Center(
+                          child: SlideTransition(
+                            position: _offsetAnim,
+                            child: FadeTransition(
+                              opacity: _opacityAnim,
+                              child: GameText(
+                                showText:
+                                    "+\$${RewardManager.instance.get2LevelCoin()}/s",
+                                fillColor: Color(0xFFF4FF72),
+                                strokeWidth: 1.w,
+                                strokeColor: Color(0xFF9B4801),
+                                fontSize: 22.sp,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    // 文字基点：放在图片上方（可根据需要微调）
-                    top: 150.h, // 举例：比图片上方 30.h
-                    right: 27.w, // 与图片左对齐
-                    child: SizedBox(
-                      width: 107.w, // 根据文字长度调整宽度
-                      child: Center(
-                        child: SlideTransition(
-                          position: _offsetAnim,
-                          child: FadeTransition(
-                            opacity: _opacityAnim,
-                            child: GameText(
-                              showText: "+\$${RewardManager.instance.get3LevelCoin()}/s",
-                              fillColor: Color(0xFFF4FF72),
-                              strokeWidth: 1.w,
-                              strokeColor: Color(0xFF9B4801),
-                              fontSize: 22.sp,
+                    Positioned(
+                      // 文字基点：放在图片上方（可根据需要微调）
+                      top: 150.h, // 举例：比图片上方 30.h
+                      right: 27.w, // 与图片左对齐
+                      child: SizedBox(
+                        width: 107.w, // 根据文字长度调整宽度
+                        child: Center(
+                          child: SlideTransition(
+                            position: _offsetAnim,
+                            child: FadeTransition(
+                              opacity: _opacityAnim,
+                              child: GameText(
+                                showText:
+                                    "+\$${RewardManager.instance.get3LevelCoin()}/s",
+                                fillColor: Color(0xFFF4FF72),
+                                strokeWidth: 1.w,
+                                strokeColor: Color(0xFF9B4801),
+                                fontSize: 22.sp,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        // 第 2 步：上方背景
-        FadeTransition(
-          opacity: _fade2,
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: EdgeInsetsGeometry.only(top: 347.h),
-              child: Image.asset(
-                "assets/images/bg_guide1_center.webp",
-                width: 320.w,
+          // 第 2 步：上方背景
+          FadeTransition(
+            opacity: _fade2,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: EdgeInsetsGeometry.only(top: 347.h),
+                child: Image.asset(
+                  "assets/images/bg_guide1_center.webp",
+                  width: 320.w,
+                ),
               ),
             ),
           ),
-        ),
 
-        // 第 3 步：底部背景
-        FadeTransition(
-          opacity: _fade3,
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: EdgeInsetsGeometry.only(bottom: 130.h),
-              child: Image.asset(
-                "assets/images/bg_guide1_bottom.webp",
-                width: 355.w,
-                fit: BoxFit.fill,
+          // 第 3 步：底部背景
+          FadeTransition(
+            opacity: _fade3,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsetsGeometry.only(bottom: 130.h),
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      "assets/images/bg_guide1_bottom.webp",
+                      width: 355.w,
+                      fit: BoxFit.fill,
+                    ),
+                    Center(child:  Image.asset(
+                      "assets/images/ic_first_guide_arrow.webp",
+                      width: 61.w,
+                      height: 36.h,
+                      fit: BoxFit.fill,
+                    ),)
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
-    ));
+        ],
+      ),
+    );
   }
 }

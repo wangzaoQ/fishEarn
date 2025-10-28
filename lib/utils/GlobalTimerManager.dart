@@ -29,7 +29,7 @@ class GlobalTimerManager{
     cancelTimer(); // 先取消之前的
     unLimitedTime = GlobalDataManager.instance.getUnLimitedTime();
     _timer2 = Timer.periodic(const Duration(seconds: 1), (timer) {
-      GameManager.instance.updateProtectTime(unLimitedTime);
+      GameManager.instance.updateUnLimitTime(unLimitedTime);
       unLimitedTime-=1;
       if(unLimitedTime <= 0){
         cancelTimer2();
@@ -49,6 +49,8 @@ class GlobalTimerManager{
 
   /// 取消定时器
   void cancelTimer2() {
+    GameManager.instance.updateUnLimitTime(0);
+
     _timer2?.cancel();
     _timer2 = null;
   }
