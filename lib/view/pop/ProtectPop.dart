@@ -183,7 +183,7 @@ class _ProtectPopState extends State<ProtectPop> {
                       if (!ClickManager.canClick(context: context)) return;
                       EventManager.instance.postEvent(
                         EventConfig.defense_pop_c,
-                        params: {"type": "money"},
+                        params: {"click_type": "money"},
                       );
                       var gameData = LocalCacheUtils.getGameData();
                       if (gameData.coin <= GameConfig.reviveCostCoin) {
@@ -237,7 +237,7 @@ class _ProtectPopState extends State<ProtectPop> {
                       if (!ClickManager.canClick(context: context)) return;
                       EventManager.instance.postEvent(
                         EventConfig.defense_pop_c,
-                        params: {"type": "ad"},
+                        params: {"click_type": "ad"},
                       );
                       if (!allowClickAd) return;
                       allowClickAd = false;
@@ -270,9 +270,10 @@ class _ProtectPopState extends State<ProtectPop> {
           SizedBox(height: 20.h,),
           CupertinoButton(
             onPressed: () {
+              if (!ClickManager.canClick(context: context)) return;
               EventManager.instance.postEvent(
                 EventConfig.defense_pop_c,
-                params: {"type": "not"},
+                params: {"click_type": "not"},
               );
               Navigator.pop(context);
             },

@@ -6,6 +6,7 @@ class EventConfig{
   static const toCash = "toCash";
   static const cashTips1 = "cashTips1";
   static const cashTips2 = "cashTips2";
+  static const cancelGuide = "cancelGuide";
 
 
   /**

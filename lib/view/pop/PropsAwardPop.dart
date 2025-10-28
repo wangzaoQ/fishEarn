@@ -489,14 +489,7 @@ class _PropsAwardPopState extends State<PropsAwardPop>
                       selectedCoin+=selectedCoin1;
                       selectedCoin+=selectedCoin2;
                       selectedCoin+=selectedCoin3;
-                      setState(() {
-                        selected = 3;
-                      });
-                      Future.delayed(const Duration(milliseconds: 1000), () async {
-                        if (!mounted) return;
-                        allowShowRVAD = true;
-                        Navigator.pop(context,selectedCoin);
-                      });
+                      Navigator.pop(context,selectedCoin);
                     }else{
                       allowShowRVAD = true;
                     }

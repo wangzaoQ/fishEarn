@@ -74,6 +74,11 @@ class _GameProgressState extends State<GameProgress>
       }else if(event.message == EventConfig.refreshCoin){
         setState(() {
         });
+      }else if(event.message == EventConfig.cancelGuide){
+        if (tutorialCoachMark?.isShowing ?? false) {
+          // 自定义逻辑
+          tutorialCoachMark?.skip(); // 关闭当前教程
+        }
       }
     });
     gameData = LocalCacheUtils.getGameData();

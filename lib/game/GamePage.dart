@@ -226,11 +226,10 @@ class _GamePageState extends State<GamePage>
     EventManager.instance.postEvent(EventConfig.home_page);
   }
 
-  var isShowGuide = false;
+  var allowResume = false;
 
   Future<void> newUserGuide() async {
-    if(isShowGuide || !allowShowNewUserGuide)return;
-    isShowGuide = true;
+    if(!allowShowNewUserGuide)return;
     userData = LocalCacheUtils.getUserData();
     var firstShowGuide1 = LocalCacheUtils.getBool(LocalCacheConfig.firstShowGuide1,defaultValue: true);
     if(firstShowGuide1){
@@ -264,10 +263,6 @@ class _GamePageState extends State<GamePage>
     }else{
 
     }
-    Future.delayed(const Duration(seconds: 1), () async {
-      if (!mounted) return;
-      isShowGuide = false;
-    });
   }
 
   @override
@@ -890,11 +885,12 @@ class _GamePageState extends State<GamePage>
     }
     GlobalTimerManager().startTimer(
       onTick: () async {
+        LogUtils.logD("${TAG} startTimer allowTime:${allowTime} adIsPlay:${adIsPlay} isLaunch${isLaunch}");
         if (!allowTime) return;
         if(adIsPlay || isLaunch){
           return;
         }
-        LogUtils.logD("${TAG} startTimer");
+        LogUtils.logD("${TAG} startTimer2");
         gameData = LocalCacheUtils.getGameData();
         userData = LocalCacheUtils.getUserData();
         if (gameData.level > 0 && gameData.levelTime >= 1) {
@@ -1188,12 +1184,15 @@ class _GamePageState extends State<GamePage>
     if (state == AppLifecycleState.resumed) {
       LogUtils.logD("${TAG} resumed");
       userData = LocalCacheUtils.getUserData();
-      Future.delayed(Duration(seconds: 2), () async {
+      Future.delayed(Duration(seconds: 1), () async {
         if (!mounted) return;
-        while(adIsPlay || isLaunch){
-          await Future.delayed(const Duration(seconds: 1));
+        if(adIsPlay || isLaunch){
+          return;
         }
-        newUserGuide();
+        if(allowResume){
+          allowResume = false;
+          newUserGuide();
+        }
         resumeTemp("gamePage state == AppLifecycleState.resumed");
       });
 
@@ -1201,7 +1200,9 @@ class _GamePageState extends State<GamePage>
       LogUtils.logD("${TAG} paused");
       if (tutorialCoachMark?.isShowing ?? false) {
         // 自定义逻辑
+        allowResume = true;
         tutorialCoachMark?.skip(); // 关闭当前教程
+        eventBus.fire(NotifyEvent(EventConfig.cancelGuide));
       }
       pauseTemp("gamePage state == AppLifecycleState.paused");
     }
