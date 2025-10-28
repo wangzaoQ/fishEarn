@@ -394,7 +394,7 @@ class _GamePearlPopState extends State<GamePearlPop>
     final int cycles = max(1, widget.wobbleCount);
     return Stack(
       children: [
-        Align(
+        widget.pearlPopType == 0?SizedBox.shrink():Align(
           alignment: Alignment.topCenter,
           child: Padding(
             padding: EdgeInsetsGeometry.only(top: 139.h),

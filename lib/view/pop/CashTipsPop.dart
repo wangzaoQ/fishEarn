@@ -10,6 +10,7 @@ import '../../config/global.dart';
 import '../../data/GameData.dart';
 import '../../utils/AudioUtils.dart';
 import '../../utils/GameManager.dart';
+import '../../utils/GlobalDataManager.dart';
 import '../../utils/LocalCacheUtils.dart';
 import '../GameText.dart';
 import '../ProgressClipper.dart';
@@ -45,7 +46,8 @@ class _CashTipsPopState extends State<CashTipsPop> {
   @override
   Widget build(BuildContext context) {
     var template = "app_need_seconds".tr();
-    String result = template.replaceAll("{count}", "40");
+    var time = GlobalDataManager.instance.getUnLimitedTime();
+    String result = template.replaceAll("{count}", "${time}");
 
     return PopScope(
       canPop: false, // 禁止默认返回
@@ -111,7 +113,7 @@ class _CashTipsPopState extends State<CashTipsPop> {
                         strokeWidth: 1.w,
                       ),
                       GameText(
-                        showText: " Enjoy xx seconds of unlimited dice!",
+                        showText: " Enjoy ${time} seconds of unlimited dice!",
                         fontSize: 14.sp,
                         strokeColor: Color(0xFF514F4F),
                         strokeWidth: 1.w,

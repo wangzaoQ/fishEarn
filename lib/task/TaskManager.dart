@@ -196,7 +196,6 @@ class TaskManager {
   }
 
   void nextTask(String task1, String task2, int task1Count, int task2Count, String taskName) {
-    LocalCacheUtils.putString(LocalCacheConfig.taskCurrentKey,"task5");
     var taskMap = TaskManager.instance.getCurrentSubTasks();
     var task1Config = taskMap[task1];
     var task2Config = taskMap[task2];
@@ -231,8 +230,10 @@ class TaskManager {
         }else if(type == 3){
           money = 1000;
         }
-        PopManager().show(context: LocalConfig.globalContext!,
-            child: CashProcessPop(money: money,));
+        if(LocalConfig.globalContext!=null){
+          PopManager().show(context: LocalConfig.globalContext!,
+              child: CashProcessPop(money: money,));
+        }
       }
     }
   }

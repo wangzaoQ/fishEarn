@@ -58,8 +58,8 @@ class _ADLimitPopState extends State<ADLimitPop> {
           ),
         ),
         Positioned(
-            left: 59.w,
-            right: 59.w,
+            left: 62.w,
+            right: 62.w,
             top: 454.h,
             child: GameText(
               showText: "app_ad_limit_content".tr(),

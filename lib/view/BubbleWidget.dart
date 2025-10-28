@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BubbleWidget extends StatefulWidget {
-  // 0 金币 1 食物 2 珍珠
+  // 0 金币 1 食物 2 珍珠 3 金币（无广告标识）
   var type;
   double? coin;
   BubbleWidget({super.key,required this.type,this.coin});
@@ -59,7 +59,7 @@ class _BubbleWidgetState extends State<BubbleWidget>
               width: 82.w,
               height: 82.h,
             ),
-            widget.type == 0?
+            widget.type == 0 || widget.type == 3?
             Align(
               alignment: Alignment.bottomCenter,
               child: Text(
@@ -79,8 +79,8 @@ class _BubbleWidgetState extends State<BubbleWidget>
 
   String getImg(type) {
     var userData = LocalCacheUtils.getUserData();
-    if(type == 0){
-      return userData.new2?"assets/images/ic_coin_bubbles2.webp":"assets/images/ic_coin_bubbles.webp";
+    if(type == 0 || type == 3){
+      return (userData.new2 || type == 3)?"assets/images/ic_coin_bubbles2.webp":"assets/images/ic_coin_bubbles.webp";
     }else if(type == 1){
       return "assets/images/ic_food_bubbles.webp";
     }else {

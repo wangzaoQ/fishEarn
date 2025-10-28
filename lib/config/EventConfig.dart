@@ -40,6 +40,8 @@ class EventConfig{
   static const fixrn_wheel_int = "fixrn_wheel_int";
   //点击现金气泡看激励广告
   static const fixrn_pop_rv = "fixrn_pop_rv";
+  //点击现金气泡看激励广告
+  static const fixrn_pop_int = "fixrn_pop_int";
   //漂流瓶奖励弹窗点击「claim all」观看激励广告
   static const fixrn_bottle_rv = "fixrn_bottle_rv";
   //漂流瓶奖励弹窗点击Only xxx弹出插屏广告

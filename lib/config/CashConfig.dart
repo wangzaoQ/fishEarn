@@ -65,12 +65,13 @@ class CashConfig {
 
   /**
    * shark_attack 鲨鱼攻击间隔 60秒
-   * protect_type 1 点击防护功能 2选1 0 直接走激励广告
+   * protect_type 1 点击防护功能 2选1   0 直接走激励广告
+   * unlimited_time 无限点击珍珠弹窗时间
    */
   static Map<String, dynamic> defaultGlobalConfig = {
-    "shark_attack":30,
+    "shark_attack":60,
     "protect_type":1,
-    "unlimited_time":40,
+    "unlimited_time":100,
   };
 
   static Map<String, dynamic> defaultReward =//idle_reward2 2级挂机美秒金额
