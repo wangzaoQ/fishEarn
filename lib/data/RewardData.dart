@@ -16,7 +16,6 @@ class RewardData {
   final RewardRangeList? oldUsersAward;
   final RewardSingle? cashBubbleT;
   final RewardRangeList? cashBubble;
-  final RewardRangeList? giveUp;
   final RewardRangeList? pearlWheel;
   final RewardRangeList? driftBottle;
 
@@ -26,7 +25,6 @@ class RewardData {
     this.oldUsersAward,
     this.cashBubbleT,
     this.cashBubble,
-    this.giveUp,
     this.pearlWheel,
     this.driftBottle,
   });
@@ -51,9 +49,6 @@ class RewardData {
       cashBubble: json['cash_bubble'] != null
           ? RewardRangeList.fromJson(json['cash_bubble'])
           : null,
-      giveUp: json['give_up'] != null
-          ? RewardRangeList.fromJson(json['give_up'])
-          : null,
       pearlWheel: json['pearl_wheel'] != null
           ? RewardRangeList.fromJson(json['pearl_wheel'])
           : null,
@@ -70,7 +65,6 @@ class RewardData {
         'old_users_award': oldUsersAward?.toJson(),
         'cash_bubble_t': cashBubbleT?.toJson(),
         'cash_bubble': cashBubble?.toJson(),
-        'give_up': giveUp?.toJson(),
         'pearl_wheel': pearlWheel?.toJson(),
         'drift_bottle': driftBottle?.toJson(),
       };

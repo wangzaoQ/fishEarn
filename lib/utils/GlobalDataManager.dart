@@ -119,8 +119,14 @@ class GlobalDataManager{
     }
   }
 
+  int addLevel1_2() {
+    return globalData?.level_1_2??10;
+  }
+  int addLevel2_3() {
+    return globalData?.level_2_3??20;
+  }
   int getUnLimitedTime(){
-    var time = globalData?.unlimitedTime??40;
+    var time = globalData?.unlimitedTime??100;
     return time;
   }
 

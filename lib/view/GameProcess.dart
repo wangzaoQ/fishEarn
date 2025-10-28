@@ -5,6 +5,7 @@ import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/data/GameData.dart';
 import 'package:fish_earn/task/RewardManager.dart';
 import 'package:fish_earn/utils/GameManager.dart';
+import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/view/GameText.dart';
 import 'package:fish_earn/view/pop/BasePopView.dart';
@@ -556,7 +557,7 @@ class _GameProgressState extends State<GameProgress>
                                         left: 22.w,
                                         top: 2.h,
                                         child: Text(
-                                          "+\$10",
+                                          "+\$${GlobalDataManager.instance.addLevel1_2()}",
                                           style: TextStyle(
                                             color: Color(0xFF561C3E),
                                             fontSize: 13.sp,
@@ -651,7 +652,7 @@ class _GameProgressState extends State<GameProgress>
                                         left: 22.w,
                                         top: 2.h,
                                         child: Text(
-                                          "+\$20",
+                                          "+\$${GlobalDataManager.instance.addLevel2_3()}",
                                           style: TextStyle(
                                             color: Color(0xFF561C3E),
                                             fontSize: 13.sp,
@@ -793,7 +794,7 @@ class _GameProgressState extends State<GameProgress>
     LocalCacheUtils.putGameData(gameData);
     widget.onConfirm(2);
     await PopManager().show(context: context, child: LevelPop1_2());
-    gameData.coin += 10;
+    gameData.coin += GlobalDataManager.instance.addLevel1_2();
     LocalCacheUtils.putGameData(gameData);
     GameManager.instance.updateCoinToGame(gameData.coin);
     widget.onConfirm(100);
@@ -810,7 +811,7 @@ class _GameProgressState extends State<GameProgress>
       context: context,
       child: LevelPop2_3(),
     );
-    gameData.coin += 20;
+    gameData.coin += GlobalDataManager.instance.addLevel2_3();
     LocalCacheUtils.putGameData(gameData);
     GameManager.instance.updateCoinToGame(gameData.coin);
     widget.onConfirm(100);
