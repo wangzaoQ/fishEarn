@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fish_earn/utils/GlobalDataManager.dart';
 
+import '../config/global.dart';
 import 'GameManager.dart';
 
 class GlobalTimerManager{
@@ -29,6 +30,7 @@ class GlobalTimerManager{
     cancelTimer(); // 先取消之前的
     unLimitedTime = GlobalDataManager.instance.getUnLimitedTime();
     _timer2 = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if(adIsPlay)return;
       GameManager.instance.updateUnLimitTime(unLimitedTime);
       unLimitedTime-=1;
       if(unLimitedTime <= 0){

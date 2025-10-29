@@ -714,7 +714,7 @@ class _GamePageState extends State<GamePage>
     var toPearlWhile = false;
     while(GlobalTimerManager().isTimer2Running()){
       toPearlWhile = true;
-      var needContinue = await toPearl(context);
+      var needContinue = await toPearl(context,needCutCount :true);
       if(!needContinue){
         break;
       }
@@ -725,7 +725,7 @@ class _GamePageState extends State<GamePage>
     resumeTemp(tag);
   }
 
-  Future<bool> toPearl(BuildContext context) async {
+  Future<bool> toPearl(BuildContext context,{bool needCutCount = false}) async {
     var needContinue = false;
     var result = await PopManager().show(
       context: context,
@@ -752,7 +752,7 @@ class _GamePageState extends State<GamePage>
         );
       }
       gameData = LocalCacheUtils.getGameData();
-      if(result!=-2 && !GlobalTimerManager().isTimer2Running()){
+      if(result!=-2 && !needCutCount){
         gameData.pearlCount -= 1;
         LocalCacheUtils.putGameData(gameData);
       }
@@ -885,7 +885,7 @@ class _GamePageState extends State<GamePage>
     }
     GlobalTimerManager().startTimer(
       onTick: () async {
-        LogUtils.logD("${TAG} startTimer allowTime:${allowTime} adIsPlay:${adIsPlay} isLaunch${isLaunch}");
+        LogUtils.logD("${TAG} startTimer allowTime:${allowTime} adIsPlay:${adIsPlay} isLaunch${isLaunch} globalShowShark:${globalShowShark}");
         if (!allowTime) return;
         if(adIsPlay || isLaunch){
           return;
@@ -945,12 +945,14 @@ class _GamePageState extends State<GamePage>
               context: context,
               child: ProtectPop(),
             );
+            LogUtils.logD("${TAG} ProtectPop result:${result}");
             if(result == 0 || result == 1){
               if (!userData.new5) {
                 globalShowShark = true;
                 EventManager.instance.postEvent(EventConfig.shark_attack_c);
                 TaskManager.instance.addTask("defend");
               }
+              globalShowShark = true;
               toProtect();
             }else{
               resumeTemp("globalShowDanger2");
@@ -962,19 +964,19 @@ class _GamePageState extends State<GamePage>
                 globalShowShark = true;
                 EventManager.instance.postEvent(EventConfig.shark_attack_c);
               });
-              Future.delayed(const Duration(milliseconds: 2000), () async {
-                if (!mounted) return;
-                globalShowShark = false;
-                if (!globalShowProtect) {
-                  bool result = await isGameOver(force: true);
-                  if (result) {
-                    return;
-                  }
-                } else {
-                  TaskManager.instance.addTask("defend");
-                }
-              });
             }
+            Future.delayed(const Duration(milliseconds: 2000), () async {
+              globalShowShark = false;
+              if (!mounted) return;
+              if (!globalShowProtect) {
+                bool result = await isGameOver(force: true);
+                if (result) {
+                  return;
+                }
+              } else {
+                TaskManager.instance.addTask("defend");
+              }
+            });
           }
         }
         progress = GameManager.instance.getCurrentProgress(gameData);
