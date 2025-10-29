@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/game/GamePage.dart';
+import 'package:fish_earn/utils/FishNFManager.dart';
 import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/GlobalTimerManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
@@ -119,13 +120,10 @@ class _FishStartPageState extends State<FishStartPage>
     // Future.microtask(() {
     //   precacheImage(const AssetImage("assets/images/bg_home.webp"), context);
     // });
-    // Future.microtask(() async {
-    //   await NFManager.instance.init();
-    //   var allowNF = await NFManager.instance.requestNF();
-    //   if(allowNF){
-    //     NFManager.instance.startNF();
-    //   }
-    // });
+    Future.microtask(() async {
+      await FishNFManager.instance.init();
+      FishNFManager.instance.requestNF();
+    });
     EventManager.instance.session();
     EventManager.instance.postEvent(EventConfig.launch_page);
   }

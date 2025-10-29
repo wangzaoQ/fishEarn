@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../config/EventConfig.dart';
 import 'LogUtils.dart';
@@ -47,19 +48,27 @@ class FishNFManager{
     var nfPermission = await allowNF();
     if(nfPermission){
       LogUtils.logD("nf has permission");
-      EventManager.instance.postEvent(EventConfig.noti_req_allow);
       startNF();
       return true;
-    }else{
-      EventManager.instance.postEvent(EventConfig.noti_req_refuse);
-      LogUtils.logD("nf no permission");
-      return false;
     }
+    final status = await Permission.notification.request();
+    if (status.isGranted) {
+      LogUtils.logD("nf has permission");
+      startNF();
+      return true;
+    }
+    LogUtils.logD("nf no permission");
+    return false;
   }
 
-  Future<bool> allowNF() async{
-    var nfPermission = await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.requestNotificationsPermission();
-    return nfPermission ?? true;
+  Future<bool> allowNF() async {
+    final status = await Permission.notification.status;
+    if(status.isGranted){
+      EventManager.instance.postEvent(EventConfig.noti_req_allow);
+    }else{
+      EventManager.instance.postEvent(EventConfig.noti_req_refuse);
+    }
+    return status.isGranted;
   }
 
   Future<void> _repeatNotification(int nfId,String nfTitle,String nfContent,String channel,Duration duration) async {

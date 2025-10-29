@@ -53,7 +53,7 @@ class RiskUserManager {
     upLoadInfo();
     var user = LocalCacheUtils.getUserData();
     if (user.userRiskType == 0 && user.userRiskStatus) {
-      LogUtils.logD("${TAG}is risky user");
+      LogUtils.logD("${TAG}is risky user userRiskFrom:${user.userRiskFrom}");
       return;
     }
     risk1(user);
