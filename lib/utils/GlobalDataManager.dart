@@ -163,6 +163,8 @@ class GlobalDataManager{
     } on Exception {
       gid = "";
     }
+    LocalCacheUtils.putString(LocalCacheConfig.cacheGIDKey,gid??"");
+
     return gid;
   }
 

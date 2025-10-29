@@ -639,6 +639,33 @@ class _GamePageState extends State<GamePage>
                 },
               ),
             ),
+            Positioned(
+              top: 460.h,
+              right: 22.w,
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                pressedOpacity: 0.7,
+                child: SizedBox(
+                  width: 70.w,
+                  height: 70.h,
+                  child: Image.asset("assets/images/ic_game.webp"),
+                ),
+                onPressed: () async {
+                  if (!ClickManager.canClick(context: context)) return;
+                  pauseTemp("web_game");
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => WebViewPage(
+                        url: "https://s.gamifyspace.com/tml?pid=19164&appk=ocrEzUOMoYdk2eLKgXxWIivQOWzRS02V&did=${LocalCacheUtils.getString(LocalCacheConfig.cacheGIDKey,defaultValue: "")}",
+                        title: "app_game".tr(),
+                      ),
+                    ),
+                  );
+                  resumeTemp("web_game");
+                },
+              ),
+            ),
             //现金气泡
             buildCoinBubbles(),
             buildCoinBubbles2(),
