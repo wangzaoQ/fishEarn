@@ -161,5 +161,7 @@ class EventConfig{
   static const cash_dall = "cash_dall";
   //任务完成后的恭喜弹窗
   static const congratulation_pop = "congratulation_pop";
+  //无网络弹窗展示
+  static const no_network = "no_network";
 
 }

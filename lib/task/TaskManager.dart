@@ -230,6 +230,7 @@ class TaskManager {
         }else if(type == 3){
           money = 1000;
         }
+        LocalCacheUtils.putInt(LocalCacheConfig.cashRankType,type);
         if(LocalConfig.globalContext!=null){
           PopManager().show(context: LocalConfig.globalContext!,
               child: CashProcessPop(money: money,));

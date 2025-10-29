@@ -159,9 +159,9 @@ class FishNFManager{
 
   void checkNF() {
     Future(() async {
-      await addPointT("nf_channel_0");
-      await addPointT("nf_channel_1");
-      await addPointT("nf_channel_2");
+      await addPointT("noti1");
+      await addPointT("noti2");
+      await addPointT("noti3");
       await addPointT("fcm");
       await addPointT("unlock");
     });
@@ -248,7 +248,7 @@ class FishNFManager{
       tagCount = 0;
     }
     Duration duration2 = Duration(minutes: minutes*2);
-    _repeatNotification(list_id[tagCount],list_t[tagCount],list_c[tagCount],"${tag}_$tagCount",duration2);
+    _repeatNotification(list_id[tagCount],list_t[tagCount],list_c[tagCount],"${tag}",duration2);
     LocalCacheUtils.putInt(tag, tagCount);
   }
 

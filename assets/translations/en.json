@@ -115,5 +115,7 @@
   "app_more_fun": "More Fun",
   "app_ok": "OK",
   "app_ad_limit_content": "You’ve watched all available ads for today. try again tomorrow.",
-  "app_need_seconds": "Remaining Time: {count} Seconds"
+  "app_need_seconds": "Remaining Time: {count} Seconds",
+  "app_cash_rank_content": "Payment in queue...",
+  "app_cash_rank_complete": "Payment completed. Funds will \narrive within 7 business days"
 }

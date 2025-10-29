@@ -41,8 +41,6 @@ class _CashMainState extends State<CashMain> {
   late GameData gameData;
   late UserData userData;
 
-  var taskName = "";
-
   @override
   void initState() {
     super.initState();
@@ -60,7 +58,6 @@ class _CashMainState extends State<CashMain> {
         });
       }
     });
-    taskName = TaskManager.instance.getCurrentTaskName();
     EventManager.instance.postEvent(EventConfig.cash_page);
     _subscription = eventBus.on<NotifyEvent>().listen((event) {
       if (event.message == EventConfig.refreshCoin) {
@@ -233,63 +230,6 @@ class _CashMainState extends State<CashMain> {
                         fillColor: Color(0xFF33FFDB),
                       ),
                     ),
-                    taskName != "task6"
-                        ? SizedBox.shrink()
-                        : Positioned(
-                            right: 3.h,
-                            bottom: 8.h,
-                            child: SizedBox(
-                              width: 80.w,
-                              height: 80.h,
-                              child: CupertinoButton(
-                                padding: EdgeInsets.zero,
-                                pressedOpacity: 0.7,
-                                child: Image.asset(
-                                  "assets/images/ic_toRank.webp",
-                                  width: 80.w,
-                                  height: 80.h,
-                                  fit: BoxFit.fill,
-                                ),
-                                onPressed: () async {
-                                  if (!ClickManager.canClick(context: context))
-                                    return;
-                                  EventManager.instance.postEvent(
-                                    EventConfig.cash_queue,
-                                  );
-                                  var type = LocalCacheUtils.getInt(
-                                    LocalCacheConfig.cashMoneyType,
-                                    defaultValue: 1,
-                                  );
-                                  //1 500 2 800 3 1000
-                                  var money = 500;
-                                  if (type == 1) {
-                                    money = 500;
-                                  } else if (type == 2) {
-                                    money = 800;
-                                  } else if (type == 3) {
-                                    money = 1000;
-                                  }
-                                  var result = await PopManager().show(
-                                    context: context,
-                                    child: CashProcessPop(money: money),
-                                  );
-                                  if (result == 0) {
-                                    PopManager().show(
-                                      context: context,
-                                      child: CashSuccessPop(),
-                                    );
-                                    LocalCacheUtils.putString(
-                                      LocalCacheConfig.taskCurrentKey,
-                                      "",
-                                    );
-                                    taskName = TaskManager.instance
-                                        .getCurrentTaskName();
-                                    setState(() {});
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
                   ],
                 ),
               ),

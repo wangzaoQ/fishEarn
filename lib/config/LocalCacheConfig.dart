@@ -8,6 +8,9 @@ class LocalCacheConfig{
   //1 500 2 800 3 1000
   static const cacheKeyCash = "cacheKeyCash";
   static const cashMoneyType = "cashMoneyType";
+  //1 500 2 800 3 1000
+  static const cashRankType = "cashRankType";
+  static const cashRankCompleteList = "cashRankCompleteList";
   static const taskCurrentKey = "taskCurrentKey";
   static const deviceIdKey = "deviceIdKey";
   static const cacheGuideKey = "cacheGuideKey";
