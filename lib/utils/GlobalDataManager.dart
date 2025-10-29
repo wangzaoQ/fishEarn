@@ -133,6 +133,10 @@ class GlobalDataManager{
 
 
   bool allowShowInt(double coin) {
+    var isCashed =LocalCacheUtils.getBool(LocalCacheConfig.isCashed,defaultValue: false);
+    if(isCashed){
+      return true;
+    }
     if(intADConfig == null)return true;
     if(intADConfig!.intAd.isEmpty){
       return false;

@@ -394,6 +394,10 @@ class _CashMainState extends State<CashMain> {
                                 LocalCacheConfig.cashMoneyType,
                                 defaultValue: 1,
                               );
+                              LocalCacheUtils.putInt(
+                                LocalCacheConfig.cacheCashCurrentKey,
+                                0,
+                              );
                               //1 500 2 800 3 1000
                               var money = 500;
                               if (type == 1) {

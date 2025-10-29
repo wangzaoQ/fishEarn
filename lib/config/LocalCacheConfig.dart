@@ -42,4 +42,5 @@ class LocalCacheConfig{
   static const allowShowOffline = "allowShowOffline";
   static const lastTriggerLevel = "lastTriggerLevel";
   static const firstShowGuide1 = "firstShowGuide1";
+  static const isCashed = "isCashed";
 }
