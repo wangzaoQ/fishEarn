@@ -76,7 +76,7 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
+    with TickerProviderStateMixin, WidgetsBindingObserver ,RouteAware{
   late GameData gameData;
   late double progress;
   late final AnimationController _controller;
@@ -126,6 +126,20 @@ class _GamePageState extends State<GamePage>
   }
 
   var allowShowNewUserGuide = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    LocalConfig.routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    LocalConfig.routeObserver.unsubscribe(this);
+    WidgetsBinding.instance.removeObserver(this); // ✅ 记得移除
+    super.dispose();
+  }
+
 
   @override
   void initState() {
@@ -264,12 +278,8 @@ class _GamePageState extends State<GamePage>
 
     }
   }
+  bool _isCurrent = false;
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this); // ✅ 记得移除
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -917,7 +927,7 @@ class _GamePageState extends State<GamePage>
         if(adIsPlay || isLaunch){
           return;
         }
-        LogUtils.logD("${TAG} startTimer2");
+        // LogUtils.logD("${TAG} startTimer2");
         gameData = LocalCacheUtils.getGameData();
         userData = LocalCacheUtils.getUserData();
         if (gameData.level > 0 && gameData.levelTime >= 1) {
@@ -1210,7 +1220,7 @@ class _GamePageState extends State<GamePage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.resumed) {
+    if (_isCurrent && state == AppLifecycleState.resumed) {
       LogUtils.logD("${TAG} resumed");
       userData = LocalCacheUtils.getUserData();
       Future.delayed(Duration(seconds: 1), () async {
@@ -1783,4 +1793,16 @@ class _GamePageState extends State<GamePage>
     )
         : SizedBox.shrink();
   }
+
+  @override
+  void didPush() => _isCurrent = true;
+
+  @override
+  void didPopNext() => _isCurrent = true;
+
+  @override
+  void didPushNext() => _isCurrent = false;
+
+  @override
+  void didPop() => _isCurrent = false;
 }
