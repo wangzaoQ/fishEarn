@@ -311,7 +311,7 @@ class _CashWidgetState extends State<CashItemView> {
           Align(
             alignment: Alignment.centerRight,
             child: Padding(
-              padding: EdgeInsets.only(right: 50.w, top: 10.h),
+              padding: EdgeInsets.only(right: 30.w, top: 10.h),
               child: SizedBox(
                 width: 80.w,
                 height: 80.h,
@@ -320,8 +320,8 @@ class _CashWidgetState extends State<CashItemView> {
                   pressedOpacity: 0.7,
                   child: Image.asset(
                     "assets/images/ic_toRank.webp",
-                    width: 80.w,
-                    height: 80.h,
+                    width: 100.w,
+                    height: 100.h,
                     fit: BoxFit.fill,
                   ),
                   onPressed: () async {
@@ -344,11 +344,12 @@ class _CashWidgetState extends State<CashItemView> {
                       LocalCacheUtils.putInt(
                         LocalCacheConfig.cashRankType, -1,
                       );
-                      List<String> cashRankCompleteList = LocalCacheUtils.getStringList(
-                        LocalCacheConfig.cashRankCompleteList,
+                      final list = List<String>.from(
+                        LocalCacheUtils.getStringList(LocalCacheConfig.cashRankCompleteList),
                       );
-                      cashRankCompleteList.add("${widget.payStatus}");
-                      LocalCacheUtils.putStringList(LocalCacheConfig.cashRankCompleteList, cashRankCompleteList);
+
+                      list.add("${widget.payStatus}");
+                      LocalCacheUtils.putStringList(LocalCacheConfig.cashRankCompleteList, list);
                       PopManager().show(
                         context: context,
                         child: CashSuccessPop(),

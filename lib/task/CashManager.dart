@@ -160,12 +160,16 @@ class CashManager {
   }
 
   List<int> generateSetWithCenter(int center, int length) {
-
     // 随机确定 center 在集合中的位置（0 ~ length-1）
     int centerIndex = random.nextInt(length);
 
-    // 计算集合起始值
+    // 计算起始值
     int start = center - centerIndex;
+
+    // 保证起始值不小于 1
+    if (start < 1) {
+      start = 1;
+    }
 
     // 生成连续整数集合
     return List.generate(length, (i) => start + i);

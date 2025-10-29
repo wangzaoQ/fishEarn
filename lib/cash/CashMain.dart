@@ -12,12 +12,14 @@ import 'package:fish_earn/utils/GameManager.dart';
 import 'package:fish_earn/utils/TimeUtils.dart';
 import 'package:fish_earn/view/GameText.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:marqueer/marqueer.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../config/EventConfig.dart';
+import '../config/LocalConfig.dart';
 import '../config/global.dart';
 import '../data/GameData.dart';
 import '../event/NotifyEvent.dart';
@@ -335,21 +337,21 @@ class _CashMainState extends State<CashMain> {
                                 gameData: gameData,
                                 payType: payType,
                                 money: 500,
-                                payStatus: 0,
-                              ),
-                              SizedBox(height: 4.h),
-                              CashItemView(
-                                gameData: gameData,
-                                payType: payType,
-                                money: 800,
                                 payStatus: 1,
                               ),
                               SizedBox(height: 4.h),
                               CashItemView(
                                 gameData: gameData,
                                 payType: payType,
-                                money: 1000,
+                                money: 800,
                                 payStatus: 2,
+                              ),
+                              SizedBox(height: 4.h),
+                              CashItemView(
+                                gameData: gameData,
+                                payType: payType,
+                                money: 1000,
+                                payStatus: 3,
                               ),
                             ],
                           ),
@@ -368,12 +370,76 @@ class _CashMainState extends State<CashMain> {
                         pps: 60, // pixels per second（控制速度）
                         autoStart: true, // 是否自动开始
                         direction: MarqueerDirection.rtl, // 滚动方向：rtl 或 ltr
-                        child: Row(
-                          children: buildMarqueChild(),
-                        ),
+                        child: Row(children: buildMarqueChild()),
                       ),
                     ),
                   ),
+                  kReleaseMode
+                      ? SizedBox.shrink()
+                      : Positioned(
+                          child: CupertinoButton(
+                            child: Text(
+                              "test",
+                              style: TextStyle(
+                                fontSize: 29.sp,
+                                color: Colors.black,
+                              ),
+                            ),
+                            onPressed: () {
+                              LocalCacheUtils.putInt(
+                                LocalCacheConfig.cacheKeyCash,
+                                -1,
+                              );
+                              var type = LocalCacheUtils.getInt(
+                                LocalCacheConfig.cashMoneyType,
+                                defaultValue: 1,
+                              );
+                              //1 500 2 800 3 1000
+                              var money = 500;
+                              if (type == 1) {
+                                money = 500;
+                              } else if (type == 2) {
+                                money = 800;
+                              } else if (type == 3) {
+                                money = 1000;
+                              }
+                              LocalCacheUtils.putInt(
+                                LocalCacheConfig.cashRankType,
+                                type,
+                              );
+                              if (LocalConfig.globalContext != null) {
+                                PopManager().show(
+                                  context: LocalConfig.globalContext!,
+                                  child: CashProcessPop(money: money),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                  kReleaseMode
+                      ? SizedBox.shrink()
+                      : Positioned(
+                          top: 100.h,
+                          child: CupertinoButton(
+                            child: Text(
+                              "test2",
+                              style: TextStyle(
+                                fontSize: 29.sp,
+                                color: Colors.black,
+                              ),
+                            ),
+                            onPressed: () {
+                              LocalCacheUtils.putInt(
+                                LocalCacheConfig.cacheCashCurrentKey,
+                                3,
+                              );
+                              LocalCacheUtils.putInt(
+                                LocalCacheConfig.cacheLastRankRefreshTimeKey,
+                                0,
+                              );
+                            },
+                          ),
+                        ),
                 ],
               ),
             ),
@@ -574,8 +640,8 @@ class _CashMainState extends State<CashMain> {
   List<Widget> buildMarqueChild() {
     List<Widget> widgets = [];
     Random random = Random();
-    for(int i = 0;i<10;i++){
-      var account ="";
+    for (int i = 0; i < 10; i++) {
+      var account = "";
       var bg = "";
       var money = 0;
       var arrived = "";
@@ -583,72 +649,92 @@ class _CashMainState extends State<CashMain> {
       String phone = faker.phoneNumber.us();
       phone = phone.replaceAll(RegExp(r'[^0-9]'), '');
       String email = faker.internet.email();
-      if(randomValue == 0 ){
+      if (randomValue == 0) {
         account = CashManager.instance.maskPhone(phone);
         bg = "assets/images/bg_cash_loop.webp";
         arrived = "Cash App";
-      }else{
+      } else {
         account = CashManager.instance.maskEmail(email);
         bg = "assets/images/bg_paypal_loop.webp";
         arrived = "PayPal";
       }
       randomValue = random.nextInt(3);
-      if(randomValue == 0){
+      if (randomValue == 0) {
         money = 500;
-      }else if(randomValue == 1){
+      } else if (randomValue == 1) {
         money = 800;
-      }else{
+      } else {
         money = 1000;
       }
       widgets.add(SizedBox(width: 14.w));
-      widgets.add(SizedBox(
-        width: 348.w,
-        height: 70.h,
-        child: Stack(
-          children: [
-            Image.asset(
-              bg,
-              width: double.infinity,
-              height: double.infinity,
-              fit: BoxFit.fill,
-            ),
-            Positioned(
-              left: 10.w,
-              top: 5.h,
-              child: Text(
-                TimeUtils.getFormattedDate2(
-                  DateTime.now().millisecondsSinceEpoch,
-                ),
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12.sp,
-                  fontFamily: "AHV",
+      widgets.add(
+        SizedBox(
+          width: 348.w,
+          height: 70.h,
+          child: Stack(
+            children: [
+              Image.asset(
+                bg,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.fill,
+              ),
+              Positioned(
+                left: 10.w,
+                top: 5.h,
+                child: Text(
+                  TimeUtils.getFormattedDate2(
+                    DateTime.now().millisecondsSinceEpoch,
+                  ),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12.sp,
+                    fontFamily: "AHV",
+                  ),
                 ),
               ),
-            ),
-            Positioned(
-              bottom: 6.h,
-              left: 86.w,
-              child: GameText(
-                showText: "+\$${money}",
-                strokeColor: Color(0xFF013407),
-                fillColor: Colors.white,
-                strokeWidth: 1.w,
+              Positioned(
+                bottom: 6.h,
+                left: 86.w,
+                child: GameText(
+                  showText: "+\$${money}",
+                  strokeColor: Color(0xFF013407),
+                  fillColor: Colors.white,
+                  strokeWidth: 1.w,
+                ),
               ),
-            ),
-            Positioned(
+              Positioned(
                 left: 184.w,
                 height: 62.h,
                 child: Column(
                   mainAxisSize: MainAxisSize.min, // 根据内容高度收缩
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                  Text("${account}",style: TextStyle(fontSize: 14.sp,color: Color(0xFF001259),fontFamily: "AHV",fontWeight: FontWeight.bold),),
-                  Text("Arrived Via [${arrived}]",style: TextStyle(fontSize: 14.sp,color: Color(0xFF001259),fontFamily: "AHV",fontWeight: FontWeight.bold),)
-            ],))
-          ],
+                    Text(
+                      "${account}",
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Color(0xFF001259),
+                        fontFamily: "AHV",
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "Arrived Via [${arrived}]",
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        color: Color(0xFF001259),
+                        fontFamily: "AHV",
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-      ));
+      );
       widgets.add(SizedBox(width: 14.w));
     }
     return widgets;
