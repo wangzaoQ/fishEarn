@@ -1202,6 +1202,8 @@ class _GamePageState extends State<GamePage>
         // 自定义逻辑
         allowResume = true;
         tutorialCoachMark?.skip(); // 关闭当前教程
+      }else if(showGuide3){
+        allowResume = true;
         eventBus.fire(NotifyEvent(EventConfig.cancelGuide));
       }
       pauseTemp("gamePage state == AppLifecycleState.paused");

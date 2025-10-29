@@ -927,6 +927,7 @@ class _GameProgressState extends State<GameProgress>
       textSkip: "",
       paddingFocus: 0,
       onFinish: () {
+        showGuide3 = false;
         EventManager.instance.postEvent(
           EventConfig.new_guide_c,
           params: {"pop_step": "pop3"},
@@ -938,6 +939,7 @@ class _GameProgressState extends State<GameProgress>
       },
     );
     tutorialCoachMark?.show(context: context);
+    showGuide3 = true;
   }
 
   void showADLevel2() {

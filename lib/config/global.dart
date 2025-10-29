@@ -28,6 +28,8 @@ bool adIsPlay = false;
 
 bool isLaunch = false;
 
+bool showGuide3 = false;
+
 
 var pUrl = "https://sites.google.com/view/fishearn-privacypolicy/home";
 var hUrl = "https://sites.google.com/view/fishearn-useragreement/home";
