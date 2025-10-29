@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:advertising_id/advertising_id.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/data/GlobalConfig.dart';
@@ -144,6 +145,21 @@ class GlobalDataManager{
       }
     }
     return Random().nextInt(100)<currentItem.point;
+  }
+
+
+  Future getGID() async {
+    String? gid="";
+    gid = LocalCacheUtils.getString(LocalCacheConfig.cacheGIDKey,defaultValue: "");
+    if(gid.isNotEmpty){
+      return gid;
+    }
+    try {
+      gid = await AdvertisingId.id(true);
+    } on Exception {
+      gid = "";
+    }
+    return gid;
   }
 
 

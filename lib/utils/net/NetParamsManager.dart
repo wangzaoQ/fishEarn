@@ -35,6 +35,7 @@ class NetParamsManager{
     parentJson["tracery"] = "widgeon";
     parentJson["hostage"] = getLocaleCode();
     parentJson["hobart"] = await getOperator();
+    parentJson["quirk"] = await GlobalDataManager.instance.getGID();
     parentJson["plug"] = "com.fishearn.rewards";
     parentJson["carthage"] = await getDeviceManufacturer();
     parentJson["juan"] = await getAppVersion();

@@ -65,6 +65,7 @@ dependencies:
   flutter_tba_info: ^0.0.9
   applovin_max: ^4.5.0
   flutter_easyloading: ^3.0.5
+  marqueer: ^2.1.0
 
   firebase_core: ^4.0.0
   firebase_crashlytics: ^5.0.0

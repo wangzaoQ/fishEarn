@@ -40,6 +40,13 @@ class TimeUtils{
     return formatter.format(DateTime.fromMillisecondsSinceEpoch(timestamp));
   }
 
+  static String getFormattedDate2(int timestamp) {
+    final formatter = DateFormat('yyyy.MM.dd', 'en_US'); // 强制使用默认内置的 en_US
+    return formatter.format(DateTime.fromMillisecondsSinceEpoch(timestamp));
+  }
+
+
+
   static bool isConsecutiveDay(int lastDay, int currentDay) {
     // 转换为 DateTime（假设时间戳是毫秒）
     final last = DateTime.fromMillisecondsSinceEpoch(lastDay);
