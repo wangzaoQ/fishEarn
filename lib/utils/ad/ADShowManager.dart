@@ -38,12 +38,12 @@ class ADShowManager{
     var isInitialized = await AppLovinMAX.isInitialized()??false;
     if(!isInitialized){
       adShow.loadComplete(ADEnum.AD_SHOW_TYPE_FAILED, "adk init error");
-      // NetControl().postEvent(PointConfig.oxrsl_ad_impression_fail,
-      //     params: {
-      //       "ad_pos_id":pointTag,
-      //       "msg":"uninitialized",
-      //       "ad_format":"",
-      //     });
+      EventManager.instance.postEvent(EventConfig.fixrn_ad_impression_fail,
+          params: {
+            "ad_pos_id":pointTag,
+            "msg":"uninitialized",
+            "ad_format":"",
+          });
       return;
     }
     var user = LocalCacheUtils.getUserData();
