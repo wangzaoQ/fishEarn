@@ -1219,28 +1219,81 @@ class _GamePageState extends State<GamePage>
       GameManager.instance.showDanger();
     }
   }
+  Timer? resumedTimer;
+
+  void checkResumeState() {
+    const maxSeconds = 3; // 最大轮询时间
+    const interval = Duration(seconds: 1);
+    int elapsed = 0;
+    bool stopped = false;
+    resumedTimer?.cancel();
+    resumedTimer = Timer.periodic(interval, (timer) async {
+      if (stopped) {
+        timer.cancel();
+        return;
+      }
+
+      elapsed += 1;
+      LogUtils.logD("$TAG resumed check tick=$elapsed _isCurrent=$_isCurrent");
+
+      if (!_isCurrent) {
+        if (elapsed >= maxSeconds) {
+          LogUtils.logD("$TAG check stopped after $elapsed seconds (not current)");
+          timer.cancel();
+        }
+        return;
+      }
+
+      // 条件满足时执行
+      userData = LocalCacheUtils.getUserData();
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      if (adIsPlay || isLaunch) {
+        timer.cancel();
+        return;
+      }
+      if (allowResume) {
+        allowResume = false;
+        newUserGuide();
+      }
+      resumeTemp("gamePage state == AppLifecycleState.resumed");
+
+      // ✅ 执行后立即停止轮询
+      stopped = true;
+      timer.cancel();
+      LogUtils.logD("$TAG check finished successfully at $elapsed seconds");
+    });
+  }
+
 
   /// 监听 App 生命周期切换
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    if (_isCurrent && state == AppLifecycleState.resumed) {
-      LogUtils.logD("${TAG} resumed");
-      userData = LocalCacheUtils.getUserData();
-      Future.delayed(Duration(seconds: 1), () async {
-        if (!mounted) return;
-        if(adIsPlay || isLaunch){
-          return;
-        }
-        if(allowResume){
-          allowResume = false;
-          newUserGuide();
-        }
-        resumeTemp("gamePage state == AppLifecycleState.resumed");
-      });
+    if (state == AppLifecycleState.resumed) {
+      checkResumeState();
+      // Future.delayed(Duration(seconds: 3), () async {
+      //   LogUtils.logD("${TAG} resumed delayed _isCurrent:${_isCurrent}");
+      //   if(!_isCurrent){
+      //     return;
+      //   }
+      //   userData = LocalCacheUtils.getUserData();
+      //   if (!mounted) return;
+      //   if(adIsPlay || isLaunch){
+      //     return;
+      //   }
+      //   if(allowResume){
+      //     allowResume = false;
+      //     newUserGuide();
+      //   }
+      //   resumeTemp("gamePage state == AppLifecycleState.resumed");
+      // });
 
     } else if (state == AppLifecycleState.paused) {
       LogUtils.logD("${TAG} paused");
+      resumedTimer?.cancel();
       if (tutorialCoachMark?.isShowing ?? false) {
         // 自定义逻辑
         allowResume = true;
@@ -1776,7 +1829,7 @@ class _GamePageState extends State<GamePage>
             adEnum: ADEnum.rewardedAD,
             tag: "reward",
             result: (type, hasValue) async {
-              allowCoinPopAD = true;
+              allowCoinPopAD3 = true;
               if (hasValue) {
                 await PopManager().show(
                   context: context,
@@ -1797,16 +1850,29 @@ class _GamePageState extends State<GamePage>
     )
         : SizedBox.shrink();
   }
-
+  //当前页活跃
   @override
-  void didPush() => _isCurrent = true;
-
+  void didPush() {
+    _isCurrent = true;
+    LogUtils.logD("$GamePage didPush → ");
+  }
+  //上层页被pop，当前页重新可见
   @override
-  void didPopNext() => _isCurrent = true;
-
+  void didPopNext() {
+    _isCurrent = true;
+    print("$GamePage didPopNext → ");
+  }
+  //当前页被新页覆盖
   @override
-  void didPushNext() => _isCurrent = false;
+  void didPushNext() {
+    _isCurrent = false;
+    print("$GamePage didPushNext → ");
+  }
 
+  //当前页出栈
   @override
-  void didPop() => _isCurrent = false;
+  void didPop() {
+    _isCurrent = false;
+    print("$GamePage didPop → ");
+  }
 }
