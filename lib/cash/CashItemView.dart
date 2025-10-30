@@ -396,6 +396,7 @@ class _CashWidgetState extends State<CashItemView> {
           )),
           Positioned(
             left: 15.w,
+            right: 15.w,
             bottom: 15.h,
             child: Text(
               "app_cash_rank_complete".tr(),
@@ -403,7 +404,7 @@ class _CashWidgetState extends State<CashItemView> {
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: 16.sp,
-                height: 1, // 👈 调整行间距 (1.0~1.5 比较常用)
+                height: 1.1, // 👈 调整行间距 (1.0~1.5 比较常用)
               ),
             ),
           ),

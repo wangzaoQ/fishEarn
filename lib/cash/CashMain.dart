@@ -364,7 +364,7 @@ class _CashMainState extends State<CashMain> {
                     left: 0,
                     right: 0,
                     child: SizedBox(
-                      height: 62.h,
+                      height: 75.h,
                       child: Marqueer(
                         // 任意 Widget 都可以放在 child 里
                         pps: 60, // pixels per second（控制速度）
