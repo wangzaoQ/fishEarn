@@ -81,9 +81,6 @@ class LocalCacheUtils{
       if(firstShowCashLimit){
         LocalCacheUtils.putBool(LocalCacheConfig.firstShowCashLimit, false);
         eventBus.fire(NotifyEvent(EventConfig.cashTips1));
-        if(result == 1){
-          eventBus.fire(NotifyEvent(EventConfig.toCash));
-        }
       }
     }else if(gameData.coin>=400||gameData.coin>=200){
       var firstShowCashLimit = LocalCacheUtils.getBool(LocalCacheConfig.firstShowCashTips,defaultValue: true);
