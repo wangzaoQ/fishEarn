@@ -171,7 +171,7 @@ class FishNFManager{
     //通知来源，通知详情中设置的“payload”参数，默认为【local】
     final count = await plugin.extractMessageReceivedNum(channel);
     for (int i = 0; i < count; i++) {
-      EventManager.instance.postEvent(EventConfig.all_noti_t,params: {"type":channel});
+      EventManager.instance.postEvent(EventConfig.all_noti_t,params: {"push_type":channel});
       await Future.delayed(Duration(seconds: 1));
     }
   }
@@ -241,7 +241,7 @@ class FishNFManager{
   void startRepeat(List<String> list_t, List<String> list_c, List<int> list_id, String tag,int minutes) {
     var tagCount = LocalCacheUtils.getInt(tag,defaultValue: 0);
     Duration duration = Duration(minutes: minutes);
-    _repeatNotification(list_id[tagCount],list_t[tagCount],list_c[tagCount],"${tag}_$tagCount",duration);
+    _repeatNotification(list_id[tagCount],list_t[tagCount],list_c[tagCount],"${tag}",duration);
     if(tagCount == 0){
       tagCount = 1;
     }else{

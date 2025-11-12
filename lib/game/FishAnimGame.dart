@@ -18,7 +18,7 @@ class FishAnimGame extends FlameGame {
   late SpriteComponent coinIcon;
   late SpriteComponent settingIcon;
   TextComponent? coinText;
-  late SpriteComponent bgProtect;
+  SpriteComponent? bgProtect;
   late TextComponent timeText;
   @override
   Color backgroundColor() => Colors.transparent;
@@ -92,7 +92,7 @@ class FishAnimGame extends FlameGame {
       ..sprite = await Sprite.load('bg_protect.webp') // 注意路径
       ..size = Vector2(124, 47) // 对应 Flutter 的 width:124.w, height:47.h
       ..position = Vector2((size.x - 124) / 2, 529); // 顶部对齐 + top padding
-    add(bgProtect);
+    add(bgProtect!);
 
     // 时间文字
     final textPaintTime = TextPaint(
@@ -108,7 +108,7 @@ class FishAnimGame extends FlameGame {
       textRenderer: textPaintTime,
       anchor: Anchor.topRight,
     )
-      ..position = bgProtect.position + Vector2(bgProtect.size.x - 12, 13); // right:12, top:13
+      ..position = bgProtect!.position + Vector2(bgProtect!.size.x - 12, 13); // right:12, top:13
     add(timeText);
     if(!globalShowProtect){
       updateProtectTime(0);
@@ -132,13 +132,14 @@ class FishAnimGame extends FlameGame {
 
   void updateProtectTime(int time){
     // 每帧刷新文字，如果保护时间在减少
+    if(bgProtect == null)return;
     if(time == 0){
-      bgProtect.paint.color = bgProtect.paint.color.withOpacity(0.0);
+      bgProtect!.paint.color = bgProtect!.paint.color.withOpacity(0.0);
       timeText.text = "";
       hideProtect();
       globalShowProtect = false;
     }else{
-      bgProtect.paint.color = bgProtect.paint.color.withOpacity(1.0);
+      bgProtect!.paint.color = bgProtect!.paint.color.withOpacity(1.0);
       timeText.text = GlobalTimerManager().formatTime(time);
       showProtect();
     }
