@@ -108,7 +108,7 @@ Future<void> main() async {
 
 _initAdjust() async {
   String appToken = LocalConfig.adjustToken; // 从 adjust 控制台拿
-  var disId = await FlutterTbaInfo.instance.getDistinctId();
+  var disId = await GlobalDataManager.instance.getDeviceId();
   Adjust.addGlobalCallbackParameter('customer_user_id', disId);
   final config = AdjustConfig(appToken, AdjustEnvironment.production);
   config.logLevel = AdjustLogLevel.verbose;

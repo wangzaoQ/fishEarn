@@ -40,10 +40,8 @@ class NetParamsManager{
     parentJson["carthage"] = await getDeviceManufacturer();
     parentJson["juan"] = await getAppVersion();
     parentJson["bulk"] = DateTime.now().millisecondsSinceEpoch;
-
-    // parentJson["parsley"] = await getGID();
-    // parentJson["still"] = await GlobalDataManager.getDeviceId();
-    // parentJson["leila"] = DateTime.now().timeZoneOffset.inHours;
+    parentJson["taft"] = await GlobalDataManager.instance.getDeviceId();
+    parentJson["fiendish"] = DateTime.now().timeZoneOffset.inHours;
     return {"gemsbok":parentJson};
   }
 

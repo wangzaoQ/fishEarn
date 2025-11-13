@@ -9,6 +9,7 @@ import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/data/GlobalConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_tba_info/flutter_tba_info.dart';
 import 'package:flutter_udid/flutter_udid.dart';
 
 import '../config/CashConfig.dart';
@@ -47,14 +48,11 @@ class GlobalDataManager{
   }
 
   Future<String> getDeviceId() async {
-    var deviceId = LocalCacheUtils.getString(LocalCacheConfig.deviceIdKey,defaultValue: "");
+    var deviceId = LocalCacheUtils.getString(LocalCacheConfig.deviceIdKey2,defaultValue: "");
     if(deviceId.isNotEmpty)return deviceId;
-    String udid = await FlutterUdid.udid;
-    if(udid.isEmpty){
-      udid = await FlutterUdid.consistentUdid;
-    }
-    LocalCacheUtils.putString(LocalCacheConfig.deviceIdKey, udid);
-    return udid;
+    deviceId = await FlutterTbaInfo.instance.getDistinctId();
+    LocalCacheUtils.putString(LocalCacheConfig.deviceIdKey2, deviceId);
+    return deviceId;
   }
 
 // 复制文本到剪贴板

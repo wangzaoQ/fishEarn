@@ -12,7 +12,7 @@ class LocalCacheConfig{
   static const cashRankType = "cashRankType";
   static const cashRankCompleteList = "cashRankCompleteList";
   static const taskCurrentKey = "taskCurrentKey";
-  static const deviceIdKey = "deviceIdKey";
+  static const deviceIdKey2 = "deviceIdKey2";
   static const cacheGuideKey = "cacheGuideKey";
   static const cacheDataRestKey = "cacheDataRestKey";
   static const cacheCashCurrentKey = "cacheCashCurrentKey";
