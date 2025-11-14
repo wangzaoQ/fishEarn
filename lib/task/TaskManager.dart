@@ -6,6 +6,8 @@ import 'package:fish_earn/config/LocalConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/LogUtils.dart';
 
+import '../config/EventConfig.dart';
+import '../utils/net/EventManager.dart';
 import '../view/pop/CashProcessPop.dart';
 import '../view/pop/PopManger.dart';
 
@@ -173,6 +175,11 @@ class TaskManager {
    */
   void addTask(String task) {
     LogUtils.logD("$TAG: addTask:$task");
+    var firstAddTask = LocalCacheUtils.getBool(LocalCacheConfig.firstAddTask,defaultValue: false);
+    if(firstAddTask){
+      LocalCacheUtils.putBool(LocalCacheConfig.firstAddTask,false);
+      EventManager.instance.postEvent(EventConfig.initiate_withdrawal);
+    }
     var taskName = TaskManager.instance.getCurrentTaskName();
     if(taskName.isNotEmpty){
       var taskList = TaskManager.instance.getCurrentSubTaskNames();

@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:fish_earn/utils/GlobalDataManager.dart';
 
+import '../config/LocalCacheConfig.dart';
 import '../config/global.dart';
 import 'GameManager.dart';
+import 'LocalCacheUtils.dart';
 
 class GlobalTimerManager{
   static final GlobalTimerManager _instance = GlobalTimerManager._internal();
@@ -51,6 +53,7 @@ class GlobalTimerManager{
 
   /// 取消定时器
   void cancelTimer2() {
+    LocalCacheUtils.putBool(LocalCacheConfig.firstShowCashTips, true);
     GameManager.instance.updateUnLimitTime(0);
 
     _timer2?.cancel();

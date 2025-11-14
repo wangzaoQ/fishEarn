@@ -227,6 +227,7 @@ class _CashPage2State extends State<CashPage> {
                             LocalCacheUtils.putInt(LocalCacheConfig.cashMoneyType, widget.payStatus,);
                             LocalCacheUtils.putString(LocalCacheConfig.taskCurrentKey,"task1");
                             LocalCacheUtils.putBool(LocalCacheConfig.isCashed,true);
+                            LocalCacheUtils.putBool(LocalCacheConfig.firstAddTask,true);
                             Navigator.pop(context, 0);
                           },
                         ),

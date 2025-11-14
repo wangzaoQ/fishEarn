@@ -161,12 +161,13 @@ class EventConfig{
   static const congratulation_pop = "congratulation_pop";
   //无网络弹窗展示
   static const no_network = "no_network";
-  //提现提醒弹窗展示
-  static const withdrawal_reminder = "withdrawal_reminder";
-  //提现提醒弹窗点击Confirm
-  static const withdrawal_reminder_c = "withdrawal_reminder_c";
-  //提现提醒弹窗点击提现
-  static const withdrawal_reminder_cash = "withdrawal_reminder_cash";
+
+  //无限骰子活动页展示
+  static const infinite_dice = "infinite_dice";
+  //无限骰子活动页点击去摇骰子
+  static const infinite_dice_c = "infinite_dice_c";
+  //无限骰子活动点击提现
+  static const infinite_dice_cash = "infinite_dice_cash";
   //提现达标弹窗展示
   static const withdrawal_ready = "withdrawal_ready";
   //提现达标弹窗点击提现
@@ -175,5 +176,7 @@ class EventConfig{
   static const withdrawal_ready_close = "withdrawal_ready_close";
   //游戏规则弹窗展示
   static const game_rules = "game_rules";
+  //第一次执行任务时触发
+  static const initiate_withdrawal = "initiate_withdrawal";
 
 }

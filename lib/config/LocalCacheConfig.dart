@@ -38,6 +38,7 @@ class LocalCacheConfig{
   static const cacheType = "cacheType";
   static const firstShowCashLimit = "firstShowCashLimit";
   static const firstShowCashTips = "firstShowCashTips";
+  static const firstAddTask = "firstAddTask";
   static const cashName = "cashName";
   static const allowShowOffline = "allowShowOffline";
   static const lastTriggerLevel = "lastTriggerLevel";

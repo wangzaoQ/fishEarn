@@ -43,7 +43,7 @@ class _CashTipsPopState extends State<CashTipsPop> {
       LocalCacheConfig.cacheShowMoney,
       defaultValue: true,
     );
-    EventManager.instance.postEvent(EventConfig.withdrawal_reminder);
+    EventManager.instance.postEvent(EventConfig.infinite_dice);
   }
 
   @override
@@ -152,7 +152,7 @@ class _CashTipsPopState extends State<CashTipsPop> {
                     ),
                     onPressed: () {
                       if (!ClickManager.canClick(context: context)) return;
-                      EventManager.instance.postEvent(EventConfig.withdrawal_reminder_c);
+                      EventManager.instance.postEvent(EventConfig.infinite_dice_c);
                       Navigator.pop(context, 1);
                     },
                   )
@@ -308,7 +308,7 @@ class _CashTipsPopState extends State<CashTipsPop> {
                       ),
                       onPressed: () {
                         if (!ClickManager.canClick(context: context)) return;
-                        EventManager.instance.postEvent(EventConfig.withdrawal_reminder_cash);
+                        EventManager.instance.postEvent(EventConfig.infinite_dice_cash);
                         Navigator.pop(context,2);
                       },
                     ),
