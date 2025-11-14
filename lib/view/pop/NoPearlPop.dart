@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../utils/AudioUtils.dart';
+import '../../utils/ClickManager.dart';
 import '../GameText.dart';
 
 class NoPearlPop extends StatefulWidget {
@@ -68,7 +69,7 @@ class _NoPearlPopState extends State<NoPearlPop> {
               ),
             ),
             onPressed: () {
-              AudioUtils().playClickAudio();
+              if (!ClickManager.canClick(context: context)) return;
               Navigator.pop(context, 1);
             },
           ),

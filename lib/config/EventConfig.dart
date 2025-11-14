@@ -144,8 +144,6 @@ class EventConfig{
   static const ad_fail = "ad_fail";
   //广告获取失败弹窗 重试按钮点击
   static const ad_fail_c = "ad_fail_c";
-  //到达提现额度弹窗
-  static const meet_withdraw = "meet_withdraw";
   //终生累计广告数到达参数的时候，就打一次
   static const pv_dall = "pv_dall";
   //老用户离线奖励弹窗展示
@@ -163,5 +161,17 @@ class EventConfig{
   static const congratulation_pop = "congratulation_pop";
   //无网络弹窗展示
   static const no_network = "no_network";
+  //提现提醒弹窗展示
+  static const withdrawal_reminder = "withdrawal_reminder";
+  //提现提醒弹窗点击Confirm
+  static const withdrawal_reminder_c = "withdrawal_reminder_c";
+  //提现提醒弹窗点击提现
+  static const withdrawal_reminder_cash = "withdrawal_reminder_cash";
+  //提现达标弹窗展示
+  static const withdrawal_ready = "withdrawal_ready";
+  //提现达标弹窗点击提现
+  static const withdrawal_ready_cash = "withdrawal_ready_cash";
+  //提现达标弹窗点击关闭&not now
+  static const withdrawal_ready_close = "withdrawal_ready_close";
 
 }

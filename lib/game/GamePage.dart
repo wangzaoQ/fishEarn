@@ -225,8 +225,10 @@ class _GamePageState extends State<GamePage>
         pauseTemp("EventConfig.cashTips1");
         var result = await PopManager().show(context: context, child: WithdrawPop());
         if(result == 1){
+          EventManager.instance.postEvent(EventConfig.withdrawal_ready_cash);
           await toCashMain(context, "EventConfig.cashTips1");
         }else{
+          EventManager.instance.postEvent(EventConfig.withdrawal_ready_close);
           resumeTemp("EventConfig.cashTips1");
         }
       }else if(event.message == EventConfig.cashTips2){

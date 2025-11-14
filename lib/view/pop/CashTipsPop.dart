@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../config/EventConfig.dart';
 import '../../config/LocalCacheConfig.dart';
 import '../../config/global.dart';
 import '../../data/GameData.dart';
@@ -12,9 +13,10 @@ import '../../utils/AudioUtils.dart';
 import '../../utils/GameManager.dart';
 import '../../utils/GlobalDataManager.dart';
 import '../../utils/LocalCacheUtils.dart';
+import '../../utils/net/EventManager.dart';
 import '../GameText.dart';
 import '../ProgressClipper.dart';
-
+//无限转盘弹窗
 class CashTipsPop extends StatefulWidget {
   const CashTipsPop({super.key});
 
@@ -41,6 +43,7 @@ class _CashTipsPopState extends State<CashTipsPop> {
       LocalCacheConfig.cacheShowMoney,
       defaultValue: true,
     );
+    EventManager.instance.postEvent(EventConfig.withdrawal_reminder);
   }
 
   @override
@@ -149,6 +152,7 @@ class _CashTipsPopState extends State<CashTipsPop> {
                     ),
                     onPressed: () {
                       if (!ClickManager.canClick(context: context)) return;
+                      EventManager.instance.postEvent(EventConfig.withdrawal_reminder_c);
                       Navigator.pop(context, 1);
                     },
                   )
@@ -304,6 +308,7 @@ class _CashTipsPopState extends State<CashTipsPop> {
                       ),
                       onPressed: () {
                         if (!ClickManager.canClick(context: context)) return;
+                        EventManager.instance.postEvent(EventConfig.withdrawal_reminder_cash);
                         Navigator.pop(context,2);
                       },
                     ),

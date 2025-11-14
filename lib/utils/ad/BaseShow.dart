@@ -2,6 +2,7 @@
 import 'package:adjust_sdk/adjust.dart';
 import 'package:adjust_sdk/adjust_ad_revenue.dart';
 import 'package:applovin_max/applovin_max.dart';
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:fish_earn/utils/net/EventManager.dart';
 
 import '../../config/global.dart';
@@ -85,11 +86,15 @@ abstract class BaseShow {
       adjustAdRevenue.adRevenuePlacement = max.placement;
       Adjust.trackAdRevenue(adjustAdRevenue);
       LogUtils.logD("af logs:: af revenue success ${max.revenue}");
+      try{
+        FacebookAppEvents fb = FacebookAppEvents();
+        fb.logPurchase(amount: max.revenue, currency: "USD");
+      }catch(e){
+        LogUtils.logD("fb logs::  revenue error $e");
+      }
     } catch (e) {
       LogUtils.logD("af logs:: af revenue error $e");
     }
 
-    // FacebookAppEvents fb = FacebookAppEvents();
-    // fb.logPurchase(amount: max.revenue, currency: "USD");
   }
 }

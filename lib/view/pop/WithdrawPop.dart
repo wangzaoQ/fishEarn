@@ -30,7 +30,7 @@ class _WithdrawPopState extends State<WithdrawPop> {
   @override
   void initState() {
     super.initState();
-    EventManager.instance.postEvent(EventConfig.meet_withdraw);
+    EventManager.instance.postEvent(EventConfig.withdrawal_ready);
   }
 
   @override
@@ -68,6 +68,7 @@ class _WithdrawPopState extends State<WithdrawPop> {
                       ),
                     ),
                     onPressed: () {
+                      if (!ClickManager.canClick(context: context)) return;
                       Navigator.pop(context, -1);
                     },
                   ),
@@ -113,6 +114,7 @@ class _WithdrawPopState extends State<WithdrawPop> {
                   ),
                 ),
                 onPressed: () {
+                  if (!ClickManager.canClick(context: context)) return;
                   Navigator.pop(context,1);
                 },
               ),

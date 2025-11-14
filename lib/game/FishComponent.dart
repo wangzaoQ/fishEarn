@@ -9,7 +9,6 @@ import 'GameFloatText.dart'; // 你的 SimpleAnimGame
 
 class FishComponent extends SpriteAnimationComponent with HasGameRef<FishAnimGame> {
   final Random _random = Random();
-
   int level;
 
   final String picName;
@@ -280,8 +279,13 @@ class FishComponent extends SpriteAnimationComponent with HasGameRef<FishAnimGam
     _updateFlipByVelocity();
 
     // 更新 overlay（仅在 overlay 当前显示时更新）
-    if (overlayNotifier != null && overlayNotifier!.value != null) {
-      overlayNotifier!.value = Offset(position.x.toDouble(), position.y.toDouble());
+    // if (overlayNotifier != null && overlayNotifier!.value != null) {
+    //   overlayNotifier!.value = Offset(position.x.toDouble(), position.y.toDouble());
+    // }
+    if(globalShowProtect){
+      gameRef.showOverlay(Offset(position.x.toDouble(), position.y.toDouble()));
+    }else {
+      gameRef.hideOverlay();
     }
     if (overlayNotifier2 != null && overlayNotifier2!.value != null) {
       overlayNotifier2!.value = Offset(position.x.toDouble(), position.y.toDouble());
@@ -341,20 +345,6 @@ class FishComponent extends SpriteAnimationComponent with HasGameRef<FishAnimGam
     final pos = position.clone()..y -= size.y / 2; // 鱼上方
     final ft = GameFloatingText(text, pos, textPaint: paint);
     gameRef.add(ft);
-  }
-
-  /// 显示 overlay（不暂停游动）
-  void showOverlay() {
-    if (overlayNotifier != null) {
-      overlayNotifier!.value = Offset(position.x.toDouble(), position.y.toDouble());
-    }
-  }
-
-  /// 隐藏 overlay
-  void hideOverlay() {
-    if (overlayNotifier != null) {
-      overlayNotifier!.value = null;
-    }
   }
 
   /// 显示 Danger（不暂停游动）

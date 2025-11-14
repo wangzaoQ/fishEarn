@@ -20,6 +20,9 @@ class FishAnimGame extends FlameGame {
   TextComponent? coinText;
   SpriteComponent? bgProtect;
   late TextComponent timeText;
+  SpriteComponent? fishOverlay;
+
+
   @override
   Color backgroundColor() => Colors.transparent;
   final int level;
@@ -87,13 +90,20 @@ class FishAnimGame extends FlameGame {
       ..position = coinBg.position + Vector2(coinBg.size.x / 2+10.w, coinBg.size.y / 2);
     add(coinText!);
 
-    // 背景图片
+    // 保护计时器功能 背景图
+    // fish overlay 特效圈
+    fishOverlay = SpriteComponent()
+      ..sprite = await Sprite.load("bg_fish_oval1.webp")
+      ..size = Vector2(230.w, 230.h)
+      ..anchor = Anchor.topLeft
+      ..position = Vector2(-9999, -9999);
+    add(fishOverlay!);
+    fishOverlay!.paint.color= fishOverlay!.paint.color.withOpacity(0.0); // 初始隐藏
     bgProtect = SpriteComponent()
       ..sprite = await Sprite.load('bg_protect.webp') // 注意路径
       ..size = Vector2(124, 47) // 对应 Flutter 的 width:124.w, height:47.h
       ..position = Vector2((size.x - 124) / 2, 529); // 顶部对齐 + top padding
     add(bgProtect!);
-
     // 时间文字
     final textPaintTime = TextPaint(
       style: TextStyle(
@@ -102,7 +112,6 @@ class FishAnimGame extends FlameGame {
         fontWeight: FontWeight.bold,
       ),
     );
-
     timeText = TextComponent(
       text: GlobalTimerManager().formatTime(0),
       textRenderer: textPaintTime,
@@ -132,11 +141,10 @@ class FishAnimGame extends FlameGame {
 
   void updateProtectTime(int time){
     // 每帧刷新文字，如果保护时间在减少
-    if(bgProtect == null)return;
+    if(bgProtect == null || fishOverlay == null)return;
     if(time == 0){
       bgProtect!.paint.color = bgProtect!.paint.color.withOpacity(0.0);
       timeText.text = "";
-      hideProtect();
       globalShowProtect = false;
     }else{
       bgProtect!.paint.color = bgProtect!.paint.color.withOpacity(1.0);
@@ -152,11 +160,31 @@ class FishAnimGame extends FlameGame {
 
   void showProtect(){
     globalShowProtect = true;
-    fishComment?.showOverlay();
+  }
+  bool _overlayVisible = false;
+
+  void showOverlay(Offset offset) {
+    if(fishOverlay == null)return;
+    if (!_overlayVisible) {
+      // ✅ 显示 overlay（如果之前是隐藏的）
+      fishOverlay!.paint.color = Colors.white.withOpacity(1.0);
+      _overlayVisible = true;
+    }
+    // ✅ 直接使用传入的中心点 offset
+    // 把 Offset（中心点）转换成左上角位置
+    final overlaySize = fishOverlay!.size;
+    fishOverlay!.position = Vector2(
+      offset.dx - overlaySize.x / 2,
+      offset.dy - overlaySize.y / 2,
+    );
   }
 
-  void hideProtect(){
-    fishComment?.hideOverlay();
+  void hideOverlay(){
+    if(fishOverlay == null)return;
+    if (_overlayVisible) {
+      fishOverlay!.paint.color = Colors.white.withOpacity(0.0);
+      _overlayVisible = false;
+    }
   }
 
   void showDanger(){

@@ -96,7 +96,7 @@ Future<void> main() async {
           splitScreenMode: true,
           builder: (context, child) {
             debugPaintSizeEnabled = false; // 👈 关闭调试边框线
-
+            LogUtils.logD("$TAG return MyApp()");
             return MyApp();
           },
         ),
@@ -182,6 +182,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
     // 根据生命周期状态处理逻辑
+    LogUtils.logD("$TAG didChangeAppLifecycleState ${state}");
     if (state == AppLifecycleState.resumed) {
       FishNFManager.instance.checkNF();
       Future.microtask(() async {

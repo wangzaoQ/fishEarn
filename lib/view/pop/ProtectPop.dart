@@ -69,6 +69,7 @@ class _ProtectPopState extends State<ProtectPop> {
                   ),
                 ),
                 onPressed: () {
+                  if (!ClickManager.canClick(context: context)) return;
                   Navigator.pop(context, -1);
                 },
               ),

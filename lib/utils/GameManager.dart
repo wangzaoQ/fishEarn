@@ -51,10 +51,6 @@ class GameManager{
     game?.hideDanger();
   }
 
-  void hideProtect() {
-    game?.hideProtect();
-  }
-
   void pauseMovement(){
     game?.pauseMovement();
   }
