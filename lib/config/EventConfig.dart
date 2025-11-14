@@ -173,5 +173,7 @@ class EventConfig{
   static const withdrawal_ready_cash = "withdrawal_ready_cash";
   //提现达标弹窗点击关闭&not now
   static const withdrawal_ready_close = "withdrawal_ready_close";
+  //游戏规则弹窗展示
+  static const game_rules = "game_rules";
 
 }

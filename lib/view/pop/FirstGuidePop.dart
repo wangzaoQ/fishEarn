@@ -4,7 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../config/EventConfig.dart';
 import '../../utils/ClickManager.dart';
+import '../../utils/net/EventManager.dart';
 
 class FirstGuidePop extends StatefulWidget {
   const FirstGuidePop({super.key});
@@ -61,6 +63,7 @@ class _FirstGuidePopState extends State<FirstGuidePop>
       parent: _fadeAllController,
       curve: const Interval(0.66, 1.0, curve: Curves.easeOut),
     );
+    EventManager.instance.postEvent(EventConfig.game_rules);
   }
 
   @override

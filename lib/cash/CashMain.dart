@@ -386,37 +386,9 @@ class _CashMainState extends State<CashMain> {
                               ),
                             ),
                             onPressed: () {
-                              LocalCacheUtils.putInt(
-                                LocalCacheConfig.cacheKeyCash,
-                                -1,
-                              );
-                              var type = LocalCacheUtils.getInt(
-                                LocalCacheConfig.cashMoneyType,
-                                defaultValue: 1,
-                              );
-                              LocalCacheUtils.putInt(
-                                LocalCacheConfig.cacheCashCurrentKey,
-                                0,
-                              );
-                              //1 500 2 800 3 1000
-                              var money = 500;
-                              if (type == 1) {
-                                money = 500;
-                              } else if (type == 2) {
-                                money = 800;
-                              } else if (type == 3) {
-                                money = 1000;
-                              }
-                              LocalCacheUtils.putInt(
-                                LocalCacheConfig.cashRankType,
-                                type,
-                              );
-                              if (LocalConfig.globalContext != null) {
-                                PopManager().show(
-                                  context: LocalConfig.globalContext!,
-                                  child: CashProcessPop(money: money),
-                                );
-                              }
+                              var gameData = LocalCacheUtils.getGameData();
+                              gameData.coin+=100;
+                              LocalCacheUtils.putGameData(gameData);
                             },
                           ),
                         ),
