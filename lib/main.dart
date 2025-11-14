@@ -97,6 +97,7 @@ Future<void> main() async {
           builder: (context, child) {
             debugPaintSizeEnabled = false; // 👈 关闭调试边框线
             LogUtils.logD("$TAG return MyApp()");
+            GlobalDataManager.instance.preloadStartImage(context);
             return MyApp();
           },
         ),

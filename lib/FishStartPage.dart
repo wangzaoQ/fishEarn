@@ -3,6 +3,7 @@ import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/game/GamePage.dart';
 import 'package:fish_earn/utils/FishNFManager.dart';
 import 'package:fish_earn/utils/GameManager.dart';
+import 'package:fish_earn/utils/GlobalDataManager.dart';
 import 'package:fish_earn/utils/GlobalTimerManager.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
 import 'package:fish_earn/utils/LogUtils.dart';
@@ -115,6 +116,7 @@ class _FishStartPageState extends State<FishStartPage>
         // 启动动画
         _controller.forward();
       }
+      GlobalDataManager.instance.preloadOtherImage(context);
     });
     // 异步预加载，不阻塞当前页面布局
     // Future.microtask(() {

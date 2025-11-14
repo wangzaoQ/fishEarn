@@ -8,6 +8,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fish_earn/config/LocalCacheConfig.dart';
 import 'package:fish_earn/data/GlobalConfig.dart';
 import 'package:fish_earn/utils/LocalCacheUtils.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tba_info/flutter_tba_info.dart';
 import 'package:flutter_udid/flutter_udid.dart';
@@ -166,5 +167,14 @@ class GlobalDataManager{
     return gid;
   }
 
+  Future<void> preloadStartImage(BuildContext context) async {
+    precacheImage(const AssetImage('assets/images/bg_start.webp'), context);
+  }
+
+  Future<void> preloadOtherImage(BuildContext context) async {
+    // 异步预加载，不阻塞当前页面布局
+    precacheImage(const AssetImage('assets/images/bg_game.webp'), context);
+    precacheImage(const AssetImage('assets/images/bg_cash.webp'), context);
+  }
 
 }
